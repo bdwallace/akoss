@@ -1,0 +1,4048 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "mobile API",
+        "description": "mobile has every tool to get any job done, so codename for the new mobile APIs.",
+        "version": "1.0.0",
+        "contact": {
+            "email": "astaxie@gmail.com"
+        }
+    },
+    "basePath": "/api",
+    "paths": {
+        "/awsHost/awsCheckStop/": {
+            "get": {
+                "tags": [
+                    "controllers/hostHostCheckController"
+                ],
+                "description": "get AwsStatus by instanceId and region",
+                "operationId": "HostCheckController.get AwsStatus by instanceId and region",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "instance id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "region",
+                        "description": "region",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "hostId",
+                        "description": "host id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "1": {
+                        "description": "获取 AwsStatus by instanceId and region 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/awsHost/awsRsyncUpdate/": {
+            "get": {
+                "tags": [
+                    "controllers/hostHostCheckController"
+                ],
+                "description": "get awsrsync by ip",
+                "operationId": "HostCheckController.get awsRsyncUpdate by project id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "project id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Host"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 awsRsyncUpdate by project id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/awsHost/awsSetStopTime/": {
+            "post": {
+                "tags": [
+                    "controllers/hostHostCheckController"
+                ],
+                "description": "get AwsStatus by instanceId and region",
+                "operationId": "HostCheckController.get AwsStatus by instanceId and region",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "instance id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "region",
+                        "description": "region",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "hostId",
+                        "description": "host id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "1": {
+                        "description": "获取 AwsStatus by instanceId and region 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/awsHost/awsStart/": {
+            "post": {
+                "tags": [
+                    "controllers/hostHostCheckController"
+                ],
+                "description": "get AwsStatus by instanceId and region",
+                "operationId": "HostCheckController.get AwsStatus by instanceId and region",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "instance id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "region",
+                        "description": "region",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "hostId",
+                        "description": "host id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "1": {
+                        "description": "获取 AwsStatus by instanceId and region 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/awsHost/awsStatus/": {
+            "post": {
+                "tags": [
+                    "controllers/hostHostCheckController"
+                ],
+                "description": "get AwsStatus by instanceId and region",
+                "operationId": "HostCheckController.get AwsStatus by instanceId and region",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "instanceId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "region",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "1": {
+                        "description": "获取 AwsStatus by instanceId and region 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/awsHost/awsStop/": {
+            "post": {
+                "tags": [
+                    "controllers/hostHostCheckController"
+                ],
+                "description": "get AwsStatus by instanceId and region",
+                "operationId": "HostCheckController.get AwsStatus by instanceId and region",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "instanceId",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "region",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "1": {
+                        "description": "获取 AwsStatus by instanceId and region 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/awsHost/awsStopOnlineHost/": {
+            "get": {
+                "tags": [
+                    "controllers/hostHostCheckController"
+                ],
+                "description": "get AwsStatus by instanceId and region",
+                "operationId": "HostCheckController.get AwsStatus by instanceId and region",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "instance id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "region",
+                        "description": "region",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "hostId",
+                        "description": "host id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "1": {
+                        "description": "获取 AwsStatus by instanceId and region 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/awsHost/awsrsync/": {
+            "post": {
+                "tags": [
+                    "controllers/hostHostCheckController"
+                ],
+                "description": "get awsrsync by ip",
+                "operationId": "HostCheckController.get awsrsync by ip",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "ip",
+                        "description": "host ip",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Host"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 awsrsync by ip 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/backup/service": {
+            "get": {
+                "tags": [
+                    "controllers/backupBackupController"
+                ],
+                "description": "get backup path",
+                "operationId": "BackupController.get backup path",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "deploy id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "back path string"
+                    },
+                    "1": {
+                        "description": "删除 deploy by deploy id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/backup/sql": {
+            "get": {
+                "tags": [
+                    "controllers/backupBackupController"
+                ],
+                "description": "get backup path",
+                "operationId": "BackupController.get backup path",
+                "responses": {
+                    "0": {
+                        "description": "back path string"
+                    },
+                    "1": {
+                        "description": "删除 deploy by deploy id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/conf/": {
+            "post": {
+                "tags": [
+                    "controllers/confConfController"
+                ],
+                "description": "add the project conf",
+                "operationId": "ConfController.添加 project conf",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "name",
+                        "description": "project conf name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "value",
+                        "description": "project conf value is json type",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "project_id",
+                        "description": "conf id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "添加 project conf 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/conf/copy": {
+            "get": {
+                "tags": [
+                    "controllers/confConfController"
+                ],
+                "description": "copy the conf conf by id",
+                "operationId": "ConfController.拷贝 conf by id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "conf id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{ok} bool"
+                    },
+                    "1": {
+                        "description": "拷贝 conf conf by id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/conf/id": {
+            "get": {
+                "tags": [
+                    "controllers/confConfController"
+                ],
+                "description": "get the project conf by id",
+                "operationId": "ConfController.获取 project conf by id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "project conf id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Conf"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 project conf by id失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/conf/id/": {
+            "delete": {
+                "tags": [
+                    "controllers/confConfController"
+                ],
+                "description": "update the project conf by id",
+                "operationId": "ConfController.删除 project conf by project id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "project conf id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{ok} bool"
+                    },
+                    "1": {
+                        "description": "删除 project conf by id失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/conf/list": {
+            "get": {
+                "tags": [
+                    "controllers/confConfController"
+                ],
+                "description": "get all the project conf",
+                "operationId": "ConfController.获取所有 project conf",
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Conf"
+                        }
+                    },
+                    "1": {
+                        "description": "获取所有 project conf 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/conf/projectId": {
+            "get": {
+                "tags": [
+                    "controllers/confConfController"
+                ],
+                "description": "get the project conf by project id",
+                "operationId": "ConfController.获取 project conf by project id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "project_id",
+                        "description": "project id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Conf"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 project conf by project id失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/crontab/": {
+            "post": {
+                "tags": [
+                    "controllers/crontabCrontabController"
+                ],
+                "description": "add crontab by new crontab",
+                "operationId": "CrontabController.add crontab by new crontab",
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Crontab"
+                        }
+                    },
+                    "1": {
+                        "description": "添加 add crontab by new crontab 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/crontab/copy/": {
+            "get": {
+                "tags": [
+                    "controllers/crontabCrontabController"
+                ],
+                "description": "copy crontab by crontab id",
+                "operationId": "CrontabController.copy crontab by crontab id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "crontab id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Crontab"
+                        }
+                    },
+                    "1": {
+                        "description": "复制 crontab by crontab id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/crontab/exec/": {
+            "get": {
+                "tags": [
+                    "controllers/crontabCrontabController"
+                ],
+                "description": "exec crontab by crontab id",
+                "operationId": "CrontabController.exec crontab by crontab id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "crontab id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Crontab"
+                        }
+                    },
+                    "1": {
+                        "description": "执行 crontab by crontab id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/crontab/id/": {
+            "get": {
+                "tags": [
+                    "controllers/crontabCrontabController"
+                ],
+                "description": "get crontab by id",
+                "operationId": "CrontabController.get crontab by id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "crontab id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Crontab"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 crontab by id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "controllers/crontabCrontabController"
+                ],
+                "description": "delete crontab by crontab id",
+                "operationId": "CrontabController.delete crontab by crontab id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "crontab id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Crontab"
+                        }
+                    },
+                    "1": {
+                        "description": "删除 crontab by crontab id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/crontab/list/": {
+            "get": {
+                "tags": [
+                    "controllers/crontabCrontabController"
+                ],
+                "description": "get all crontab",
+                "operationId": "CrontabController.get all crontab",
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Crontab"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 get all crontab 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/crontab/reload/": {
+            "get": {
+                "tags": [
+                    "controllers/crontabCrontabController"
+                ],
+                "description": "reload crontab",
+                "operationId": "CrontabController.reload crontab",
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Crontab"
+                        }
+                    },
+                    "1": {
+                        "description": "重启 reload crontab 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/crontabLog/page/": {
+            "get": {
+                "tags": [
+                    "controllers/crontabCrontabLogController"
+                ],
+                "description": "get crontab by id",
+                "operationId": "CrontabLogController.get crontab log by page",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "plage",
+                        "description": "crontab log page",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.CrontabLog"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 crontab by page 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/deploy": {
+            "post": {
+                "tags": [
+                    "controllers/deployDeployController"
+                ],
+                "description": "添加没有tag和host的deploy",
+                "operationId": "DeployController.添加空白 deploy",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "servcies",
+                        "description": "ture",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Service"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int"
+                    },
+                    "1": {
+                        "description": "添加 deploy 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/deploy/build": {
+            "post": {
+                "tags": [
+                    "controllers/deployDeployController"
+                ],
+                "description": "添加没有tag和host的deploy",
+                "operationId": "DeployController.添加空白 deploy",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "servcies",
+                        "description": "ture",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Service"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int"
+                    },
+                    "1": {
+                        "description": "添加 deploy 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/deploy/id/": {
+            "get": {
+                "tags": [
+                    "controllers/deployDeployController"
+                ],
+                "description": "获取 deploy by Id",
+                "operationId": "DeployController.获取 deploy by Id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "deploy id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Deploy"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 deploy by Id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "controllers/deployDeployController"
+                ],
+                "description": "delete deploy by deploy id",
+                "operationId": "DeployController.delete deploy by deploy id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "deploy id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Deploy"
+                        }
+                    },
+                    "1": {
+                        "description": "删除 deploy by deploy id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/deploy/list/": {
+            "get": {
+                "tags": [
+                    "controllers/deployDeployController"
+                ],
+                "description": "get all the deploy",
+                "operationId": "DeployController.获取所有 deploy",
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Deploy"
+                        }
+                    },
+                    "1": {
+                        "description": "获取所有 deploy 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/deploy/projectId/": {
+            "get": {
+                "tags": [
+                    "controllers/deployDeployController"
+                ],
+                "description": "get deploys by project id",
+                "operationId": "DeployController.获取 deploys by project id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "project_id",
+                        "description": "project id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Deploy"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 deploy by Id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/deploy/projectId/userId": {
+            "get": {
+                "tags": [
+                    "controllers/deployDeployController"
+                ],
+                "description": "get deploys by project id",
+                "operationId": "DeployController.获取 deploys by project id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "project_id",
+                        "description": "project id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Deploy"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 deploy by Id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/deploy/service": {
+            "post": {
+                "tags": [
+                    "controllers/deployDeployController"
+                ],
+                "description": "添加 deploy",
+                "operationId": "DeployController.发布",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "deploy",
+                        "description": "true",
+                        "schema": {
+                            "$ref": "#/definitions/models.Deploy"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int"
+                    },
+                    "1": {
+                        "description": "添加 deploy 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/deploy/serviceId/": {
+            "get": {
+                "tags": [
+                    "controllers/deployDeployController"
+                ],
+                "description": "get deploys by service id",
+                "operationId": "DeployController.获取 deploys by service id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "service_id",
+                        "description": "service id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Deploy"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 deploy by Id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/deploy/tagcmd": {
+            "post": {
+                "tags": [
+                    "controllers/deployDeployController"
+                ],
+                "description": "添加有tag会生成docker命令,但没有确实要发布哪些主机",
+                "operationId": "DeployController.添加tagcmd deploy",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "deploy",
+                        "description": "true",
+                        "schema": {
+                            "$ref": "#/definitions/models.Deploy"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int"
+                    },
+                    "1": {
+                        "description": "添加 deploy 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/domain": {
+            "post": {
+                "tags": [
+                    "controllers/domainDomainController"
+                ],
+                "description": "add the domain",
+                "operationId": "DomainController.添加 domain",
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "添加 domain 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/domain/class/": {
+            "get": {
+                "tags": [
+                    "controllers/domainDomainController"
+                ],
+                "description": "doamin by project_id for class",
+                "operationId": "DomainController.domain by project_id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "project_id",
+                        "description": "project id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{ok} bool"
+                    },
+                    "1": {
+                        "description": "查询每套环境里域名的所有class"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/domain/id/": {
+            "get": {
+                "tags": [
+                    "controllers/domainDomainController"
+                ],
+                "description": "get the domain by id",
+                "operationId": "DomainController.获取 domain by id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "domain id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Domain"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 domain by id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "controllers/domainDomainController"
+                ],
+                "description": "delete the domain by id",
+                "operationId": "DomainController.删除 domain by id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "domain id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{ok} bool"
+                    },
+                    "1": {
+                        "description": "删除 domain host by id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/domain/list/": {
+            "get": {
+                "tags": [
+                    "controllers/domainDomainController"
+                ],
+                "description": "get all the domain",
+                "operationId": "DomainController.获取所有 domain",
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Domain"
+                        }
+                    },
+                    "1": {
+                        "description": "获取所有 domain 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/domain/monitor/": {
+            "get": {
+                "tags": [
+                    "controllers/domainDomainController"
+                ],
+                "description": "delete the domain by id",
+                "operationId": "DomainController.删除 domain by id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "domain id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{ok} bool"
+                    },
+                    "1": {
+                        "description": "删除 domain host by id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/domain/platformAndClass/": {
+            "get": {
+                "tags": [
+                    "controllers/domainDomainController"
+                ],
+                "description": "get all the domain",
+                "operationId": "DomainController.获取所有 domain",
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Domain"
+                        }
+                    },
+                    "1": {
+                        "description": "获取所有 domain 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/domain/projectId/": {
+            "get": {
+                "tags": [
+                    "controllers/domainDomainController"
+                ],
+                "description": "get the domain by projects id",
+                "operationId": "DomainController.获取 domain by projects id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "projects_id",
+                        "description": "projects id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Domain"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 domain by projects id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/domain/serviceId/": {
+            "get": {
+                "tags": [
+                    "controllers/domainDomainController"
+                ],
+                "description": "get the domain by projects id",
+                "operationId": "DomainController.获取 domain by projects id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "service_id",
+                        "description": "service id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Domain"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 domain by projects id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/fast/deleteSgroup": {
+            "post": {
+                "tags": [
+                    "controllers/fastSgroupController"
+                ],
+                "description": "delete sgroup",
+                "operationId": "SgroupController.删除 sgroup",
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "删除 sgroup 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/fast/getSgroup": {
+            "get": {
+                "tags": [
+                    "controllers/fastSgroupController"
+                ],
+                "description": "获取 sgroup",
+                "operationId": "SgroupController.获取 sgroup",
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "获取 sgroup 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/fast/setSgroup": {
+            "post": {
+                "tags": [
+                    "controllers/fastSgroupController"
+                ],
+                "description": "set sgroup",
+                "operationId": "SgroupController.设置 sgroup",
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "设置 sgroup 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/host": {
+            "post": {
+                "tags": [
+                    "controllers/hostHostController"
+                ],
+                "description": "add the host",
+                "operationId": "HostController.添加 host",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "name",
+                        "description": "host name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "private_ip",
+                        "description": "private ip",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "public_ip",
+                        "description": "public ip",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "use_public",
+                        "description": "use public IP",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "project_id",
+                        "description": "project id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "添加 host 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/host/copy": {
+            "get": {
+                "tags": [
+                    "controllers/hostHostController"
+                ],
+                "description": "copy the host host by id",
+                "operationId": "HostController.拷贝 host by id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "host id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{ok} bool"
+                    },
+                    "1": {
+                        "description": "拷贝 host host by id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/host/dockerPs/": {
+            "get": {
+                "tags": [
+                    "controllers/hostHostController"
+                ],
+                "description": "get host docker ps",
+                "operationId": "HostController.获取 host docker ps",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "use_ip",
+                        "description": "use_ip",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "1": {
+                        "description": "获取 获取 host docker ps 状态 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/host/id/": {
+            "get": {
+                "tags": [
+                    "controllers/hostHostController"
+                ],
+                "description": "get the host by id",
+                "operationId": "HostController.获取 host by id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "host id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Host"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 host by id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "controllers/hostHostController"
+                ],
+                "description": "update the host host by id",
+                "operationId": "HostController.删除 host host by id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "host id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{ok} bool"
+                    },
+                    "1": {
+                        "description": "删除 host host by id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/host/list/": {
+            "get": {
+                "tags": [
+                    "controllers/hostHostController"
+                ],
+                "description": "get all the host",
+                "operationId": "HostController.获取所有 host",
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Host"
+                        }
+                    },
+                    "1": {
+                        "description": "获取所有 host 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/host/projectId/": {
+            "get": {
+                "tags": [
+                    "controllers/hostHostController"
+                ],
+                "description": "get the host by projects id",
+                "operationId": "HostController.获取 host by projects id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "projects_id",
+                        "description": "projects id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Host"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 host by projects id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/link/": {
+            "post": {
+                "tags": [
+                    "controllers/linkLinkController"
+                ],
+                "description": "add link by new link",
+                "operationId": "LinkController.add link by new link",
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Link"
+                        }
+                    },
+                    "1": {
+                        "description": "添加 add link by new link 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/link/copy/": {
+            "get": {
+                "tags": [
+                    "controllers/linkLinkController"
+                ],
+                "description": "copy link by link id",
+                "operationId": "LinkController.copy link by link id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "link id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Link"
+                        }
+                    },
+                    "1": {
+                        "description": "复制 link by link id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/link/id/": {
+            "get": {
+                "tags": [
+                    "controllers/linkLinkController"
+                ],
+                "description": "get link by id",
+                "operationId": "LinkController.get link by id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "link id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Link"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 link by id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "controllers/linkLinkController"
+                ],
+                "description": "delete link by link id",
+                "operationId": "LinkController.delete link by link id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "link id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Link"
+                        }
+                    },
+                    "1": {
+                        "description": "删除 link by link id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/link/list/": {
+            "get": {
+                "tags": [
+                    "controllers/linkLinkController"
+                ],
+                "description": "get all link",
+                "operationId": "LinkController.get all link",
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Link"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 get all link 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/other/appconfig": {
+            "get": {
+                "tags": [
+                    "controllers/otherOtherController"
+                ],
+                "description": "get other the config",
+                "operationId": "OtherController.获取所有一些配置文件的参数",
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Project"
+                        }
+                    },
+                    "1": {
+                        "description": "获取所有 project 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/platform": {
+            "post": {
+                "tags": [
+                    "controllers/platformPlatformController"
+                ],
+                "description": "add the platform",
+                "operationId": "PlatformController.添加 platform",
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "添加 platform 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/platform/id/": {
+            "get": {
+                "tags": [
+                    "controllers/platformPlatformController"
+                ],
+                "description": "get the platform by id",
+                "operationId": "PlatformController.获取 platform by id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "platform id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Platform"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 platform by id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "controllers/platformPlatformController"
+                ],
+                "description": "delete the platform by id",
+                "operationId": "PlatformController.删除 platform by id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "platform id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{ok} bool"
+                    },
+                    "1": {
+                        "description": "删除 platform by id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/platform/list/": {
+            "get": {
+                "tags": [
+                    "controllers/platformPlatformController"
+                ],
+                "description": "get all the platform",
+                "operationId": "PlatformController.获取所有 platform",
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Platform"
+                        }
+                    },
+                    "1": {
+                        "description": "获取所有 platform 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/platform/name": {
+            "get": {
+                "tags": [
+                    "controllers/platformPlatformController"
+                ],
+                "description": "platform by project_id for name",
+                "operationId": "PlatformController.platform by project_id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "project_id",
+                        "description": "project id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{ok} bool"
+                    },
+                    "1": {
+                        "description": "查询每套环境里platform的name"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/platform/projectId/": {
+            "get": {
+                "tags": [
+                    "controllers/platformPlatformController"
+                ],
+                "description": "get the platform by projects id",
+                "operationId": "PlatformController.获取 platform by projects id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "projects_id",
+                        "description": "projects id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Platform"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 platform by projects id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/platform/relatedCheck/": {
+            "get": {
+                "tags": [
+                    "controllers/platformPlatformController"
+                ],
+                "description": "delete the platform by id",
+                "operationId": "PlatformController.删除 platform by id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "platform id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{ok} bool"
+                    },
+                    "1": {
+                        "description": "删除 platform by id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/platformAndService/id/": {
+            "delete": {
+                "tags": [
+                    "controllers/platformPlatformController"
+                ],
+                "description": "delete the platform and service by related id",
+                "operationId": "PlatformController.删除 platform and service related by platform id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "platform id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{ok} bool"
+                    },
+                    "1": {
+                        "description": "删除 platform and service related by id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/platformAndService/platformId/": {
+            "get": {
+                "tags": [
+                    "controllers/platformPlatformController"
+                ],
+                "description": "根据 platform id 查询所有 service 信息",
+                "operationId": "PlatformController.获取 platform by platform id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "platform_id",
+                        "description": "platform id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Service"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 platform and service related 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/platformAndService/related/": {
+            "post": {
+                "tags": [
+                    "controllers/platformPlatformController"
+                ],
+                "description": "添加 platform and service 多对多关联表数据",
+                "operationId": "PlatformController.添加 platform and service 多对多关联表数据",
+                "responses": {
+                    "0": {
+                        "description": "{id} int"
+                    },
+                    "1": {
+                        "description": "添加 platform and service 多对多关联表数据 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/project/": {
+            "post": {
+                "tags": [
+                    "controllers/projectsProjectController"
+                ],
+                "description": "add the project",
+                "operationId": "ProjectController.添加project",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "name",
+                        "description": "project name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "alias",
+                        "description": "project alias",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "添加 project 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/project/alias/": {
+            "get": {
+                "tags": [
+                    "controllers/projectsProjectController"
+                ],
+                "description": "get the project by alias",
+                "operationId": "ProjectController.获取project",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "alias",
+                        "description": "project alias",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Project"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 project by alias 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/project/id/": {
+            "get": {
+                "tags": [
+                    "controllers/projectsProjectController"
+                ],
+                "description": "get the project by id",
+                "operationId": "ProjectController.获取project by id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "project id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Project"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 project by id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "controllers/projectsProjectController"
+                ],
+                "description": "delete the project",
+                "operationId": "ProjectController.删除project",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "project id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{ok} bool"
+                    },
+                    "1": {
+                        "description": "删除 project 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/project/list/": {
+            "get": {
+                "tags": [
+                    "controllers/projectsProjectController"
+                ],
+                "description": "get all the project",
+                "operationId": "ProjectController.获取所有project",
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Project"
+                        }
+                    },
+                    "1": {
+                        "description": "获取所有 project 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/record/count": {
+            "get": {
+                "tags": [
+                    "controllers/recordRecordController"
+                ],
+                "description": "根据 project id 查询所有 service 信息",
+                "operationId": "RecordController.获取 record count by deploy id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "deploy id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "[3, 2, 1]"
+                    },
+                    "1": {
+                        "description": "获取 service by project id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/record/list": {
+            "get": {
+                "tags": [
+                    "controllers/recordRecordController"
+                ],
+                "description": "根据 project id 查询所有 service 信息",
+                "operationId": "RecordController.获取 service by project id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "project_id",
+                        "description": "project id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Service"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 service by project id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/record/listcount": {
+            "get": {
+                "tags": [
+                    "controllers/recordRecordController"
+                ],
+                "description": "根据 project id 查询所有 service 信息",
+                "operationId": "RecordController.获取 record count by deploy id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "deploy id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "[3, 2, 1]"
+                    },
+                    "1": {
+                        "description": "获取 service by project id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/recordoperation/count": {
+            "get": {
+                "tags": [
+                    "controllers/operationRecordOperationRecordController"
+                ],
+                "description": "根据 service_id, class 查询所有 count 信息",
+                "operationId": "OperationRecordController.获取 operation_record count by service_id, class",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "service_id",
+                        "description": "service id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "class",
+                        "description": "class",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "[3, 2, 1]"
+                    },
+                    "1": {
+                        "description": "获取 operation_record by service_id, class, count 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/recordoperation/listcount": {
+            "get": {
+                "tags": [
+                    "controllers/operationRecordOperationRecordController"
+                ],
+                "description": "根据 service_id, class, count 查询所有 operation_record 信息",
+                "operationId": "OperationRecordController.获取 operation_record count by service_id, class, count",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "deploy id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "class",
+                        "description": "class",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "count",
+                        "description": "count",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "[3, 2, 1]"
+                    },
+                    "1": {
+                        "description": "获取 service by project id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/resource/aws": {
+            "get": {
+                "tags": [
+                    "controllers/resourceResourceController"
+                ],
+                "description": "AWS 资源监控",
+                "operationId": "ResourceController.AWS 资源监控",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "awsRegion",
+                        "description": "awsRegion",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "service",
+                        "description": "service class",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "AWS 资源监控"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/resource/tag": {
+            "get": {
+                "tags": [
+                    "controllers/resourceResourceController"
+                ],
+                "description": "AWS 资源监控",
+                "operationId": "ResourceController.AWS 资源监控",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "awsRegion",
+                        "description": "awsRegion",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "service",
+                        "description": "service class",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "AWS 资源监控"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/robot/reload/": {
+            "get": {
+                "tags": [
+                    "controllers/robotRobotController"
+                ],
+                "description": "robot reload front-end service",
+                "operationId": "RobotController.reload",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "service_id",
+                        "description": "service id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "host_id",
+                        "description": "host id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "reload 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/robot/restart/": {
+            "get": {
+                "tags": [
+                    "controllers/robotRobotController"
+                ],
+                "description": "robot restart back-end service",
+                "operationId": "RobotController.restart",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "service_id",
+                        "description": "service id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "host_id",
+                        "description": "host id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "restart 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/service/": {
+            "post": {
+                "tags": [
+                    "controllers/serviceServiceController"
+                ],
+                "description": "add the service",
+                "operationId": "ServiceController.添加 service",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "name",
+                        "description": "service name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "port",
+                        "description": "service port",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "image_path",
+                        "description": "service image path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "value",
+                        "description": "service conf value",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "project_id",
+                        "description": "project id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "添加 service 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/service/backend/": {
+            "get": {
+                "tags": [
+                    "controllers/serviceServiceController"
+                ],
+                "description": "根据 project id 查询所有 service 信息",
+                "operationId": "ServiceController.获取 service by project id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "project_id",
+                        "description": "project id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Service"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 service by project id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/service/copy": {
+            "get": {
+                "tags": [
+                    "controllers/serviceServiceController"
+                ],
+                "description": "copy the service conf by id",
+                "operationId": "ServiceController.拷贝 service by id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "service id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{ok} bool"
+                    },
+                    "1": {
+                        "description": "拷贝 service conf by id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/service/defaultKey/": {
+            "get": {
+                "tags": [
+                    "controllers/serviceServiceController"
+                ],
+                "description": "获取 service default conf value json key",
+                "operationId": "ServiceController.获取 default conf key",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "project_id",
+                        "description": "project id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "host_id",
+                        "description": "host id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Service"
+                        }
+                    },
+                    "1": {
+                        "description": "获取所有 default key 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/service/id/": {
+            "get": {
+                "tags": [
+                    "controllers/serviceServiceController"
+                ],
+                "description": "根据 service id 查询所有 service 信息",
+                "operationId": "ServiceController.获取 service by service id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "service_id",
+                        "description": "service id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Service"
+                        }
+                    },
+                    "1": {
+                        "description": "删除 service by service id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "controllers/serviceServiceController"
+                ],
+                "description": "delete the service conf by id",
+                "operationId": "ServiceController.删除 service by id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "service id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{ok} bool"
+                    },
+                    "1": {
+                        "description": "删除 service conf by id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/service/list/": {
+            "get": {
+                "tags": [
+                    "controllers/serviceServiceController"
+                ],
+                "description": "get all the service",
+                "operationId": "ServiceController.获取所有 service",
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Service"
+                        }
+                    },
+                    "1": {
+                        "description": "获取所有 service 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/service/name": {
+            "get": {
+                "tags": [
+                    "controllers/serviceServiceController"
+                ],
+                "description": "service by project_id for name",
+                "operationId": "ServiceController.service by project_id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "project_id",
+                        "description": "project id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{ok} bool"
+                    },
+                    "1": {
+                        "description": "查询每套环境里service的name"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/service/platformId/": {
+            "get": {
+                "tags": [
+                    "controllers/serviceServiceController"
+                ],
+                "description": "根据 project id 查询所有 service 信息",
+                "operationId": "ServiceController.获取 service by project id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "project_id",
+                        "description": "project id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Service"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 service by project id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/service/related/": {
+            "post": {
+                "tags": [
+                    "controllers/serviceServiceController"
+                ],
+                "description": "添加 service 以及多对多关联表数据",
+                "operationId": "ServiceController.添加 service 以及多对多关联表数据",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "name",
+                        "description": "service name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "port",
+                        "description": "service port",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "image_path",
+                        "description": "service image path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "value",
+                        "description": "service conf value",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "project_id",
+                        "description": "project id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "host",
+                        "description": "host id",
+                        "schema": {
+                            "$ref": "#/definitions/object"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "service",
+                        "description": "host id",
+                        "schema": {
+                            "$ref": "#/definitions/object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int"
+                    },
+                    "1": {
+                        "description": "添加 service 以及多对多关联表数据 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/task/": {
+            "post": {
+                "tags": [
+                    "controllers/taskTaskController"
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int"
+                    },
+                    "1": {
+                        "description": "添加 task 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/task/id/": {
+            "get": {
+                "tags": [
+                    "controllers/taskTaskController"
+                ],
+                "description": "获取 task by Id",
+                "operationId": "TaskController.获取 task by Id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "task id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Task"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 task by Id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "controllers/taskTaskController"
+                ],
+                "description": "delete task by task id",
+                "operationId": "TaskController.delete task by task id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "task id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Task"
+                        }
+                    },
+                    "1": {
+                        "description": "删除 task by task id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/task/list/": {
+            "get": {
+                "tags": [
+                    "controllers/taskTaskController"
+                ],
+                "description": "get all the task",
+                "operationId": "TaskController.获取所有 task",
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Task"
+                        }
+                    },
+                    "1": {
+                        "description": "获取所有 task 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/task/serviceId/": {
+            "get": {
+                "tags": [
+                    "controllers/taskTaskController"
+                ],
+                "description": "get tasks by service id",
+                "operationId": "TaskController.获取 tasks by service id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "service_id",
+                        "description": "service id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Task"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 task by Id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/walle/build": {
+            "post": {
+                "tags": [
+                    "controllers/walleWalleController"
+                ],
+                "description": "下载站 download file",
+                "operationId": "WalleController.下载站 download file",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "service id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "download file 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/walle/dockerps": {
+            "get": {
+                "tags": [
+                    "controllers/walleWalleController"
+                ],
+                "description": "根据 Service.Id 获取service所有的host上的状态",
+                "operationId": "WalleController.获取 service所有host上的状态",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "service_id",
+                        "description": "service id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{list} {[\"tag\", ...]}"
+                    },
+                    "1": {
+                        "description": "获取 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/walle/download/": {
+            "post": {
+                "tags": [
+                    "controllers/walleWalleController"
+                ],
+                "description": "下载站 download file",
+                "operationId": "WalleController.下载站 download file",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "service id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "Host",
+                        "description": "host id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/*Task"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "download file 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/walle/linechange": {
+            "get": {
+                "tags": [
+                    "controllers/walleWalleController"
+                ],
+                "description": "根据 Project.Nacos 查询它当套环境的下线主机",
+                "operationId": "WalleController.获取 获取nacos的下线列表",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "projects_id",
+                        "description": "projects id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{list} {[\"host:port\", ...]}"
+                    },
+                    "1": {
+                        "description": "获取 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/walle/lineget": {
+            "get": {
+                "tags": [
+                    "controllers/walleWalleController"
+                ],
+                "description": "根据 Project.Nacos 查询它当套环境的下线主机",
+                "operationId": "WalleController.获取 获取nacos的下线列表",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "projects_id",
+                        "description": "projects id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{list} {[\"host:port\", ...]}"
+                    },
+                    "1": {
+                        "description": "获取 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/walle/reload/": {
+            "post": {
+                "tags": [
+                    "controllers/walleWalleController"
+                ],
+                "description": "reload",
+                "operationId": "WalleController.reload",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "service_id",
+                        "description": "service id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "host_id",
+                        "description": "host id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "reload 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/walle/restart/": {
+            "post": {
+                "tags": [
+                    "controllers/walleWalleController"
+                ],
+                "description": "restart",
+                "operationId": "WalleController.restart",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "service id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "Host",
+                        "description": "host id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "user",
+                        "description": "user id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "restart 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/walle/stop/": {
+            "post": {
+                "tags": [
+                    "controllers/walleWalleController"
+                ],
+                "description": "restart",
+                "operationId": "WalleController.restart",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "service id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "Host",
+                        "description": "host id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/*Task"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "restart 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/walle/taglist": {
+            "get": {
+                "tags": [
+                    "controllers/walleWalleController"
+                ],
+                "description": "根据 Service.ImagePath 查询所有 tag list 信息",
+                "operationId": "WalleController.获取 tag list for ImagePath",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "image_path",
+                        "description": "service image_path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{list} {[\"tag\", ...]}"
+                    },
+                    "1": {
+                        "description": "获取 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/walle/upload": {
+            "post": {
+                "tags": [
+                    "controllers/walleWalleController"
+                ],
+                "description": "下载站 upload file",
+                "operationId": "WalleController.下载站 upload file",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "name",
+                        "description": "name",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "file",
+                        "description": "file",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/*Task"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "upload file 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "*Task": {
+            "title": "*Task",
+            "type": "object"
+        },
+        "models.Conf": {
+            "title": "Conf",
+            "type": "object",
+            "properties": {
+                "CreatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "Project": {
+                    "$ref": "#/definitions/models.Project"
+                },
+                "Services": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Service"
+                    }
+                },
+                "UpdatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Value": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Crontab": {
+            "title": "Crontab",
+            "type": "object",
+            "properties": {
+                "Address": {
+                    "type": "string"
+                },
+                "Api": {
+                    "type": "string"
+                },
+                "Auto": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "CreatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Crontab": {
+                    "type": "string"
+                },
+                "Direction": {
+                    "type": "string"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "Project": {
+                    "$ref": "#/definitions/models.Project"
+                },
+                "Result": {
+                    "type": "string"
+                },
+                "Script": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "UpdatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                }
+            }
+        },
+        "models.CrontabLog": {
+            "title": "CrontabLog",
+            "type": "object",
+            "properties": {
+                "Auto": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "CreatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Crontab": {
+                    "$ref": "#/definitions/models.Crontab"
+                },
+                "CrontabName": {
+                    "type": "string"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Result": {
+                    "type": "string"
+                },
+                "Status": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "UpdatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                }
+            }
+        },
+        "models.Deploy": {
+            "title": "Deploy",
+            "type": "object",
+            "properties": {
+                "Action": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "Class": {
+                    "type": "string"
+                },
+                "Count": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "CreatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "IsRun": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Project": {
+                    "$ref": "#/definitions/models.Project"
+                },
+                "Status": {
+                    "description": "0未上线1状态未定义,2审核失败,3上线完成,4上线失败",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "Tasks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Task"
+                    }
+                },
+                "Title": {
+                    "type": "string"
+                },
+                "UpdatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "User": {
+                    "$ref": "#/definitions/models.User"
+                }
+            }
+        },
+        "models.Domain": {
+            "title": "Domain",
+            "type": "object",
+            "properties": {
+                "Class": {
+                    "type": "string"
+                },
+                "Conf": {
+                    "type": "string"
+                },
+                "Conf80": {
+                    "type": "string"
+                },
+                "CreatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Crt": {
+                    "type": "string"
+                },
+                "Domain": {
+                    "type": "string"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Key": {
+                    "type": "string"
+                },
+                "Monitor": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "Platforms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Platform"
+                    }
+                },
+                "Port": {
+                    "type": "string"
+                },
+                "Project": {
+                    "$ref": "#/definitions/models.Project"
+                },
+                "Quicken": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Services": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Service"
+                    }
+                },
+                "UpdatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                }
+            }
+        },
+        "models.Host": {
+            "title": "Host",
+            "type": "object",
+            "properties": {
+                "CreatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "EndTime": {
+                    "type": "string"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "InstanceId": {
+                    "type": "string"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "PrivateIp": {
+                    "type": "string"
+                },
+                "Project": {
+                    "$ref": "#/definitions/models.Project"
+                },
+                "PublicIp": {
+                    "type": "string"
+                },
+                "Region": {
+                    "type": "string"
+                },
+                "Services": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Service"
+                    }
+                },
+                "StartTime": {
+                    "type": "string"
+                },
+                "UpdatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "UseIp": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Link": {
+            "title": "Link",
+            "type": "object",
+            "properties": {
+                "Class": {
+                    "type": "string"
+                },
+                "CreatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Direction": {
+                    "type": "string"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Link": {
+                    "type": "string"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "Projects": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Project"
+                    }
+                },
+                "UpdatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                }
+            }
+        },
+        "models.Platform": {
+            "title": "Platform",
+            "type": "object",
+            "properties": {
+                "ChannelId": {
+                    "type": "string"
+                },
+                "CreatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Domains": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Domain"
+                    }
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "Project": {
+                    "$ref": "#/definitions/models.Project"
+                },
+                "Services": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Service"
+                    }
+                },
+                "UpdatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Value": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Project": {
+            "title": "Project",
+            "type": "object",
+            "properties": {
+                "Alias": {
+                    "type": "string"
+                },
+                "AwsKeyId": {
+                    "type": "string"
+                },
+                "AwsKeySecret": {
+                    "type": "string"
+                },
+                "AwsRegion": {
+                    "type": "string"
+                },
+                "CreatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Nacos": {
+                    "type": "string"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "UpdatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                }
+            }
+        },
+        "models.Service": {
+            "title": "Service",
+            "type": "object",
+            "properties": {
+                "Class": {
+                    "type": "string"
+                },
+                "Confs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Conf"
+                    }
+                },
+                "CreatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "DockerName": {
+                    "type": "string"
+                },
+                "Domains": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Domain"
+                    }
+                },
+                "Health": {
+                    "type": "string"
+                },
+                "Hosts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Host"
+                    }
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "ImagePath": {
+                    "type": "string"
+                },
+                "IsDel": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "KillTime": {
+                    "type": "string"
+                },
+                "LastTag": {
+                    "type": "string"
+                },
+                "LastTagUpdateAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "LogKeyword": {
+                    "type": "string"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "Platforms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Platform"
+                    }
+                },
+                "Port": {
+                    "type": "string"
+                },
+                "Project": {
+                    "$ref": "#/definitions/models.Project"
+                },
+                "ReleaseTo": {
+                    "type": "string"
+                },
+                "Tag": {
+                    "type": "string"
+                },
+                "UpdatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Value": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Task": {
+            "title": "Task",
+            "type": "object",
+            "properties": {
+                "Action": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "Cmd": {
+                    "type": "string"
+                },
+                "Count": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "CreatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Deploy": {
+                    "$ref": "#/definitions/models.Deploy"
+                },
+                "Hosts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Host"
+                    }
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Project": {
+                    "$ref": "#/definitions/models.Project"
+                },
+                "Service": {
+                    "$ref": "#/definitions/models.Service"
+                },
+                "Status": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "Tag": {
+                    "type": "string"
+                },
+                "UpdatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "User": {
+                    "$ref": "#/definitions/models.User"
+                }
+            }
+        },
+        "models.User": {
+            "title": "User",
+            "type": "object",
+            "properties": {
+                "AuthKey": {
+                    "type": "string"
+                },
+                "Avatar": {
+                    "type": "string"
+                },
+                "CreatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Email": {
+                    "type": "string"
+                },
+                "EmailConfirmationToken": {
+                    "type": "string"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "IsEmailVerified": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "PasswordHash": {
+                    "type": "string"
+                },
+                "PasswordResetToken": {
+                    "type": "string"
+                },
+                "ProjectId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "ProjectName": {
+                    "type": "string"
+                },
+                "Realname": {
+                    "type": "string"
+                },
+                "Role": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "Status": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "UpdatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Username": {
+                    "type": "string"
+                }
+            }
+        },
+        "object": {
+            "title": "object",
+            "type": "object"
+        }
+    }
+}
