@@ -27,8 +27,8 @@ func init() {
 
     beego.GlobalControllerRouter["controllers/domain:DomainController"] = append(beego.GlobalControllerRouter["controllers/domain:DomainController"],
         beego.ControllerComments{
-            Method: "GetDomainById",
-            Router: `/domain/id/`,
+            Method: "DomainHealthCheck",
+            Router: `/domain/health/`,
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -39,6 +39,15 @@ func init() {
             Method: "DeleteDomainById",
             Router: `/domain/id/`,
             AllowHTTPMethods: []string{"delete"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["controllers/domain:DomainController"] = append(beego.GlobalControllerRouter["controllers/domain:DomainController"],
+        beego.ControllerComments{
+            Method: "GetDomainById",
+            Router: `/domain/id/`,
+            AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})

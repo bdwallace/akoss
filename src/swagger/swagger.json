@@ -1143,6 +1143,35 @@
                 }
             }
         },
+        "/domain/health/": {
+            "get": {
+                "tags": [
+                    "controllers/domainDomainController"
+                ],
+                "description": "check domain health",
+                "operationId": "DomainController.check domain health",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "domain",
+                        "description": "domain",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{ok}"
+                    },
+                    "1": {
+                        "description": ""
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
         "/domain/id/": {
             "get": {
                 "tags": [

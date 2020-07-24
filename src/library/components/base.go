@@ -3,6 +3,7 @@ package components
 import (
 	"encoding/json"
 	"fmt"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"library/common"
 	gopubssh "library/ssh"
 	"models"
@@ -441,3 +442,53 @@ func (c *BaseComponents) RunLocalCommandHostLog(task *models.Task, command strin
 }
 
 
+
+
+func GetMqttHealth(domain *models.Domain) (health string, err error){
+
+	confs, err := models.GetConfByConfNameAndProjectId("emqtt",domain.Project.Id)
+	if err != nil{
+		//fmt.Println("error: ",err)
+		return health, err
+	}
+
+	confValues := make([]*models.ConfValue,0)
+	if err := json.Unmarshal([]byte(confs[0].Value),&confValues); err != nil{
+		//fmt.Println("error: ",err)
+		return health, err
+	}
+
+	broker := "tcp://" + domain.Domain + ":" + domain.Port
+	mqttUserName := ""
+	mqttPwd := ""
+
+	for _, v := range confValues {
+		if v.Key == "MQTT_USER" {
+			mqttUserName = v.Value
+		}
+
+		if v.Key == "MQTT_PWD"{
+			mqttPwd = v.Value
+		}
+	}
+
+	opts := mqtt.NewClientOptions().AddBroker(broker)
+	opts = opts.SetClientID("mqtt-client")
+	opts = opts.SetUsername(mqttUserName)
+	opts = opts.SetPassword(mqttPwd)
+	opts = opts.SetCleanSession(true)
+	opts = opts.SetAutoReconnect(true)
+
+	mqttClient := mqtt.NewClient(opts)
+	token := mqttClient.Connect()
+	if token.Wait() && token.Error() != nil{
+		err = token.Error()
+		return "", err
+	}
+
+	if resIsConn := mqttClient.IsConnected(); resIsConn{
+		health = "200"
+	}
+
+	return health, err
+}

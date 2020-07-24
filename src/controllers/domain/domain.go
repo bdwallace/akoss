@@ -4,10 +4,11 @@ import (
 	"controllers"
 	"encoding/json"
 	"fmt"
+	"github.com/astaxie/beego"
+	"library/common"
+	"library/components"
 	"models"
 	"strings"
-
-	"github.com/astaxie/beego"
 )
 
 type DomainController struct {
@@ -383,4 +384,46 @@ server {
 	nginxconf = strings.Replace(def, "__", domain, -1)
 	return
 }
+
+
+
+// @Title check domain health
+// @Description check domain health
+// @Param   domain      query     string 	  true       "domain"
+// @Success 0 {ok}
+// @Failure 1
+// @Failure 2 User not found
+// @router /domain/health/ [get]
+func (c *DomainController)DomainHealthCheck() {
+
+	domainId, err := c.GetInt("id")
+	if err != nil{
+		c.SetJson(1, err, "获取 domain_id 失败")
+		return
+	}
+
+	domain, err := models.GetDomainById(domainId)
+	if err != nil{
+		c.SetJson(1, err, "根据 domain id 获取 domain 失败")
+		return
+	}
+
+	url := ""
+	health := ""
+	if domain.Class == "mqtt" {
+		health, err = components.GetMqttHealth(domain)
+	}else {
+		url = fmt.Sprintf("https://%s/", domain.Domain)
+		response, err := common.HttpGet(url, nil)
+		if err != nil {
+			c.SetJson(1, -1,"获取 domain health 失败")
+			return
+		}
+		health = common.IntToStr(response.StatusCode)
+	}
+
+	c.SetJson(0, health, "")
+	return
+}
+
 
