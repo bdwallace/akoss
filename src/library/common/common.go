@@ -539,5 +539,6 @@ func HttpGet(url string, headers map[string]string) (*http.Response, error) {
     if err != nil {
         return nil, err
     }
+	client.CloseIdleConnections()
     return resp, nil
 }

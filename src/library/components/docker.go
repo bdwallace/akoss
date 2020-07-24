@@ -149,35 +149,19 @@ func (c *BaseDocker)DockerServiceHealth(host *models.Host, port string, have443 
 		urlPrivate = fmt.Sprintf("http://%s:%s%s",host.PrivateIp, port, c.BaseComponents.Service.Health)
 	}
 
-	// req := &httplib.BeegoHttpRequest{}
-	// req.SetTimeout(3, 3)
-	// req.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
-	// req = httplib.Get(urlPrivate)
+
 	response, err := common.HttpGet(urlPrivate, nil)
 	if err != nil {
 		return
 	}
 	if strings.Index(url, "/actuator/health") != -1 {
-		// res, err := req.String()
-		// if err != nil {
-		// 	return 
-		// }
 
-		// if index := strings.Index(respon, "UP"); index > 0 {
-		// 	health = "200"
-		// }
 		body, _ := ioutil.ReadAll(response.Body)
 		if index := strings.Index(string(body), "UP"); index > 0 {
 			health = "200"
 		}
 	} else {
-		// repo, err := req.Response()
-		// if err != nil {
-		// 	fmt.Println("err : ",err)
-		// 	return
-		// }
 
-		// health = strconv.Itoa(response.StatusCode)
 		health = common.IntToStr(response.StatusCode)
 	}
 	return
