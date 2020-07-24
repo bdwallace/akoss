@@ -485,6 +485,8 @@ func GetMqttHealth(domain *models.Domain) (health string, err error){
 		err = token.Error()
 		return "", err
 	}
+	defer mqttClient.Disconnect(250)
+
 
 	if resIsConn := mqttClient.IsConnected(); resIsConn{
 		health = "200"
