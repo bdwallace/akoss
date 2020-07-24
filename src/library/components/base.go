@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	uuid "github.com/satori/go.uuid"
 	"library/common"
 	gopubssh "library/ssh"
 	"models"
@@ -472,8 +473,9 @@ func GetMqttHealth(domain *models.Domain) (health string, err error){
 		}
 	}
 
+
 	opts := mqtt.NewClientOptions().AddBroker(broker)
-	opts = opts.SetClientID("mqtt-client")
+	opts = opts.SetClientID(uuid.NewV4().String())
 	opts = opts.SetUsername(mqttUserName)
 	opts = opts.SetPassword(mqttPwd)
 	opts = opts.SetCleanSession(true)
