@@ -33,7 +33,7 @@ RUN TERM=linux && export TERM
 USER root 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories && \
     apk update && \
-    apk add ca-certificates bash vim tzdata sudo curl wget openssh docker mariadb-client && \ 
+    apk add ca-certificates bash vim tzdata sudo curl wget openssh docker mariadb-client chromium && \ 
     echo "Asia/Shanghai" > /etc/timezone && \
     cp -r -f /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     rm -rf /var/cache/apk/*   /tmp/*  && \ 
