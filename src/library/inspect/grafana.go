@@ -3,6 +3,7 @@ package inspect
 import (
 	"strings"
 	"library/bot"
+	"library/common"
 	"models"
 	"context"
 	_ "flag"
@@ -62,6 +63,10 @@ func Grafana(grafana *models.InspectGrafana) {
 		chromedp.Navigate(grafana.Url),
 		// 连接再次等待网页内容
 		chromedp.WaitVisible(grafana.WaitVisible, chromedp.ByQuery),
+		chromedp.ActionFunc(func(ctx context.Context) error {
+			common.Sleep(1)
+			return nil
+		}),
 		chromedp.WaitVisible(grafana.WaitVisible, chromedp.ByQuery),
 		// 截取图片
 		chromedp.ActionFunc(func(ctx context.Context) error {

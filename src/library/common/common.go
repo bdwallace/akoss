@@ -542,3 +542,11 @@ func HttpGet(url string, headers map[string]string) (*http.Response, error) {
 	client.CloseIdleConnections()
     return resp, nil
 }
+
+
+/* 
+	休息，sleep
+*/
+func Sleep(t int64) {
+	time.Sleep(time.Duration(t)*time.Second)
+}
