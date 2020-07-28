@@ -39,6 +39,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
     rm -rf /var/cache/apk/*   /tmp/*  && \ 
     mkdir -p /data/htdocs && \
     mkdir -p /data/logs && \
+    mkdir -p /data/akgo/src/logs && \
     ssh-keygen -q -N "" -f /root/.ssh/id_rsa && \
     #输出的key需要加入发布目标机的 ~/.ssh/authorized_keys
     cat ~/.ssh/id_rsa.pub  
@@ -46,7 +47,6 @@ WORKDIR /data/akgo
 ADD control /data/akgo/control
 COPY --from=golang /data/akgo/src/akgo /data/akgo/src/akgo
 COPY --from=golang /data/akgo/src/conf /data/akgo/src/conf
-COPY --from=golang /data/akgo/src/logs /data/akgo/src/logs
 COPY --from=node /data/akgo/src/views /data/akgo/src/views
 COPY --from=node /data/akgo/src/static /data/akgo/src/static
 CMD ["./control","rundocker"]
