@@ -1667,6 +1667,172 @@
                 }
             }
         },
+        "/inspectgrafana": {
+            "post": {
+                "tags": [
+                    "controllers/inspectGrafanaController"
+                ],
+                "description": "add the inspectgrafana",
+                "operationId": "GrafanaController.添加",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "name",
+                        "description": "inspectgrafana name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "private_ip",
+                        "description": "private ip",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "public_ip",
+                        "description": "public ip",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "use_public",
+                        "description": "use public IP",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "project_id",
+                        "description": "project id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "添加 inspectgrafana 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/inspectgrafana/exec/": {
+            "get": {
+                "tags": [
+                    "controllers/inspectGrafanaController"
+                ],
+                "description": "get all the inspectgrafana",
+                "operationId": "GrafanaController.获取所有 inspectgrafana",
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.InspectGrafana"
+                        }
+                    },
+                    "1": {
+                        "description": "获取所有 inspectgrafana 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/inspectgrafana/id/": {
+            "get": {
+                "tags": [
+                    "controllers/inspectGrafanaController"
+                ],
+                "description": "get the inspectgrafana by id",
+                "operationId": "GrafanaController.获取 inspectgrafana by id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "inspectgrafana id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.InspectGrafana"
+                        }
+                    },
+                    "1": {
+                        "description": "获取 inspectgrafana by id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "controllers/inspectGrafanaController"
+                ],
+                "description": "update the inspectgrafana inspectgrafana by id",
+                "operationId": "GrafanaController.删除 inspectgrafana inspectgrafana by id",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "inspectgrafana id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{ok} bool"
+                    },
+                    "1": {
+                        "description": "删除 inspectgrafana inspectgrafana by id 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/inspectgrafana/list/": {
+            "get": {
+                "tags": [
+                    "controllers/inspectGrafanaController"
+                ],
+                "description": "get all the inspectgrafana",
+                "operationId": "GrafanaController.获取所有 inspectgrafana",
+                "responses": {
+                    "0": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.InspectGrafana"
+                        }
+                    },
+                    "1": {
+                        "description": "获取所有 inspectgrafana 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
         "/link/": {
             "post": {
                 "tags": [
@@ -3747,6 +3913,39 @@
                     "format": "datetime"
                 },
                 "UseIp": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.InspectGrafana": {
+            "title": "InspectGrafana",
+            "type": "object",
+            "properties": {
+                "CreatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Domain": {
+                    "type": "string"
+                },
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "Sessions": {
+                    "type": "string"
+                },
+                "UpdatedAt": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "Url": {
+                    "type": "string"
+                },
+                "WaitVisible": {
                     "type": "string"
                 }
             }

@@ -25,6 +25,7 @@ import (
 	taskcontrollers "controllers/task"
 	usercontrollers "controllers/user"
 	wallecontrollers "controllers/walle"
+	inspectcontrollers "controllers/inspect"
 	"time"
 
 	"github.com/astaxie/beego"
@@ -120,6 +121,9 @@ func init() {
 		),
 		beego.NSInclude(
 			&robotcontroller.RobotController{},
+		),
+		beego.NSInclude(
+			&inspectcontrollers.GrafanaController{},
 		),
 
 	)

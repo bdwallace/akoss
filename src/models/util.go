@@ -164,6 +164,10 @@ const(
 	// user
 	userTableName = "user"
 	userId = "user_id"
+
+
+	//inspect
+	inspectGrafanaTableName = "t_inspect_grafana"
 )
 
 
