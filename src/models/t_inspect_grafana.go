@@ -8,8 +8,8 @@ import (
 
 type InspectGrafana struct {
 	Id             	int       				`orm:"column(id);auto"`
-	Name      		string 					`orm:"column(name);size(100)"`
-	Url 			string 					`orm:"column(url);size(800)"`
+	Name      		string 					`orm:"column(name);size(100);unique"`
+	Url 			string 					`orm:"column(url);size(800);"`
 	Sessions 		string 					`orm:"column(sessions);size(800)"`
 	WaitVisible		string					`orm:"column(wait_visible);size(200)"`
 	Domain			string					`orm:"column(domain);size(200)"`
@@ -52,9 +52,24 @@ func GetAllInspectGrafana()(t []*InspectGrafana,err error){
 
 	o := orm.NewOrm()
 	if _, err = o.QueryTable(inspectGrafanaTableName).All(&t);err != nil{
-		return nil,err
+		return
 	}
-	return t,nil
+	return 
+
+}
+
+func GetAllInspectGrafanaPage(start, length int)(count int64, t []*InspectGrafana,err error){
+
+	o := orm.NewOrm()
+
+	if count, err = o.QueryTable(inspectGrafanaTableName).Count(); err != nil{
+		return
+	}
+
+	if _, err = o.QueryTable(inspectGrafanaTableName).Limit(length, start).All(&t);err != nil{
+		return
+	}
+	return 
 
 }
 

@@ -95,7 +95,6 @@ func (c *DomainController)GetDomainList() {
 	start := 0
 	length, _ := c.GetInt("length", 20)
 
-
 	if page > 0 {
 		start = (page - 1) * length
 	}

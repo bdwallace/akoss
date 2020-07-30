@@ -103,6 +103,9 @@
                 }, {
                   title: "计划任务日志",
                   path: "/crontab/log",
+                }, {
+                  title: "grafana巡检",
+                  path: "/crontab/grafana",
                 }]
               }, {
                 title: "快捷操作",
@@ -181,6 +184,9 @@
                 }, {
                   title: "计划任务日志",
                   path: "/crontab/log",
+                }, {
+                  title: "grafana巡检",
+                  path: "/crontab/grafana",
                 }]
               }, {
                 title: "快捷操作",

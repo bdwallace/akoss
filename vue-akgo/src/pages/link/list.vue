@@ -195,8 +195,6 @@
     export default{
         data(){
             return {
-                level: store.state.user_info.user.Level,
-                // level_data: [],
                 table_project_index: [],
                 table_project_data: [],
                 table_public: {

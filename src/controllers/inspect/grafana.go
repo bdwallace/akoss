@@ -127,14 +127,20 @@ func (c *GrafanaController)DeleteInspectGrafanaById(){
 // @router /inspectgrafana/list/ [get]
 func (c *GrafanaController)GetAllInspectGrafana() {
 
+	page, _ := c.GetInt("page", 0)
+	start := 0
+	length, _ := c.GetInt("length", 20)
+	if page > 0 {
+		start = (page - 1) * length
+	}
 
-	resInspectGrafanas, err := models.GetAllInspectGrafana()
+	count, resInspectGrafanas, err := models.GetAllInspectGrafanaPage(start, length)
 	if err != nil{
 		c.SetJson(1,err,"获取所有 InspectGrafana 失败")
 		return
 	}
 
-	c.SetJson(0,resInspectGrafanas,"")
+	c.SetJson(0, map[string]interface{}{"total": count, "currentPage": page, "table_data": resInspectGrafanas}, "")
 	return
 }
 
@@ -162,7 +168,7 @@ func (c *GrafanaController)ExecAllInspectGrafana() {
 	}
 	
 
-	c.SetJson(0,resInspectGrafanas,"")
+	c.SetJson(0,nil,"")
 	return
 }
 

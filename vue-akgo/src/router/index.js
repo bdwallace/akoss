@@ -342,6 +342,17 @@ const routes = [{
             auth: true
         }
     }, {
+        path: '/crontab/grafana',
+        name: 'crontabGrafana',
+        components: {
+            default: require('pages/crontab/grafana'),
+            menuView: require('components/leftSlide')
+        },
+        meta: {
+            title: "grafana巡检任务",
+            auth: true
+        }
+    }, {
         path: '/link/list',
         name: 'linkList',
         components: {
