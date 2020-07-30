@@ -122,7 +122,8 @@ func Grafana(grafana *models.InspectGrafana) {
 	// if err := telegram.SendPhotoFile("mojotv_full_screen_shot.png"); err != nil {
 	// 	beego.Error("send photo err: ", err)
 	// }
-	if err := telegram.SendPhoto(buf, grafana.Name); err != nil {
+	timeStr:=time.Now().Format("2006-01-02 15:04:05")
+	if err := telegram.SendPhoto(buf, fmt.Sprintf("%s %s", timeStr, grafana.Name)); err != nil {
 		beego.Error("send photo err: ", err)
 	}
 
