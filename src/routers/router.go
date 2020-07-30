@@ -56,6 +56,8 @@ func init() {
 
 	beego.Router("/api/get/user", &usercontrollers.UserController{})
 	beego.Router("/api/delete/user", &usercontrollers.UserController{})
+    //在使用Put方法时，页面传给后端的id始终为零，改成get方法就可以！记一下
+	beego.Router("/api/user/reset", &usercontrollers.UserController{}, "get:Put")
 	beego.Router("/", &controllers.MainController{})
 
 	akNs := beego.NewNamespace("/api",

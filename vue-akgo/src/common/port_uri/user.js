@@ -26,3 +26,6 @@ exports.usersProject = "/api/get/user/project"
 exports.projectchange = "/changeProject"
 
 exports.userdel = "/api/delete/user"
+
+//重置用户密码为:123456
+exports.userreset = "/api/user/reset"

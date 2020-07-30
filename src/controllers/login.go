@@ -40,6 +40,9 @@ func (c *LoginController) Post() {
 	if err != nil {
 		c.SetJson(1, nil, "用户名或密码错误")
 		return
+	} else if user.IsDel == 1 {
+		c.SetJson(1, nil, "这是已删除用户，不能登录")
+		return
 	} else {
 		// if user.AuthKey == "" {
 		userAuth := common.Md5String(user.Username + common.GetString(time.Now().Unix()))

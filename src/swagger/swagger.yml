@@ -2847,6 +2847,9 @@ definitions:
       Id:
         type: integer
         format: int64
+      IsDel:
+        type: integer
+        format: int64
       IsEmailVerified:
         type: integer
         format: int32

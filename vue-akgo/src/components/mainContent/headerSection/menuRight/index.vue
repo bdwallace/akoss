@@ -17,7 +17,7 @@
                     <el-dropdown-item class="dropdown-list">
                         <a href="javascript:" class="dropdown-btn" @click="user_click(1)">
                             <i class="icon fa fa-user"></i>
-                            <span>个人信息</span>
+                            <span>密码修改</span>
                         </a>
                     </el-dropdown-item>
                     <el-dropdown-item class="dropdown-list">

@@ -58,6 +58,9 @@
                                      tag="span">
                             <el-button size="small" icon="edit">修改</el-button>
                         </router-link>
+                        <el-button v-show="user_id == 1" type="danger" size="small" icon="edit"
+                                   @click="reset_data(props.row.id)">重置密码
+                        </el-button>
                         <el-button type="danger" size="small" icon="delete"
                                    @click="delete_data(props.row.id)">删除
                         </el-button>
@@ -86,6 +89,7 @@
       },
         data(){
             return {
+                user_id: store.state.user_info.user.Id, 
                 table_data: null,
                 load_data: true,
             }
@@ -144,6 +148,39 @@
                             message: msg,
                             type: 'success'
                         })
+                    })
+                    .catch(() => {
+                        this.load_data = false
+                    })
+                })
+                .catch(() => {
+                    this.load_data = false
+                })
+            },
+
+            reset_data(id) {
+                let confirm = '此操作将重置id: ' + id + ' 密码, 是否继续?'
+                this.$confirm(confirm, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                })
+                .then(() => {
+                    this.load_data = true
+                    //发现就是不能用put方法!
+                    //在使用Put方法时，页面传给后端的id始终为零，改成get方法就可以！记一下
+                    // this.$http.put(port_user.userreset, {
+                    this.$http.get(port_user.userreset, {
+                            params: {
+                                id: id,
+                            }
+                        })
+                    .then(({data: {msg}}) => {
+                        this.$message({
+                            message: msg,
+                            type: 'success'
+                        })
+                        this.load_data = false
                     })
                     .catch(() => {
                         this.load_data = false
