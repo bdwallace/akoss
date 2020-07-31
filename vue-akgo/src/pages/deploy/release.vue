@@ -200,17 +200,18 @@
                             @click="post_tag" :loading="on_submit_loading">确定tag版本
                         </el-button>
                         <div v-else style="display:inline">
-                        <el-button type="primary" v-if="form != null && form.Class == 'java'" @click="on_submit_form(true)" :loading="on_submit_loading" style="margin-right: 50px">灰度发布
-                        </el-button>
-                        <el-button type="danger" v-if="form != null"
-                            @click="on_submit_form(false)" :loading="on_submit_loading">全部发布
-                        </el-button>
-                        </div>
-                        <el-button @click="$router.back()">取消</el-button>
+                            <el-button type="primary" v-if="form != null && form.Class == 'java'" @click="on_submit_form(true)" :loading="on_submit_loading" style="margin-right: 50px">灰度发布
+                            </el-button>
+                            <el-button @click="$router.back()">取消</el-button>
 
-                        <el-button type="danger" @click="is_backDialog = true" style="float: right">
-                            回退发布单
-                        </el-button>
+                            <el-button type="danger" @click="is_backDialog = true" style="float: right">
+                                回退发布单
+                            </el-button>
+
+                            <el-button type="danger" v-if="form != null" style="float: right;margin-right:30px"
+                                @click="on_submit_form(false)" :loading="on_submit_loading">全部发布
+                            </el-button>
+                        </div>
 
                     </div>
                 </el-tab-pane>
