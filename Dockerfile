@@ -33,6 +33,7 @@ FROM alpine:3.9.3
 ENV TZ='Asia/Shanghai' 
 RUN TERM=linux && export TERM
 USER root 
+COPY src/file /data/akgo/src/file
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories && \
     apk update && \
     apk add ca-certificates bash vim tzdata sudo curl wget openssh docker mariadb-client chromium && \ 
@@ -42,8 +43,17 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
     mkdir -p /data/htdocs && \
     mkdir -p /data/logs && \
     mkdir -p /data/akgo/src/logs && \
-    ssh-keygen -q -N "" -f /root/.ssh/id_rsa && \
+    # 安装早准备好的中文字体
+    cp /data/akgo/src/file/chinese /usr/share/fonts/chinese && \
+    # 使用file目录下早准备好的密钥
+    mkdir -p ~/.ssh && \
+    cp /data/akgo/src/file/id_rsa ~/.ssh/id_rsa && \
+    cp /data/akgo/src/file/id_rsa.pub ~/.ssh/id_rsa.pub && \
+    chmod 700 ~/.ssh && \
+    chmod 600 ~/.ssh/id_rsa && \
+    chmod 600 ~/.ssh/id_rsa.pub && \
     #输出的key需要加入发布目标机的 ~/.ssh/authorized_keys
+    # ssh-keygen -q -N "" -f /root/.ssh/id_rsa && \
     cat ~/.ssh/id_rsa.pub  
 WORKDIR /data/akgo
 ADD control /data/akgo/control
