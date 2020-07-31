@@ -273,10 +273,12 @@ func (c *DeployController)releaseHandling(ch chan int,task *models.Task,deploy *
 		}
 
 		// 更新服务最新tag
-		if err := c.UpdateServiceTagAndLastTag(task);err != nil{
-			c.SetJson(1, nil, "发布 service 更新 tag 失败")
-			return
-		}
+		// 因为发布次数会有不确定性，所以更新service的tag和last_tag不能在发布的时候更新
+		// 只能在确定task的tag和生成命令时更新service的tag和last_tag
+		// if err := c.UpdateServiceTagAndLastTag(task);err != nil{
+		// 	c.SetJson(1, nil, "发布 service 更新 tag 失败")
+		// 	return
+		// }
 
 	}
 

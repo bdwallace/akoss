@@ -378,6 +378,12 @@ func (c *DeployController) AddDeployTagCmd() {
 			c.SetJson(1, nil, "创建 docker cmd 插入 deploy 相关 task cmd 失败")
 			return
 		}
+
+		// 更新服务最新tag
+		if err := c.UpdateServiceTagAndLastTag(task);err != nil{
+			c.SetJson(1, nil, "发布 service 更新 tag 失败")
+			return
+		}
 	}
 
 	c.SetJson(0, deploy, "")
