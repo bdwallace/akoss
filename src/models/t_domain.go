@@ -172,6 +172,12 @@ func GetDomainById(id int) (d *Domain, err error) {
 }
 
 
+func GetDomainByDomain(d *Domain) (resDomain *Domain, err error) {
+
+	return
+}
+
+
 func SearchDomain(projectId, start, length int, class, platforms, services, searchText string)(total int, d []*Domain, err error){
 	base := fmt.Sprintf("SELECT `t_domain`.`id`, `t_domain`.`name`, `t_domain`.`domain`, `t_domain`.`class`, `t_domain`.`monitor`, `t_domain`.`port`, `t_domain`.`crt`, `t_domain`.`key` FROM `%s` `t_domain`", domainTableName)
 
@@ -252,11 +258,11 @@ func GetDomainMonitorAll() (m []Domain, err error) {
 }
 
 
-func AddDomain(d *Domain) (id int64, err error) {
+func AddDomain(d []*Domain) (id int64, err error) {
 
 	o := orm.NewOrm()
 
-	id, err = o.Insert(d)
+	id, err = o.InsertMulti(len(d),d)
 	if err != nil{
 		return
 	}
