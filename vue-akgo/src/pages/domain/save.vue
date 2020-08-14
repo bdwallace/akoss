@@ -18,9 +18,14 @@
             </el-form-item> -->
 
             <el-form-item label="域名:" prop="Domain" label-width="120px">
-              <el-input v-model="form.Domain" placeholder="请输入域名"
-                        style="width: 600px;"></el-input>
+<!--              <el-input v-model="form.Domain" placeholder="请输入域名"-->
+<!--                        style="width: 600px;"></el-input>-->
+
+              <el-input type="textarea" :rows="2" placeholder="请输入域名"
+                        v-model="form.Domain" style="width: 600px;"></el-input>
+
               <font style="color: red" size="1">域名不需要添加www前缀！</font>
+              <font style="color: red" size="1">添加多个域名需要使用换行符分隔！</font>
             </el-form-item>
 
             <el-form-item label="名称\备注:" prop="Name" label-width="120px">
@@ -85,31 +90,31 @@
 	                <el-button size="mini" type="primary">选取文件</el-button>
                 </el-upload>
             </el-form-item>
-            
+
             <el-form-item label="是/否监控:" label-width="120px">
               <el-radio-group v-model="form.Monitor">
                 <el-radio :label="0">否</el-radio>
                 <el-radio :label="1">是</el-radio>
               </el-radio-group>
-            </el-form-item>                  
+            </el-form-item>
 
             <el-form-item label="是/否CDN加速:" label-width="120px">
               <el-radio-group v-model="form.Quicken">
                 <el-radio :label="0">否</el-radio>
                 <el-radio :label="1">是</el-radio>
               </el-radio-group>
-            </el-form-item>                  
+            </el-form-item>
 
             <el-form-item label="端口:" prop="Port" label-width="120px">
               <el-input v-model="form.Port" placeholder="需要运维人员填入"
                         style="width: 200px;"></el-input>
             </el-form-item>
-            
+
             <el-form-item label="域名类型" label-width="120px">
-              <el-select v-model="form.Class" placeholder="选择域名类型" 
+              <el-select v-model="form.Class" placeholder="选择域名类型"
                           filterable
                           style="width: 300px;">
-                <el-option   
+                <el-option
                   v-for="item in itemClass"
                   :key="item"
                   :label="item"
@@ -118,20 +123,20 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item label="关联项目:"  label-width="120px">
+            <el-form-item label="关联平台:"  label-width="120px">
               <el-button @click.stop="get_itemplatform" size="mini">
                 <i class="fa fa-refresh"></i>
               </el-button>
 
                           <!-- clearable -->
-              <el-select v-model="form.Platforms" placeholder="选择已有平台" 
+              <el-select v-model="form.Platforms" placeholder="选择已有平台"
                           filterable
                           multiple
                           value-key="Id"
                           style="width: 300px;">
                           <!-- @change="get_itemplatform_check(0)"> -->
                           <!-- @visible-change="get_itemplatform_check(index)"> -->
-                <el-option   
+                <el-option
                   v-for="item in itemPlatform"
                   :key="item.Name"
                   :label="item.Name"
@@ -139,11 +144,11 @@
                 </el-option>
               </el-select>
 
-              <!-- <el-select v-model="form.Services[0]" placeholder="选择已有项目" 
+              <!-- <el-select v-model="form.Services[0]" placeholder="选择已有项目"
                           filterable
                           value-key="Id"
                           style="width: 300px;">
-                <el-option   
+                <el-option
                   v-for="item in itemService[0]"
                   :key="item.Name"
                   :label="item.Name"
@@ -201,7 +206,7 @@
 
         form: {
           Name: null,
-          Domain: null,
+          Domain: [],
           Crt: "",
           Key: "",
           Port: null,
@@ -212,7 +217,7 @@
           Quicken: 0,
           Class: null,
           Platforms: [],
-          Services: [] 
+          Services: []
         },
         route_id: this.$route.params.id,
         load_data: false,
@@ -284,7 +289,7 @@
           this.form.Services.push({});
           this.load_data = false
         },
-        
+
         del_service(index){
           this.load_data = true
           this.itemService.splice(index, 1)
@@ -347,7 +352,7 @@
         //         this.get_itemproject(addProject.platform_id, i)
         //         // this.$set(this.addProject, i, addProject)
         //         this.addProject.push(addProject)
-                
+
         //       }
         //       this.load_data = false
 
@@ -403,7 +408,7 @@
                   _this.contentHtml = e.target.result;
               };
               reader.readAsText(file.raw,'gb2312');
- 
+
           }
           console.log(file, fileList);
         },
