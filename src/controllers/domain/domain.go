@@ -32,13 +32,16 @@ func (c *DomainController)AddDomain(){
 		c.SetJson(1, nil, "数据格式错误")
 		return
 	}
-
 	domain.Conf = c.conf(domain.Domain)
 	domain.Conf80 = c.conf80(domain.Domain)
 
-	// 3. 处理更新或添加
-	if 0 != domain.Id {
+	allDomain := domain.Domain
+	domainSplit := strings.Split(allDomain,"\n")
+
+	if 0 != domain.Id && len(domainSplit) == 1 {
 		// update     UpdateDomainRelated
+		domain.Domain = strings.Trim(domain.Domain," ")
+		domain.Domain = strings.Trim(domain.Domain,",")
 		err := models.UpdateDomainAndRelated(domain)
 		if err != nil{
 			fmt.Println("error: ",err)
@@ -48,7 +51,19 @@ func (c *DomainController)AddDomain(){
 		}
 	}else {
 		// add
-		id, err := models.AddDomain(domain)
+		domains := make([]*models.Domain,0)
+		for i := 0; i < len(domainSplit); i++ {
+			if domainSplit[i] == "" {
+				continue
+			}
+			tempDomain := new(models.Domain)
+			tempDomain = domain
+			tempDomain.Domain = strings.Trim(domainSplit[i]," ")
+			tempDomain.Domain = strings.Trim(domainSplit[i],",")
+			domains = append(domains,tempDomain)
+		}
+
+		id, err := models.AddDomain(domains)
 		if err != nil{
 			fmt.Println("err:  ",err)
 			c.SetJson(1,nil,"新建 domain 失败")

@@ -146,7 +146,7 @@
                         <router-link :to="{name: 'domainUpdate', params: {id: props.row.Id}}" tag="span">
                             <el-button type="info" size="small" icon="edit">修改</el-button>
                         </router-link>
-                        
+
                         <el-button style="margin-left:0px" type="danger" size="small" icon="delete" @click="delete_data(props.row.Id)">删除
                         </el-button>
                     </template>
@@ -172,11 +172,11 @@
     import {panelTitle, bottomToolBar, search} from 'components'
     import {port_platform, port_domain, port_service} from 'common/port_uri'
     import store from 'store'
-    import FileSaver from "file-saver" 
+    import FileSaver from "file-saver"
     export default{
         data(){
             return {
-                ProjectId: store.state.user_info.user.ProjectId, 
+                ProjectId: store.state.user_info.user.ProjectId,
                 // level_data: [],
                 table_data: [],
                 //当前页码
@@ -204,8 +204,8 @@
                 itemService: [],
 
                 Class: "NOT_FILTER",
-                Platforms: "NOT_FILTER", 
-                Services: "NOT_FILTER", 
+                Platforms: "NOT_FILTER",
+                Services: "NOT_FILTER",
             }
         },
         components: {
@@ -317,7 +317,7 @@
                     this.load_data = false
                 })
             },
-            
+
             get_platform_name() {
                 this.load_data = true
                 this.$http.get(port_platform.name, {
@@ -406,7 +406,7 @@
 
             //根据id删除数据
             delete_data(id){
-                this.$confirm('此操作将删除该数据, 是否继续?', '提示', {
+                this.$confirm('此操作将删除该数据, 是否继续? 若要删除此域名请先删除域名所关联平台', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -437,13 +437,13 @@
                 let fileName = this.table_data[index].Name + "." + etx
                 if(etx == "crt") {
                     var blob = new Blob([this.table_data[index].Crt], {type: "text/plain;charset=utf-8"})
-                } 
+                }
                 if(etx == "key") {
                     var blob = new Blob([this.table_data[index].Key], {type: "text/plain;charset=utf-8"})
                 }
                 FileSaver.saveAs(blob, fileName)
             },
-            
+
             //页码选择
             handleCurrentChange(val) {
                 this.currentPage = val
