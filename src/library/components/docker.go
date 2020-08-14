@@ -131,26 +131,26 @@ func (c *BaseDocker)GetPortForDockerServiceHealth() (port string, have443 int) {
 
 func (c *BaseDocker)DockerServiceHealth(host *models.Host, port string, have443 int) (health string, url string) {
 
-	urlPrivate := ""
+	urlUse := ""
 	//  前端服务
 	if c.BaseComponents.Service.Health == "" {
 		//  前端 https
 		if have443 > 0{
 			url = fmt.Sprintf("https://%s:%s/",host.PublicIp, port)
-			urlPrivate = fmt.Sprintf("https://%s:%s/",host.PrivateIp, port)
+			urlUse = fmt.Sprintf("https://%s:%s/",host.UseIp, port)
 		}else {
 			//  前端 http
 			url = fmt.Sprintf("http://%s:%s/",host.PublicIp, port)
-			urlPrivate = fmt.Sprintf("http://%s:%s/",host.PrivateIp, port)
+			urlUse = fmt.Sprintf("http://%s:%s/",host.UseIp, port)
 		}
 	} else {
 		//  后端服务
 		url = fmt.Sprintf("http://%s:%s%s",host.PublicIp, port, c.BaseComponents.Service.Health)
-		urlPrivate = fmt.Sprintf("http://%s:%s%s",host.PrivateIp, port, c.BaseComponents.Service.Health)
+		urlUse = fmt.Sprintf("http://%s:%s%s",host.UseIp, port, c.BaseComponents.Service.Health)
 	}
 
 
-	response, err := common.HttpGet(urlPrivate, nil)
+	response, err := common.HttpGet(urlUse, nil)
 	if err != nil {
 		return
 	}
