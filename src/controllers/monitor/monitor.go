@@ -25,17 +25,15 @@ type MonitorController struct {
 // @router /monitor/ [get]
 func (c *MonitorController)Monitor(){
 
-	//projects, err := models.GetAllProject()
-	//if err != nil{
-	//	c.SetJson(1, nil, "error: get all project id")
-	//	return
-	//}
-	projectId, _ := c.GetInt("project_id")
+	projects, err := models.GetAllProject()
+	if err != nil{
+		c.SetJson(1, nil, "error: get all project id")
+		return
+	}
 
+	for _, project := range projects {
 
-	//for _, project := range projects {
-
-		hosts, err := models.GetAllHost(projectId)
+		hosts, err := models.GetAllHost(project.Id)
 		if err != nil{
 			c.SetJson(1, nil, "error: get all host by project id")
 			return
@@ -51,7 +49,7 @@ func (c *MonitorController)Monitor(){
 		waitgroup.Wait()
 		c.SetJson(0, nil , "")
 		return
-	//}
+	}
 
 }
 
