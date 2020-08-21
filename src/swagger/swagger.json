@@ -1976,6 +1976,33 @@
                 }
             }
         },
+        "/monitor/": {
+            "get": {
+                "tags": [
+                    "controllers/monitorMonitorController"
+                ],
+                "description": "检查 monitor  nod_exporter 容器，若没有则启动该容器。",
+                "operationId": "MonitorController.monitor",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "projectId",
+                        "description": "project id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "1": {
+                        "description": "获取 AwsStatus by instanceId and region 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
         "/other/appconfig": {
             "get": {
                 "tags": [
