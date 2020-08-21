@@ -14,6 +14,7 @@ import (
 	fastcontrollers "controllers/fast"
 	hostcontrollers "controllers/host"
 	linkcontrollers "controllers/link"
+	monitorcontrollers "controllers/monitor"
 	"controllers/operationRecord"
 	othercontrollers "controllers/other"
 	platformcontroller "controllers/platform"
@@ -127,7 +128,9 @@ func init() {
 		beego.NSInclude(
 			&inspectcontrollers.GrafanaController{},
 		),
-
+		beego.NSInclude(
+			&monitorcontrollers.MonitorController{},
+		),
 	)
 	beego.AddNamespace(akNs)
 }
