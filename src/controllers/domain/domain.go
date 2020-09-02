@@ -32,14 +32,16 @@ func (c *DomainController)AddDomain(){
 		c.SetJson(1, nil, "数据格式错误")
 		return
 	}
-	domain.Conf = c.conf(domain.Domain)
-	domain.Conf80 = c.conf80(domain.Domain)
 
 	allDomain := domain.Domain
 	domainSplit := strings.Split(allDomain,"\n")
 
-	if 0 != domain.Id && len(domainSplit) == 1 {
-		// update     UpdateDomainRelated
+	// update     UpdateDomainRelated
+	if 0 != domain.Id  {
+		if len(domainSplit) > 1 {
+			c.SetJson(1,nil,"不允许同时修改多个域名")
+			return
+		}
 		domain.Domain = strings.Trim(domain.Domain," ")
 		domain.Domain = strings.Trim(domain.Domain,",")
 		err := models.UpdateDomainAndRelated(domain)
@@ -49,20 +51,23 @@ func (c *DomainController)AddDomain(){
 			c.SetJson(1,nil,resErr)
 			return
 		}
-	}else {
-		// add
+	}
+
+	// add
+	if 0 == domain.Id && len(domainSplit) > 0 {
 		domains := make([]*models.Domain,0)
 		for i := 0; i < len(domainSplit); i++ {
 			if domainSplit[i] == "" {
 				continue
 			}
 			tempDomain := new(models.Domain)
-			tempDomain = domain
+			*tempDomain = *domain
 			tempDomain.Domain = strings.Trim(domainSplit[i]," ")
-			tempDomain.Domain = strings.Trim(domainSplit[i],",")
+			tempDomain.Domain = strings.Trim(tempDomain.Domain,",")
+			tempDomain.Conf = c.conf(tempDomain.Domain)
+			tempDomain.Conf80 = c.conf80(tempDomain.Domain)
 			domains = append(domains,tempDomain)
 		}
-
 		id, err := models.AddDomain(domains)
 		if err != nil{
 			fmt.Println("err:  ",err)
