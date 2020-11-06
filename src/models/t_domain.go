@@ -172,8 +172,11 @@ func GetDomainById(id int) (d *Domain, err error) {
 }
 
 
-func GetDomainByDomain(d *Domain) (resDomain *Domain, err error) {
+func GetDomainByDomain(domain *Domain) (d *Domain, err error) {
 
+	o := orm.NewOrm()
+	d = &Domain{}
+	err = o.QueryTable(domainTableName).Filter("domain", domain.Domain).One(d)
 	return
 }
 

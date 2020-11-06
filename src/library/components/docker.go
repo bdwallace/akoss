@@ -499,6 +499,7 @@ func (c *BaseDocker) CreateDockerCmd(task *models.Task, count int,serviceClass s
 	var encryptionDomain string
 	if serviceClass != "java" && len(task.Service.Platforms) != 0 {
 
+/*
 		// 添加 playfrom param
 		if c.BaseComponents.Platform != nil{
 
@@ -522,6 +523,23 @@ func (c *BaseDocker) CreateDockerCmd(task *models.Task, count int,serviceClass s
 				return
 			}
 		}
+*/
+		// 添加 playfrom param
+		if c.BaseComponents.Platform != nil{
+
+			// 指定加速域名
+			if len(task.Service.Domains) != 0 {
+				encryptionDomain = "wss://" + task.Service.Domains[0].Domain
+			}
+
+			platformParam, err = c.AnalyzePlatformParam(encryptionDomain)
+			if err != nil {
+				beego.Error("AnalyzePlatformParam error!")
+				return
+			}
+		}
+
+
 	}
 
 	//var domainCmd string

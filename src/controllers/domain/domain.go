@@ -68,6 +68,26 @@ func (c *DomainController)AddDomain(){
 			tempDomain.Conf80 = c.conf80(tempDomain.Domain)
 			domains = append(domains,tempDomain)
 		}
+
+		// 已存在 domain
+		existsDomains := ""
+		// 校验添加的域名是否已存在
+		for _, d := range domains {
+			resDomian, err := models.GetDomainByDomain(d)
+
+			// 域名已经存在
+			if err == nil && resDomian.Id > 0{
+				existsDomains = existsDomains + resDomian.Domain + "  "
+			}
+		}
+
+		// 域名存在, 返回已存在域名
+		if len(existsDomains) > 0 {
+			errMsg := existsDomains + "域名存在, 添加 domain 失败"
+			c.SetJson(1,nil,errMsg)
+			return
+		}
+
 		id, err := models.AddDomain(domains)
 		if err != nil{
 			fmt.Println("err:  ",err)
