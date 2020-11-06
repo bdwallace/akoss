@@ -44,7 +44,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
     mkdir -p /data/logs && \
     mkdir -p /data/akgo/src/logs && \
     # 安装早准备好的中文字体
-    cp /data/akgo/src/file/chinese /usr/share/fonts && \
+    cp -r -f /data/akgo/src/file/chinese /usr/share/fonts && \
     # 使用file目录下早准备好的密钥
     mkdir -p ~/.ssh && \
     cp /data/akgo/src/file/id_rsa ~/.ssh/id_rsa && \
