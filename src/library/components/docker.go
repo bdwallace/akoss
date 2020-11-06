@@ -530,6 +530,8 @@ func (c *BaseDocker) CreateDockerCmd(task *models.Task, count int,serviceClass s
 			// 指定加速域名
 			if len(task.Service.Domains) != 0 {
 				encryptionDomain = "wss://" + task.Service.Domains[0].Domain
+			}else {
+				encryptionDomain = "ws://"
 			}
 
 			platformParam, err = c.AnalyzePlatformParam(encryptionDomain)
