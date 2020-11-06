@@ -22,7 +22,7 @@
 <!--                        style="width: 600px;"></el-input>-->
 
               <el-input type="textarea" :rows="2" placeholder="请输入域名"
-                        v-model="form.Domain" style="width: 600px;"></el-input>
+                        v-model.trim="form.Domain" style="width: 600px;"></el-input>
 
               <font style="color: red" size="1">域名不需要添加www前缀！</font>
               <font style="color: red" size="1">添加多个域名需要使用换行符分隔！</font>
