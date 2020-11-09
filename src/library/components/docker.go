@@ -531,7 +531,7 @@ func (c *BaseDocker) CreateDockerCmd(task *models.Task, count int,serviceClass s
 			if len(task.Service.Domains) != 0 {
 				encryptionDomain = "wss://" + task.Service.Domains[0].Domain
 			}else {
-				encryptionDomain = "ws://"
+				encryptionDomain = ""
 			}
 
 			platformParam, err = c.AnalyzePlatformParam(encryptionDomain)
