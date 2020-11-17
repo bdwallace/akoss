@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"library/common"
 	"library/components"
+	"strings"
 
 	// "library/myoss"
 	"library/aws"
@@ -12,7 +13,6 @@ import (
 	"os"
 	"os/exec"
 	"path"
-	"strings"
 	"time"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
@@ -115,9 +115,9 @@ func (c *Mysql) Backup(sqlPath string) (err error) {
 	}
 
 	if err := cmd.Wait(); err != nil {
- 		fmt.Println("--4.等待任务执行完--")
-        return err
-    }
+		fmt.Println("--4.等待任务执行完--")
+		return err
+	}
 
 	return
 }
@@ -221,6 +221,163 @@ func BackupService(serviceClass string) (data []map[string]interface{}, backPath
 	return
 }
 
+type ServiceRelatedProject struct{
+	ServiceName string
+	ServiceTag string
+	ServiceRelatedProjectName string
+}
+
+
+
+func GetServiceTag(serviceClass string) (serviceObj [][]ServiceRelatedProject,  err error) {
+
+	serviceNameList := new(orm.ParamsList)
+	if serviceClass	== "java" {
+		serviceNameList, err = models.GetServiceClassJava()
+	}else {
+		serviceNameList, err = models.GetServiceClassOther()
+	}
+	if err != nil{
+		return nil,err
+	}
+
+	wildcardServiceName := make(map[string]int, 0)
+	for _, serviceName := range *serviceNameList {
+		strServiceName := serviceName.(string)
+		if strings.Index(strServiceName,"_") > 0{
+			serviceName = strings.Replace(strServiceName,"_","-",-1)
+		}
+		wildcardServiceName[serviceName.(string)] += 1
+	}
+
+	for serviceName, num := range wildcardServiceName {
+
+		services := make([]*models.Service, 0)
+
+		services, _ = models.GetServiceByServiceName(serviceName)
+		oldServiceName := ""
+		if num == 2 && strings.Index(serviceName,"-") > 0{
+			oldServiceName = strings.Replace(serviceName,"-","_",-1)
+		}
+		services2, _ := models.GetServiceByServiceName(oldServiceName)
+		services = append(services, services2...)
+
+		sameNameOfServices := make([]ServiceRelatedProject,0)
+
+		for _, s := range services {
+			serviceRelatedProjectOjb := ServiceRelatedProject {
+				ServiceName:s.Name,
+				ServiceTag:s.Tag,
+				ServiceRelatedProjectName:s.Project.Name,
+			}
+
+			if serviceName == "" {
+				fmt.Println("serviceName == nil")
+			}
+
+			sameNameOfServices = append(sameNameOfServices,serviceRelatedProjectOjb)
+		}
+		serviceObj = append(serviceObj, sameNameOfServices)
+	}
+
+	return
+}
+
+
+
+//
+//func GetServiceTag(serviceClass string) (serviceObj [][]ServiceRelatedProject,  err error) {
+//
+//	serviceNameList := new(orm.ParamsList)
+//	if serviceClass	== "java" {
+//		serviceNameList, err = models.GetServiceClassJava()
+//	}else {
+//		serviceNameList, err = models.GetServiceClassOther()
+//	}
+//	if err != nil{
+//		return nil,err
+//	}
+//
+//	// 获取所有service,  根据 serviceName 获取service
+//	//serviceObj = make(map[string][]ServiceRelatedProject)
+//	//serviceObj = make(map[string][]ServiceRelatedProject)
+//
+//	wildcardServiceName := make(map[string]int, 0)
+//	for _, serviceName := range *serviceNameList {
+//		strServiceName := serviceName.(string)
+//		serviceName = strings.Replace(strServiceName,"_","-",-1)
+//		wildcardServiceName[serviceName.(string)] += 1
+//	}
+//
+//	//for _, serviceName := range *serviceNameList	{
+//	for serviceName, num := range wildcardServiceName {
+//
+//		services := make([]*models.Service, 0)
+//
+//	/*
+//		if value, ok := serviceName.(string); ok {
+//			services, _ = models.GetServiceByServiceName(value)
+//		}
+//	*/
+//		if num == 2 {
+//			services, _ = models.GetServiceByServiceName(serviceName)
+//			oldServiceName := strings.Replace(serviceName,"-","_",-1)
+//			services2, _ := models.GetServiceByServiceName(oldServiceName)
+//			services = append(services, services2...)
+//		}
+//
+//		sameNameOfServices := make([]ServiceRelatedProject,0)
+//		serviceNum := len(services)
+//		for i, s := range services {
+//
+//			serviceRelatedProjectOjb := ServiceRelatedProject {
+//				ServiceName:s.Name,
+//				ServiceTag:s.Tag,
+//				ServiceRelatedProjectName:s.Project.Name,
+//			}
+//
+//			// 第一套补位
+//			// 只有一个service,并且为第二套, 补位第一套
+//			if serviceNum == 1 && i == 0 && services[0].Project.Name == "第二套" {
+//
+//				tempServiceRelatedProjectOjb := ServiceRelatedProject {
+//					ServiceName: s.Name,
+//					ServiceTag: "---",
+//					ServiceRelatedProjectName: "第二套",
+//				}
+//
+//				// 补位第一套
+//				sameNameOfServices = append(sameNameOfServices,tempServiceRelatedProjectOjb)
+//			}
+//
+///*
+//			// 只有一个service,并且为第三套, 补位第一套
+//			if serviceNum == 1 && i == 0 && s.Project.Name == "第三套" {
+//
+//			}
+//			// 有两个service, 为第二套,第三套, 补位第一套
+//			if serviceNum == 2 && i == 0 && services[0].Project.Name == "第二套"{
+//
+//				if  serviceNum == 2 && i == 1 && services[1].Project.Name == "第三套"{
+//
+//				}
+//			}
+//
+//			// 第二套补位
+//			// 有一个service,为第一套,无需补位
+//			// 有一个service,为第三套, 补位第一套,第二套,
+//			// 有两个service,为第一套,第三套, 补位第二套
+//*/
+//			sameNameOfServices = append(sameNameOfServices,serviceRelatedProjectOjb)
+//
+//		}
+//		serviceObj = append(serviceObj, sameNameOfServices)
+//	}
+//
+//	return
+//}
+
+
 func GetService(serviceClass string) (data []map[string]interface{},err error) {
 
 	serviceNameList := new(orm.ParamsList)
@@ -229,11 +386,6 @@ func GetService(serviceClass string) (data []map[string]interface{},err error) {
 	}else {
 		serviceNameList, err = models.GetServiceClassOther()
 	}
-	//
-	fmt.Println("==============")
-	fmt.Println("serviceNameList: ",serviceNameList)
-
-
 	if err != nil{
 		return nil,err
 	}

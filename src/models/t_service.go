@@ -328,7 +328,7 @@ func SearchFrontendServices(searchText string, projectId int, platformId int)(s 
 func GetServiceClassJava() (list *orm.ParamsList, err error) {
 	list = new(orm.ParamsList)
 	o := orm.NewOrm()
-	_, err = o.QueryTable(serviceTableName).Filter("class", "java").GroupBy("name").OrderBy("name").ValuesFlat(list, "name")
+	_, err = o.QueryTable(serviceTableName).Filter("class", "java").Filter("is_del",0).GroupBy("name").OrderBy("name").ValuesFlat(list, "name")
 
 	return
 }
@@ -338,7 +338,7 @@ func GetServiceClassJava() (list *orm.ParamsList, err error) {
 func GetServiceClassOther() (list *orm.ParamsList, err error) {
 	list = new(orm.ParamsList)
 	o := orm.NewOrm()
-	_, err = o.QueryTable(serviceTableName).Exclude("class", "java").GroupBy("name").OrderBy("name").ValuesFlat(list, "name")
+	_, err = o.QueryTable(serviceTableName).Exclude("class", "java").Filter("is_del",0).GroupBy("name").OrderBy("name").ValuesFlat(list, "name")
 	return
 }
 
@@ -386,7 +386,7 @@ func GetServiceByProjectNotJavaForName(projectId int) (list *orm.ParamsList, err
 func GetServiceByServiceName(serviceName string) (s []*Service, err error) {
 
 	o := orm.NewOrm()
-	_, err = o.QueryTable(serviceTableName).Filter("name", serviceName).RelatedSel().All(&s)
+	_, err = o.QueryTable(serviceTableName).Filter("name", serviceName).Filter("is_del",0).RelatedSel().All(&s)
 
 	return
 }
