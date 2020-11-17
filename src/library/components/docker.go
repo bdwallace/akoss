@@ -152,12 +152,15 @@ func (c *BaseDocker)DockerServiceHealth(host *models.Host, port string, have443 
 	}
 
 	response, err := common.HttpGet(urlUse, nil)
-	fmt.Println("check health request url=",urlUse," err=",err)
+	fmt.Println("check health request url=",urlUse," err=",err," resp=",response)
 	if err != nil {
 		return
 	}
+
+
 	//if strings.Index(url, "/actuator/health") != -1 {
-    if frontFlag {
+    if !frontFlag {
+		// 后端服务
 		body, _ := ioutil.ReadAll(response.Body)
 		if index := strings.Index(string(body), "UP"); index > 0 {
 			health = "200"
@@ -166,7 +169,7 @@ func (c *BaseDocker)DockerServiceHealth(host *models.Host, port string, have443 
 		}
 
 	} else {
-
+		// 前端服务
 		health = common.IntToStr(response.StatusCode)
 	}
 	return
