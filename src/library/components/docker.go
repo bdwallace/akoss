@@ -132,8 +132,10 @@ func (c *BaseDocker)GetPortForDockerServiceHealth() (port string, have443 int) {
 func (c *BaseDocker)DockerServiceHealth(host *models.Host, port string, have443 int) (health string, url string) {
 
 	urlUse := ""
+	frontFlag := false
 	//  前端服务
 	if c.BaseComponents.Service.Health == "" {
+		frontFlag = true
 		//  前端 https
 		if have443 > 0{
 			url = fmt.Sprintf("https://%s:%s/",host.PublicIp, port)
@@ -149,17 +151,20 @@ func (c *BaseDocker)DockerServiceHealth(host *models.Host, port string, have443 
 		urlUse = fmt.Sprintf("http://%s:%s%s",host.UseIp, port, c.BaseComponents.Service.Health)
 	}
 
-
 	response, err := common.HttpGet(urlUse, nil)
+	fmt.Println("check health request url=",urlUse," err=",err)
 	if err != nil {
 		return
 	}
-	if strings.Index(url, "/actuator/health") != -1 {
-
+	//if strings.Index(url, "/actuator/health") != -1 {
+    if frontFlag {
 		body, _ := ioutil.ReadAll(response.Body)
 		if index := strings.Index(string(body), "UP"); index > 0 {
 			health = "200"
+		}else {
+			health = "-1"
 		}
+
 	} else {
 
 		health = common.IntToStr(response.StatusCode)
