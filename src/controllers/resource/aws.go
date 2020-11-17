@@ -126,15 +126,12 @@ func (c *ResourceController) Aws() {
 func (c *ResourceController) Tag() {
 	class := c.GetString("class")
 
-	// fmt.Println("-------------------", class)
-	data, backPath, err := backup.BackupService(class)
+	//data, backPath, err := backup.BackupService(class)
+	serviceObj, err := backup.GetServiceTag(class)
 	if err != nil {
-		c.SetJson(1, nil, "")
+		c.SetJson(1, nil, "获取 服务tag列表 失败")
 		return
 	}
-	// fmt.Printf("data: %+v\n",data)
-	// fmt.Printf("bancPath: %s\n",backPath)
-	c.SetJson(0, map[string]interface{}{"data": data, "backPath": backPath}, "")
-	// c.SetJson(0, data, backPath)
+	c.SetJson(0, serviceObj, "")
 	return
 }

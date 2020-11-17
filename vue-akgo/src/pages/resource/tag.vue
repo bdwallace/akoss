@@ -12,7 +12,7 @@
             </el-button>
 
             <el-button @click="$router.back()">取消</el-button>
-              
+
             <el-button v-if="download_path != ''" @click="download">导出数据</el-button>
         </div>
         <div class="panel-body">
@@ -24,67 +24,72 @@
                     border
                     style="width: 100%">
                 <el-table-column
-                        prop="name"
-                        label="项目"
-                        sortable>
+                    prop="0.ServiceName"
+                    label="项目">
                 </el-table-column>
                 <el-table-column
-                        prop="PsImage1"
-                        label="第一套Tag">
+                    prop="0.ServiceTag"
+                    label="第一套Tag">
                 </el-table-column>
                 <el-table-column
-                        prop="PsImage2"
-                        label="第二套Tag">
+                    prop="1.ServiceTag"
+                    label="第二套Tag">
                 </el-table-column>
-                <el-table-column
-                        prop="PsImage3"
-                        label="第三套Tag">
-                </el-table-column>
-                <el-table-column
-                        prop="ProjectStatus1"
-                        label="第一套详情"
-                        width="110">
-                    <template scope="props">
-                        <el-popover
-                            ref="ProjectStatus1"
-                            placement="left-start"
-                            width="600"
-                            trigger="click">
-                            <span style="color:teal;white-space: pre-wrap;">{{props.row.ProjectStatus1}}</span>
-                        </el-popover>
-                        <el-button v-show="props.row.ProjectStatus1 != ''" type="info" v-popover:ProjectStatus1>查看</el-button>
-                    </template>
-                </el-table-column>
-                <el-table-column
-                        prop="ProjectStatus2"
-                        label="第二套详情"
-                        width="110">
-                    <template scope="props">
-                        <el-popover
-                            ref="ProjectStatus2"
-                            placement="left-start"
-                            width="600"
-                            trigger="click">
-                            <span style="color:teal;white-space: pre-wrap;">{{props.row.ProjectStatus2}}</span>
-                        </el-popover>
-                        <el-button v-show="props.row.ProjectStatus2 != ''" type="info" v-popover:ProjectStatus2>查看</el-button>
-                    </template>
-                </el-table-column>
-                <el-table-column
-                        prop="ProjectStatus3"
-                        label="第三套详情"
-                        width="110">
-                    <template scope="props">
-                        <el-popover
-                            ref="ProjectStatus3"
-                            placement="left-start"
-                            width="600"
-                            trigger="click">
-                            <span style="color:teal;white-space: pre-wrap;">{{props.row.ProjectStatus3}}</span>
-                        </el-popover>
-                        <el-button v-show="props.row.ProjectStatus3 != ''" type="info" v-popover:ProjectStatus3>查看</el-button>
-                    </template>
-                </el-table-column>
+<!--                <el-table-column-->
+<!--                    prop="2.ServiceTag"-->
+<!--                    label="第三套Tag">-->
+<!--                </el-table-column>-->
+
+
+<!--                <el-table-column-->
+<!--                        prop="PsImage3"-->
+<!--                        label="第三套Tag">-->
+<!--                </el-table-column>-->
+<!--                <el-table-column-->
+<!--                        prop="ProjectStatus1"-->
+<!--                        label="第一套详情"-->
+<!--                        width="110">-->
+<!--                    <template scope="props">-->
+<!--                        <el-popover-->
+<!--                            ref="ProjectStatus1"-->
+<!--                            placement="left-start"-->
+<!--                            width="600"-->
+<!--                            trigger="click">-->
+<!--                            <span style="color:teal;white-space: pre-wrap;">{{props.row.ProjectStatus1}}</span>-->
+<!--                        </el-popover>-->
+<!--                        <el-button v-show="props.row.ProjectStatus1 != ''" type="info" v-popover:ProjectStatus1>查看</el-button>-->
+<!--                    </template>-->
+<!--                </el-table-column>-->
+<!--                <el-table-column-->
+<!--                        prop="ProjectStatus2"-->
+<!--                        label="第二套详情"-->
+<!--                        width="110">-->
+<!--                    <template scope="props">-->
+<!--                        <el-popover-->
+<!--                            ref="ProjectStatus2"-->
+<!--                            placement="left-start"-->
+<!--                            width="600"-->
+<!--                            trigger="click">-->
+<!--                            <span style="color:teal;white-space: pre-wrap;">{{props.row.ProjectStatus2}}</span>-->
+<!--                        </el-popover>-->
+<!--                        <el-button v-show="props.row.ProjectStatus2 != ''" type="info" v-popover:ProjectStatus2>查看</el-button>-->
+<!--                    </template>-->
+<!--                </el-table-column>-->
+<!--                <el-table-column-->
+<!--                        prop="ProjectStatus3"-->
+<!--                        label="第三套详情"-->
+<!--                        width="110">-->
+<!--                    <template scope="props">-->
+<!--                        <el-popover-->
+<!--                            ref="ProjectStatus3"-->
+<!--                            placement="left-start"-->
+<!--                            width="600"-->
+<!--                            trigger="click">-->
+<!--                            <span style="color:teal;white-space: pre-wrap;">{{props.row.ProjectStatus3}}</span>-->
+<!--                        </el-popover>-->
+<!--                        <el-button v-show="props.row.ProjectStatus3 != ''" type="info" v-popover:ProjectStatus3>查看</el-button>-->
+<!--                    </template>-->
+<!--                </el-table-column>-->
             </el-table>
         </div>
     </div>
@@ -124,21 +129,22 @@
                             }
                         })
                 .then(({data: {data}}) => {
-                    console.log("-----------------", data)
-                    this.table_data = data.data
-                    this.download_path = data.backPath
+                  console.log("----------data-------", data)
+                    this.table_data = data
+                    // this.download_path = data.backPath
                     this.load_data = false
+                  console.log("----------table_data-------", this.table_data)
                 })
                 .catch(() => {
                     this.$forceUpdate()
                     this.load_data = false
                 })
-            
+
             },
 
             output() {
-                const defaultCellStyle =  { 
-                    font: { name: "Verdana", sz: 11, color: "FF00FF88"}, 
+                const defaultCellStyle =  {
+                    font: { name: "Verdana", sz: 11, color: "FF00FF88"},
                     // fill: {fgColor: {rgb: "FFFFAA00"}},
                     border: {color: {auto: 1}},
                     alignment: {wrapText: 1, horizontal: "center", vertical: "center", indent: 0}
