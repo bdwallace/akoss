@@ -57,10 +57,6 @@ func (c *ResourceController) Aws() {
 			resEc2InstanceInfos = append(resEc2InstanceInfos,v.Instances...)
 		}
 
-		for i, v := range resEc2InstanceInfos{
-			fmt.Println("i = ",i,"   name: ",v.InstanceName)
-		}
-
 		c.SetJson(200, resEc2InstanceInfos, "")
 
 	case "vpc":

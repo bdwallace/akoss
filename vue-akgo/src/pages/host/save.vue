@@ -54,21 +54,21 @@
                     end: '24:00',
                     minTime: form.StartTime
                   }">
-                </el-time-select> 
+                </el-time-select>
             </el-form-item>
 
           </el-col>
 
           <el-col :span="10">
             <el-form-item label="查询aws实例:" prop="PublicIp" label-width="130px">
-              <!-- <el-select v-model="awsHost" 
+              <!-- <el-select v-model="awsHost"
                           filterable
                           value-key
                           clearable
                           :placeholder="`${form.Region} . ${form.InstanceId}`"
                           style="width: 600px;"
                           @change="check_itemAwsHost(awsHost)">
-                <el-option   
+                <el-option
                   v-for="item in itemAwsHost"
                   :key="item"
                   :label="`${item.Region} . ${item.EC2InstanceInfo.InstanceID} . ${item.EC2InstanceInfo.InstanceName} . ${item.EC2InstanceInfo.PrivateIP} . ${item.EC2InstanceInfo.PublicIP}`"
@@ -85,10 +85,10 @@
               <el-input v-model="form.PublicIp" placeholder="请输入公网IP"
                         style="width: 300px;">
               </el-input>
-              <el-button 
-                v-if="itemAwsHost[0] && form.PublicIp != itemAwsHost[0].EC2InstanceInfo.PublicIP" 
-                :type="awsColor" 
-                @click="form.PublicIp = itemAwsHost[0].EC2InstanceInfo.PublicIP" 
+              <el-button
+                v-if="itemAwsHost[0] && form.PublicIp != itemAwsHost[0].EC2InstanceInfo.PublicIP"
+                :type="awsColor"
+                @click="form.PublicIp = itemAwsHost[0].EC2InstanceInfo.PublicIP"
                 :loading="on_submit_loading" >
                   更新为：{{itemAwsHost[0].EC2InstanceInfo.PublicIP}}
               </el-button>
@@ -98,23 +98,37 @@
               <el-input v-model="form.InstanceId" placeholder="请 查询aws实例"
                         style="width: 300px;">
               </el-input>
-              <el-button 
-                v-if="itemAwsHost[0] && form.InstanceId != itemAwsHost[0].EC2InstanceInfo.InstanceID" 
-                :type="awsColor" 
-                @click="form.InstanceId = itemAwsHost[0].EC2InstanceInfo.InstanceID" 
+              <el-button
+                v-if="itemAwsHost[0] && form.InstanceId != itemAwsHost[0].EC2InstanceInfo.InstanceID"
+                :type="awsColor"
+                @click="form.InstanceId = itemAwsHost[0].EC2InstanceInfo.InstanceID"
                 :loading="on_submit_loading" >
                   更新为：{{itemAwsHost[0].EC2InstanceInfo.InstanceID}}
               </el-button>
             </el-form-item>
 
+            <el-form-item label="aws实例类型:" prop="InstanceType" label-width="130px">
+              <el-input v-model="form.InstanceType" placeholder="请 查询aws实例类型"
+                        style="width: 300px;">
+              </el-input>
+              <el-button
+                v-if="itemAwsHost[0] && form.InstanceType != itemAwsHost[0].EC2InstanceInfo.InstanceType"
+                :type="awsColor"
+                @click="form.InstanceType = itemAwsHost[0].EC2InstanceInfo.InstanceType"
+                :loading="on_submit_loading" >
+                更新为：{{itemAwsHost[0].EC2InstanceInfo.InstanceType}}
+              </el-button>
+            </el-form-item>
+
+
             <el-form-item label="aws区域:" prop="Region" label-width="130px">
               <el-input v-model="form.Region" placeholder="请 查询aws实例"
                         style="width: 300px;">
               </el-input>
-              <el-button 
-                v-if="itemAwsHost[0] && form.Region != itemAwsHost[0].Region" 
-                :type="awsColor" 
-                @click="form.Region = itemAwsHost[0].Region" 
+              <el-button
+                v-if="itemAwsHost[0] && form.Region != itemAwsHost[0].Region"
+                :type="awsColor"
+                @click="form.Region = itemAwsHost[0].Region"
                 :loading="on_submit_loading" >
                   更新为：{{itemAwsHost[0].Region}}
               </el-button>

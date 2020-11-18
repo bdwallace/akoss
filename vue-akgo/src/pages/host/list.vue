@@ -6,7 +6,7 @@
             <!-- <el-radio-group style="float: left;margin-right: 100px;margin-top: 15px" v-model="level" @change="get_table_data()">
             <el-radio v-for="item in level_data" :key="item.Id" :label="item.Id">{{item.Name}}</el-radio>
             </el-radio-group> -->
-            
+
             <div style="float: left;margin-right: 10px;margin-top: 5px">
                 <el-button plain size="small" v-if="table_data">全部&nbsp;{{table_data.length}}&nbsp;台主机</el-button>
             </div>
@@ -121,7 +121,11 @@
 
                         <div style="clear: both;margin-bottom: 10px"></div>
 
-                        <div>
+                      <div>
+                        <el-tag type="primary">{{props.row.InstanceType}}</el-tag>
+                      </div>
+
+                      <div>
                         <el-tag type="primary">{{props.row.InstanceId}}</el-tag>
                         </div>
 
@@ -203,12 +207,12 @@
                             </el-input>
                             <!-- <el-input readonly style="width: 150px" size="mini" v-model="item.ps_created_at">
                             </el-input> -->
-                            <el-input readonly style="width: 180px" size="mini" v-model="item.ps_image">    
+                            <el-input readonly style="width: 180px" size="mini" v-model="item.ps_image">
                             </el-input>
                         </div>
                         <div style="clear: both;margin-bottom: 10px;"> <span></span> </div>
                     </template>
-                </el-table-column>                
+                </el-table-column>
 
             </el-table>
             <!-- <bottom-tool-bar>
@@ -266,7 +270,7 @@
                 filter: {
                     awsRegion: [],
                 },
-                ProjectId: store.state.user_info.user.ProjectId, 
+                ProjectId: store.state.user_info.user.ProjectId,
                 // level_data: [],
                 table_data: [],
                 //当前页码
@@ -340,7 +344,7 @@
                         this.load_data = false
                     })
                 })
-            }, 
+            },
 
             //根据aws的实例ID停止该实例
             stop_host_status(index){
@@ -362,7 +366,7 @@
                         this.load_data = false
                     })
                 })
-            }, 
+            },
 
             //根据aws的实例ID获取实例的状态
             get_host_status(index){

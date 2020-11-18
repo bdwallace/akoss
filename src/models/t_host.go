@@ -17,6 +17,7 @@ type Host struct {
 	PublicIp  		string 				`orm:"column(public_ip);size(100)"`
 	UseIp			string				`orm:"column(use_ip)"`
 	InstanceId 		string 				`orm:"column(instance_id);size(200)"`	  //  ++
+	InstanceType 	string 				`orm:"column(instance_type);size(200)"`	  //  ++
 	Region     		string 				`orm:"column(region);size(200)"`			// ++
 	StartTime  		string 				`orm:"column(start_time);size(100)"`		// ++
 	EndTime    		string 				`orm:"column(end_time);size(100)"`		// ++
@@ -103,7 +104,7 @@ func GetAllHost(projectId int) (h []*Host, err error) {
 
 
 func SearchHosts(projectId int, awsRegion string, searchText string)(h []*Host, err error){
-	base := fmt.Sprintf("SELECT `T0`.`id`, `T0`.`name`, `T0`.`private_ip`, `T0`.`public_ip`, `T0`.`use_ip`, `T0`.`region`, `T0`.`instance_id`, `T0`.`start_time`, `T0`.`end_time` FROM `%s` `T0`", hostTableName)
+	base := fmt.Sprintf("SELECT `T0`.`id`, `T0`.`name`, `T0`.`private_ip`, `T0`.`public_ip`, `T0`.`use_ip`, `T0`.`region`, `T0`.`instance_id`,  `T0`.`instance_type`, `T0`.`start_time`, `T0`.`end_time` FROM `%s` `T0`", hostTableName)
 
 	where := "WHERE"
 	if projectId != 0 {
