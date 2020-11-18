@@ -132,7 +132,6 @@ func (c *BaseDocker)GetPortForDockerServiceHealth() (port string, have443 int) {
 func (c *BaseDocker)DockerServiceHealth(host *models.Host, port string, have443 int) (health string, url string) {
 
 	urlUse := ""
-	frontFlag := false
 	//  前端服务
 	if c.BaseComponents.Service.Health == "" {
 		frontFlag = true
@@ -158,11 +157,10 @@ func (c *BaseDocker)DockerServiceHealth(host *models.Host, port string, have443 
 	}
 
 
-	//if strings.Index(url, "/actuator/health") != -1 {
-    if !frontFlag {
+	if strings.Index(url, "/actuator/health") != -1 {
 		// 后端服务
 		body, _ := ioutil.ReadAll(response.Body)
-		if index := strings.Index(string(body), "UP"); index > 0 {
+	if index := strings.Index(string(body), "UP"); index > 0 {
 			health = "200"
 		}else {
 			health = "-1"
@@ -241,9 +239,6 @@ func (c *BaseDocker) DockerPs(lineData string) (res []map[string]string, err err
 
 		p, have443 := c.GetPortForDockerServiceHealth()
 		health, url := c.DockerServiceHealth(host,p,have443)
-		// if err != nil{
-		// 	return res, err
-		// }
 
 
 		res = append(res, map[string]string{"host_id": common.IntToStr(host.Id), "ip": host.PrivateIp, "ip_pub": host.PublicIp, "ip_show": host.UseIp, "ps_status": PsStatus, "ps_created_at": PsCreatedAt, "ps_image": PsImage, "line": Line, "health":health, "url":url})
