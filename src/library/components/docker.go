@@ -160,7 +160,7 @@ func (c *BaseDocker)DockerServiceHealth(host *models.Host, port string, have443 
 	if strings.Index(url, "/actuator/health") != -1 {
 		// 后端服务
 		body, _ := ioutil.ReadAll(response.Body)
-		if index := strings.Index(string(body), "UP"); index > 0 {
+	if index := strings.Index(string(body), "UP"); index > 0 {
 			health = "200"
 		}else {
 			health = "-1"
