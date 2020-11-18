@@ -2625,6 +2625,8 @@ definitions:
         format: int64
       InstanceId:
         type: string
+      InstanceType:
+        type: string
       Name:
         type: string
       PrivateIp:

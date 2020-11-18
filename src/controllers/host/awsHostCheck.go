@@ -18,12 +18,12 @@ type HostCheckController struct {
 	controllers.BaseController
 }
 
-type ResAwsHoat struct {
+type ResAwsHost struct {
 	Region          string
 	EC2InstanceInfo *aws.EC2InstanceInfo
 }
 
-type ResAwsHoatS struct {
+type ResAwsHosts struct {
 	Region           string
 	EC2InstanceInfoS []*aws.EC2InstanceInfo
 }
@@ -65,7 +65,7 @@ func (c *HostCheckController)AwsRsync() {
 		return
 	}
 
-	resAwsHoatS := make([]*ResAwsHoatS, 0)
+	resAwsHoatS := make([]*ResAwsHosts, 0)
 	for _, region := range regions {
 		myAws.Region = region
 		myAws.SourceInfo = new(aws.ResourceInfo)
@@ -81,21 +81,21 @@ func (c *HostCheckController)AwsRsync() {
 		for _, v := range myAws.SourceInfo.EC2Info.EC2Reservations {
 			resEc2InstanceInfos = append(resEc2InstanceInfos, v.Instances...)
 		}
-		res := &ResAwsHoatS{Region: region, EC2InstanceInfoS: resEc2InstanceInfos}
+		res := &ResAwsHosts{Region: region, EC2InstanceInfoS: resEc2InstanceInfos}
 		resAwsHoatS = append(resAwsHoatS, res)
 	}
 
-	resAwsHoat := make([]*ResAwsHoat, 0)
+	resAwsHost := make([]*ResAwsHost, 0)
 	for _, v := range resAwsHoatS {
 		for _, vv := range v.EC2InstanceInfoS {
 			if host.PrivateIp == vv.PrivateIP {
-				res := &ResAwsHoat{Region: v.Region, EC2InstanceInfo: vv}
-				resAwsHoat = append(resAwsHoat, res)
+				res := &ResAwsHost{Region: v.Region, EC2InstanceInfo: vv}
+				resAwsHost = append(resAwsHost, res)
 			}
 		}
 	}
 
-	c.SetJson(0, resAwsHoat, "")
+	c.SetJson(0, resAwsHost, "")
 	return
 }
 
@@ -132,7 +132,7 @@ func (c *HostCheckController) AwsRsyncUpdate() {
 		return
 	}
 
-	resAwsHoatS := make([]*ResAwsHoatS, 0)
+	resAwsHoatS := make([]*ResAwsHosts, 0)
 	for _, region := range regions {
 		myAws.Region = region
 		myAws.SourceInfo = new(aws.ResourceInfo)
@@ -148,7 +148,7 @@ func (c *HostCheckController) AwsRsyncUpdate() {
 		for _, v := range myAws.SourceInfo.EC2Info.EC2Reservations {
 			resEc2InstanceInfos = append(resEc2InstanceInfos, v.Instances...)
 		}
-		res := &ResAwsHoatS{Region: region, EC2InstanceInfoS: resEc2InstanceInfos}
+		res := &ResAwsHosts{Region: region, EC2InstanceInfoS: resEc2InstanceInfos}
 		resAwsHoatS = append(resAwsHoatS, res)
 	}
 

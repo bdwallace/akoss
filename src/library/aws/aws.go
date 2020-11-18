@@ -831,10 +831,6 @@ func (c *BaseAws) GetEC2sInfo() (*ec2.DescribeInstancesOutput, error) {
 
 	c.SourceInstance.Ec2 = ec2.New(c.Session)
 
-	fmt.Println("c.sourceInstance: ",c.SourceInstance)
-	fmt.Println("c.sourceInstance.Ec2: ",c.SourceInstance.Ec2)
-	fmt.Println("c.session: ",c.Session)
-
 	// get all ec2 instance info
 	input := &ec2.DescribeInstancesInput{}
 	result, err := c.SourceInstance.Ec2.DescribeInstances(input)
