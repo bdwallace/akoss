@@ -134,7 +134,6 @@ func (c *BaseDocker)DockerServiceHealth(host *models.Host, port string, have443 
 	urlUse := ""
 	//  前端服务
 	if c.BaseComponents.Service.Health == "" {
-		frontFlag = true
 		//  前端 https
 		if have443 > 0{
 			url = fmt.Sprintf("https://%s:%s/",host.PublicIp, port)
