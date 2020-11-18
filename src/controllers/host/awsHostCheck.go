@@ -157,7 +157,7 @@ func (c *HostCheckController) AwsRsyncUpdate() {
 		for _, v := range resAwsHoatS {
 			for _, vv := range v.EC2InstanceInfoS {
 				if host.PrivateIp == vv.PrivateIP {
-					if host.Region != v.Region || host.InstanceId != vv.InstanceID || host.PublicIp != vv.PublicIP {
+					if host.Region != v.Region || host.InstanceId != vv.InstanceID || host.InstanceType != vv.InstanceType || host.PublicIp != vv.PublicIP {
 						resData := map[string]string{host.PrivateIp:""}
 						if host.Region != v.Region {
 							resData[host.PrivateIp] = fmt.Sprintf("%s,%s to %s", resData[host.PrivateIp], host.Region, v.Region)
@@ -166,6 +166,10 @@ func (c *HostCheckController) AwsRsyncUpdate() {
 						if host.InstanceId != vv.InstanceID {
 							resData[host.PrivateIp] = fmt.Sprintf("%s,%s to %s", resData[host.PrivateIp], host.InstanceId, vv.InstanceID)
 							host.InstanceId = vv.InstanceID
+						}
+						if host.InstanceType != vv.InstanceType {
+							resData[host.PrivateIp] = fmt.Sprintf("%s,%s to %s", resData[host.PrivateIp], host.InstanceType, vv.InstanceType)
+							host.InstanceType = vv.InstanceType
 						}
 						if host.PublicIp != vv.PublicIP {
 							resData[host.PrivateIp] = fmt.Sprintf("%s,%s to %s", resData[host.PrivateIp], host.PublicIp, vv.PublicIP)
