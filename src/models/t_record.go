@@ -213,8 +213,8 @@ func UpdateRecordById(m *Record) (err error) {
 		}
 	}
 */
-	if num, err := o.Update(m); err == nil {
-		fmt.Println("Number of records updated in database:", num)
+	if _, err = o.Update(m); err != nil {
+		return
 	}
 
 	return

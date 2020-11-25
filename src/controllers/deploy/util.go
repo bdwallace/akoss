@@ -382,9 +382,9 @@ func (c *DeployController)RunDockerCmd(task * models.Task ,cmdType string, docke
 	hostIndex := strings.Index(dockerCmd,":")
 	host := dockerCmd[:hostIndex]
 	cmd := dockerCmd[hostIndex + 1:]
-	fmt.Println("============")
-	fmt.Println("DockerCmd:  ",cmd)
-	fmt.Println("============")
+	//fmt.Println("============")
+	//fmt.Println("run cmd:  ",cmd)
+	//fmt.Println("============")
 	docker := new(components.BaseDocker)
 	docker.BaseComponents.User = c.TaskUser
 	docker.BaseComponents.Task = c.Task

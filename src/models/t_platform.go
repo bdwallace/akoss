@@ -304,8 +304,6 @@ func AddPlatformAndServiceRelated(platform *Platform) (id int64, err error) {
 
 	o := orm.NewOrm()
 
-	fmt.Println("==============")
-	fmt.Printf("platform: %+v\n",platform)
 	id, err = o.Insert(platform)
 	if err != nil{
 		err = fmt.Errorf("error:  AddPlatformAndServiceRelated to insert service fail!")

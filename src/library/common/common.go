@@ -379,10 +379,10 @@ func DesECBEncrypt(text string, keys string) (string, error) {
 	//NewCipher创建一个新的加密块
 	block, err := des.NewCipher(key)
 	if err != nil {
-		fmt.Println("-----初始化加密块，失败！-----")
+		fmt.Println("error: DesECBEncrypt NewCipher ",err)
 		return "", err
 	}
-	fmt.Println("-----初始化加密块，成功！-----")
+
 	bs := block.BlockSize()
 	data = PKCS5Padding(data, bs)
 	if len(data)%bs != 0 {

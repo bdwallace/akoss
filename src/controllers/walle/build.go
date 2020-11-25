@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"library/components"
 	"models"
-
-	"github.com/astaxie/beego"
 )
 
 // @Title 下载站 download file
@@ -18,7 +16,7 @@ import (
 func (c *WalleController)Build() {
 
 
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	// var domain *models.Domain
 	operationRecord := new(models.OperationRecord)
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, operationRecord)

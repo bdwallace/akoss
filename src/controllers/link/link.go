@@ -5,8 +5,6 @@ import (
 	"models"
 
 	"encoding/json"
-
-	"github.com/astaxie/beego"
 )
 
 type LinkController struct {
@@ -74,7 +72,7 @@ func (c *LinkController) GetAllLink() {
 // @router /link/ [post]
 func (c *LinkController) AddLink() {
 	//projectId,_:=c.GetInt("projectId",0)
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var link *models.Link
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &link)
 	if err != nil {

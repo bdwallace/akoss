@@ -322,3 +322,5 @@ pkg
 nohup.out
 vue-akgo/nohup.out
 vue-akgo/package-lock.json
+
+src/conf/app.conf

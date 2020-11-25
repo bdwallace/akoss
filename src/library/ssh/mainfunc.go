@@ -18,7 +18,7 @@ import (
  */
 func CmdLocal(cmd string, to int) (sshexec.ExecResult, error) {
 	timeout := time.After(time.Duration(to) * time.Second)
-	fmt.Println("------timeout----------", timeout)
+	fmt.Println("cmd exec timeout: ", cmd, "   ",timeout)
 	execResult := LocalExec(cmd)
 	errorText := ""
 	if execResult.Error != nil {

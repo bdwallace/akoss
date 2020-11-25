@@ -1,18 +1,15 @@
 package crontab
 
-
 import (
 	gopubssh "library/ssh"
 	"models"
 
 	"time"
-
-	"github.com/astaxie/beego"
 )
 
 func Execute(id int, auto int) (err error) {
 	crontab, _ := models.GetCrontabById(id)
-	beego.Info("------正在执行任务：-----", crontab.Id)
+	//beego.Info("执行任务,任务id=", crontab.Id)
 
 	s, err := gopubssh.CommandLocal(crontab.Script, 360)
 	switch {

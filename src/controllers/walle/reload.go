@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"library/components"
 	"models"
-
-	"github.com/astaxie/beego"
 )
 
 // @Title reload
@@ -18,7 +16,7 @@ import (
 // @router /walle/reload/ [post]
 func (c *WalleController)Reload() {
 
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	operationRecord := new(models.OperationRecord)
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, operationRecord)
 	if err != nil {

@@ -2,13 +2,11 @@ package inspectcontrollers
 
 import (
 	"controllers"
-	"models"
 	"library/inspect"
+	"models"
 
 	"encoding/json"
 	"regexp"
-
-	"github.com/astaxie/beego"
 )
 
 type GrafanaController struct {
@@ -29,7 +27,7 @@ type GrafanaController struct {
 // @router /inspectgrafana [post]
 func (c *GrafanaController)PostInspectGrafana(){
 
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var inspectgrafana models.InspectGrafana
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &inspectgrafana)
 	if err != nil {

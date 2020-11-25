@@ -13,15 +13,16 @@
     "babel-polyfill": "^6.23.0",
     "echarts": "^3.5.0",
     "element-ui": "^1.2.9",
-    "file-saver": "^2.0.2",
+    "file-saver": "^2.0.5",
     "font-awesome": "^4.7.0",
     "normalize.css": "^5.0.0",
     "nprogress": "^0.2.0",
     "vue": "2.2.6",
     "vue-clipboard2": "^0.3.1",
     "vue-router": "^2.3.0",
+    "vue-wechat-title": "^2.0.7",
     "vuex": "^2.2.1",
-    "xlsx": "^0.16.5"
+    "xlsx": "^0.16.9"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",

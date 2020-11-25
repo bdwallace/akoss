@@ -28,7 +28,6 @@ func (c *WalleController) Upload(){
 	dir := fmt.Sprintf("upload/task/%s", strings.Split(name, ".")[0])
 	path := fmt.Sprintf("upload/task/%s/%s", strings.Split(name, ".")[0], name)
 	if _, err = os.Stat(dir); os.IsNotExist(err) {
-		fmt.Println("upload 创建目录:", dir)
 		err := common.Mkdir(dir)
 		if err != nil {
 			c.SetJson(1, nil, "upload 创建目录失败")

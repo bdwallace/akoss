@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"models"
-
-	"github.com/astaxie/beego"
 )
 
 type PlatformController struct {
@@ -21,7 +19,7 @@ type PlatformController struct {
 // @router /platform [post]
 func (c *PlatformController)AddPlatform(){
 
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var platform models.Platform
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &platform)
 	if err != nil {
@@ -68,14 +66,14 @@ func (c *PlatformController)GetAllPlatform() {
 	if searchText == ""{
 		resPlatform, err = models.GetAllPlatform(projectId)
 		if err != nil{
-			fmt.Println("error: GetAllPlatform()",err)
+			fmt.Println("error: GetAllPlatform",err)
 			c.SetJson(1,err,"获取所有 Platform 失败")
 			return
 		}
 	}else {
 		resPlatform, err = models.SearchPlatform(searchText,projectId)
 		if err != nil{
-			fmt.Println("error: GetAllPlatform()",err)
+			fmt.Println("error: GetAllPlatform",err)
 			c.SetJson(1,err,"搜索 Platform 匹配内容 失败")
 			return
 		}
@@ -328,7 +326,7 @@ func (c *PlatformController) GetPlatformAndServiceRelatedByPlatformId(){
 func (c *PlatformController) AddPlatformAndServiceRelated(){
 
 	// 1. 获取数据
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	//var service models.Service
 	platform := new(models.Platform)
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, platform)
@@ -347,7 +345,7 @@ func (c *PlatformController) AddPlatformAndServiceRelated(){
 		// update
 		err := models.UpdatePlatformAndServicesRelated(platform)
 		if err != nil{
-			fmt.Println("error: ",err)
+			fmt.Println(" error: ",err)
 			c.SetJson(1,nil,"更新 platform and service 多对多关系 失败")
 			return
 		}
@@ -355,7 +353,7 @@ func (c *PlatformController) AddPlatformAndServiceRelated(){
 		// add
 		_, err = models.AddPlatformAndServiceRelated(platform)
 		if err != nil{
-			fmt.Println("err:  ",err)
+			fmt.Println("error: AddPlatformAndServiceRelated  ",err)
 			c.SetJson(1,nil,"添加 platform and service 多对多关系 失败")
 			return
 		}

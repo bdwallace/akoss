@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"models"
-
-	"github.com/astaxie/beego"
 )
 
 type ServiceController struct {
@@ -67,12 +65,12 @@ func (c *ServiceController) GetServiceDefaultConfKay() {
 // @router /service/ [post]
 func (c *ServiceController) AddService() {
 
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	service := new(models.Service)
 	var id int64
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, service)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("error: AddService json.Unmarshal  ",err)
 		c.SetJson(1, nil, "数据格式错误")
 		return
 	}
@@ -81,7 +79,7 @@ func (c *ServiceController) AddService() {
 		// update service
 		resId, err := models.UpdateServiceById(service)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("error: UpdateServiceById ",err)
 			c.SetJson(1, err, "更新 service 失败")
 			return
 		}
@@ -92,7 +90,7 @@ func (c *ServiceController) AddService() {
 		// add service
 		id, err = models.AddService(service)
 		if err != nil {
-			fmt.Println("error:  ",err)
+			fmt.Println("error: AddService   ",err)
 			c.SetJson(1, err, "添加 service 失败")
 			return
 		}
@@ -161,7 +159,7 @@ func (c *ServiceController) CopyServiceById() {
 	resService.Name = fmt.Sprintf("%s - copy", resService.Name)
 	_, err = models.AddServiceAndRelated(resService)
 	if err != nil {
-		fmt.Println("error:  ",err)
+		fmt.Println("error: AddServiceAndRelated  ",err)
 		c.SetJson(1, err, "添加 service 失败")
 		return
 	}
@@ -221,7 +219,7 @@ func (c *ServiceController) GetServiceAllRelatedByProjectId(){
 	searchText := c.GetString("search_text")
 	projectId, err := c.GetInt("project_id")
 	if err != nil{
-		fmt.Println("error: GetInt(\"project_id\")",err)
+		fmt.Println("error: GetProjectId  ",err)
 		c.SetJson(1,err,"获取 project_id 失败")
 		return
 	}
@@ -238,7 +236,7 @@ func (c *ServiceController) GetServiceAllRelatedByProjectId(){
 	}else {
 		resServices, err = models.SearchBackendServices(searchText,projectId)
 		if err != nil{
-			fmt.Println("error: SearchService()",err)
+			fmt.Println("error: SearchService",err)
 			c.SetJson(1,err,"搜索 Services 匹配内容 失败")
 			return
 		}
@@ -271,7 +269,7 @@ func (c *ServiceController) GetServiceAllRelatedByPlatformId(){
 
 	platformId, err := c.GetInt("platform_id")
 	if err != nil{
-		fmt.Println("error: GetInt(\"platform_id\")",err)
+		fmt.Println("error: GetplatformId  ",err)
 		c.SetJson(1,err,"获取 platform_id 失败")
 		return
 	}
@@ -367,7 +365,7 @@ func (c *ServiceController)GetServiceByProjectForName(){
 func (c *ServiceController) AddServiceAllRelatedByService(){
 
 	// 1. 获取数据
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	//var service models.Service
 	service := new(models.Service)
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, service)
@@ -391,7 +389,7 @@ func (c *ServiceController) AddServiceAllRelatedByService(){
 		// update
 		err := models.UpdateServiceAndRelated(service)
 		if err != nil{
-			fmt.Println("error: ",err)
+			fmt.Println("error: UpdateServiceAndRelated  ",err)
 			c.SetJson(1,nil,"更新 service 多对多关系 失败")
 			return
 		}
@@ -399,7 +397,7 @@ func (c *ServiceController) AddServiceAllRelatedByService(){
 		// add
 		_, err = models.AddServiceAndRelated(service)
 		if err != nil{
-			fmt.Println("err:  ",err)
+			fmt.Println("error: AddServiceAndRelated ",err)
 			c.SetJson(1,nil,"添加 service 多对多关系 失败")
 			return
 		}

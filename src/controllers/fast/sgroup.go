@@ -64,7 +64,7 @@ func (c *SgroupController) GetSgroup() {
 // @Failure 2 User not found
 // @router /fast/setSgroup [post]
 func (c *SgroupController) SetSgroup() {
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var myAws aws.BaseAws
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &myAws)
 	if err != nil {
@@ -99,7 +99,7 @@ func (c *SgroupController) SetSgroup() {
 // @Failure 2 User not found
 // @router /fast/deleteSgroup [post]
 func (c *SgroupController) DeleteSgroup() {
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 
 	// var sgroup ec2.SecurityGroup
 	var sgroup GroupData

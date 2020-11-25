@@ -2,11 +2,10 @@ package usercontrollers
 
 import (
 	"controllers"
-	"models"
 	"golang.org/x/crypto/bcrypt"
-	"time"
-	"fmt"
 	"library/common"
+	"models"
+	"time"
 
 	"github.com/astaxie/beego/orm"
 )
@@ -61,7 +60,6 @@ func (c *UserController) Delete() {
 
 //重置用户密码，必须要admin用户才能重置
 func (c *UserController) Put() {
-	fmt.Println("-----", c.User)
 	if c.User == nil || c.User.Id != 1 {
 		c.SetJson(1, nil, "请联系admin重置密码")
 		return

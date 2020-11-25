@@ -4,7 +4,6 @@ import (
 	"controllers"
 	"encoding/json"
 	"fmt"
-	"github.com/astaxie/beego"
 	"models"
 )
 
@@ -28,7 +27,7 @@ type TaskController struct {
 // @router /task/ [post]
 func (c *TaskController) AddTask() {
 
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	task := new(models.Task)
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, task)
 	if err != nil {

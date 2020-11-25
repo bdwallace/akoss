@@ -4,7 +4,6 @@ import (
 	"controllers"
 	"encoding/json"
 	"fmt"
-	"github.com/astaxie/beego"
 	"library/common"
 	"library/components"
 	"models"
@@ -24,7 +23,7 @@ type DomainController struct {
 // @router /domain [post]
 func (c *DomainController)AddDomain(){
 
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	// var domain *models.Domain
 	domain := new(models.Domain)
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, domain)
@@ -90,7 +89,7 @@ func (c *DomainController)AddDomain(){
 
 		id, err := models.AddDomain(domains)
 		if err != nil{
-			fmt.Println("err:  ",err)
+			fmt.Println("error:  ",err)
 			c.SetJson(1,nil,"新建 domain 失败")
 			return
 		}
@@ -98,7 +97,7 @@ func (c *DomainController)AddDomain(){
 		domain.Id = int(id)
 		err = models.AddDomainAndRelated(domain)
 		if err != nil{
-			fmt.Println("err:  ",err)
+			fmt.Println("error:  ",err)
 			c.SetJson(1,nil,"添加 domain 多对多关系 失败")
 			return
 		}

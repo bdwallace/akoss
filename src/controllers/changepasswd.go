@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
-
 	"github.com/astaxie/beego/orm"
 	"golang.org/x/crypto/bcrypt"
 	"models"
@@ -16,7 +14,7 @@ type ChangePasswdController struct {
 
 func (c *ChangePasswdController) Post() {
 	//哈希校验成功后 更新 auth_key
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 
 	postData := map[string]string{"old_password": "", "newpassword": "", "repeat_newpassword": ""}
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &postData)
@@ -34,7 +32,7 @@ func (c *ChangePasswdController) Post() {
 	var user models.User
 	o := orm.NewOrm()
 	err = o.Raw("SELECT * FROM `user` WHERE id= ?", c.User.Id).QueryRow(&user)
-	beego.Info(user)
+	//beego.Info(user)
 	//验证旧密码
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(oldPassword))
 	if err != nil {

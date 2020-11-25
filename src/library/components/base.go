@@ -264,7 +264,7 @@ func (c *BaseComponents) RunDockerPs(command string, timeout int, host string)(s
 
 
 func (c *BaseComponents) SaveSql(task *models.Task, command string, duration int, status int, value interface{}, host string, sql string) (int64,error){
-	beego.Info(value)
+	//beego.Info(value)
 	if duration < 0 {
 		duration = 0
 	}
@@ -305,7 +305,7 @@ func (c *BaseComponents) SaveSql(task *models.Task, command string, duration int
 
 
 func (c *BaseComponents) SaveSqlToOperationRecord(command string, duration int, status int, action int, value interface{}, host *models.Host,class string) (err error) {
-	beego.Info(value)
+	//beego.Info(value)
 	if duration < 0 {
 		duration = 0
 	}
@@ -385,11 +385,11 @@ func LineChange(url string, hostPort string, line string) (err error) {
 	content4 := "grayRelease.grayServerList="
 	content := content1 + content2 + content3 + content4 + strings.Trim(strings.Join(lineList, ","), ",")
 	reqPost.Param("content", content)
-	resultPost, err := reqPost.String()
+	_, err = reqPost.String()
 	if err != nil {
 		return
 	}
-	beego.Info(fmt.Sprintf("%s %s %s", hostPort, line, resultPost))
+	//beego.Info(fmt.Sprintf("%s %s %s", hostPort, line, resultPost))
 
 	return
 
@@ -401,11 +401,11 @@ func Line(url string) (lineStr string, err error) {
 	req.Param("dataId", "grayReleaseConfig.properties")
 	req.Param("group", "DEFAULT_GROUP")
 	result, err := req.String()
-	beego.Info(fmt.Sprintf("curl: %s", url))
+	//beego.Info(fmt.Sprintf("curl: %s", url))
 
 	resultList := strings.Split(result, "=")
 	lineStr = resultList[len(resultList)-1]
-	beego.Info(fmt.Sprintf("lineStr: %s", lineStr))
+	//beego.Info(fmt.Sprintf("lineStr: %s", lineStr))
 
 	return
 }
