@@ -82,7 +82,7 @@ func (s *OssTypeSuite) TestDecodeListMultipartUploadResult(c *C) {
 func (s *OssTypeSuite) TestSortUploadPart(c *C) {
 	parts := []UploadPart{}
 
-	sort.Sort(uploadParts(parts))
+	sort.Sort(UploadParts(parts))
 	c.Assert(len(parts), Equals, 0)
 
 	parts = []UploadPart{
@@ -93,7 +93,7 @@ func (s *OssTypeSuite) TestSortUploadPart(c *C) {
 		{PartNumber: 3, ETag: "E3"},
 	}
 
-	sort.Sort(uploadParts(parts))
+	sort.Sort(UploadParts(parts))
 
 	c.Assert(parts[0].PartNumber, Equals, 1)
 	c.Assert(parts[0].ETag, Equals, "E1")
@@ -235,7 +235,7 @@ func (s *OssTypeSuite) TestValidateLifecleRules(c *C) {
 	}
 	rules = []LifecycleRule{rule}
 	err = verifyLifecycleRules(rules)
-	c.Assert(err, NotNil)
+	c.Assert(err, IsNil)
 
 	transition1 := LifecycleTransition{
 		Days:         30,
@@ -257,7 +257,7 @@ func (s *OssTypeSuite) TestValidateLifecleRules(c *C) {
 	}
 	rules = []LifecycleRule{rule}
 	err = verifyLifecycleRules(rules)
-	c.Assert(err, NotNil)
+	c.Assert(err, IsNil)
 
 	rule = LifecycleRule{
 		ID:     "ruleID",
@@ -266,7 +266,7 @@ func (s *OssTypeSuite) TestValidateLifecleRules(c *C) {
 	}
 	rules = []LifecycleRule{rule}
 	err = verifyLifecycleRules(rules)
-	c.Assert(err, NotNil)
+	c.Assert(err, IsNil)
 
 	rules = []LifecycleRule{}
 	err1 := verifyLifecycleRules(rules)

@@ -18,15 +18,16 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
     rm -rf /var/cache/apk/*   /tmp/* 
 ADD ./ /data/akgo/
 WORKDIR /data/akgo/vue-akgo
-# RUN npm config set strict-ssl false && \
-#     npm config set unsafe_perm true && \
-#     npm install node-gyp && \
-#     npm install vue-wechat-title  && \
-#     npm install file-saver xlsx  && \
-#     npm install node-sass sass-loader --unsafe-perm  && \
-#     npm install --unsafe-perm 
-RUN npm config set unsafe_perm true && \
-    npm install
+RUN npm config set strict-ssl false && \
+    npm config set unsafe_perm true && \
+    npm install node-gyp && \
+    npm install vue-wechat-title  && \
+    npm install file-saver xlsx  && \
+    npm install node-sass sass-loader --unsafe-perm  && \
+    npm install --unsafe-perm 
+#RUN npm config set unsafe_perm true && \
+#    npm config set strict-ssl false && \
+#    npm install --unsafe-perm
 RUN npm run build 
 
 FROM alpine:3.9.3
@@ -36,8 +37,8 @@ USER root
 COPY src/file /data/akgo/src/file
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories && \
     apk update && \
-    apk add ca-certificates bash vim tzdata sudo curl wget openssh docker mariadb-client chromium && \ 
-    echo "Asia/Shanghai" > /etc/timezone && \
+    apk add ca-certificates bash vim tzdata sudo curl wget openssh docker mariadb-client chromium
+RUN echo "Asia/Shanghai" > /etc/timezone && \
     cp -r -f /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     rm -rf /var/cache/apk/*   /tmp/*  && \ 
     mkdir -p /data/htdocs && \

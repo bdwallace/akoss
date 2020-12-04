@@ -7,12 +7,14 @@ package routers
 import (
 	"controllers"
 	backupcontrollers "controllers/backup"
+	cloudcontrollers "controllers/cloud"
 	confcontrollers "controllers/conf"
 	crontabcontroller "controllers/crontab"
 	deploycontrollers "controllers/deploy"
 	domaincontroller "controllers/domain"
 	fastcontrollers "controllers/fast"
 	hostcontrollers "controllers/host"
+	inspectcontrollers "controllers/inspect"
 	linkcontrollers "controllers/link"
 	monitorcontrollers "controllers/monitor"
 	"controllers/operationRecord"
@@ -26,15 +28,11 @@ import (
 	taskcontrollers "controllers/task"
 	usercontrollers "controllers/user"
 	wallecontrollers "controllers/walle"
-	inspectcontrollers "controllers/inspect"
 	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 )
-
-
-
 
 func init() {
 
@@ -47,7 +45,6 @@ func init() {
 		MaxAge:          5 * time.Minute,
 	}))
 
-
 	beego.Router("/login", &controllers.LoginController{})
 	beego.Router("/logout", &controllers.LogoutController{})
 	beego.Router("/loginbydocke", &controllers.LoginByDockerController{})
@@ -57,7 +54,7 @@ func init() {
 
 	beego.Router("/api/get/user", &usercontrollers.UserController{})
 	beego.Router("/api/delete/user", &usercontrollers.UserController{})
-    //在使用Put方法时，页面传给后端的id始终为零，改成get方法就可以！记一下
+	//在使用Put方法时，页面传给后端的id始终为零，改成get方法就可以！记一下
 	beego.Router("/api/user/reset", &usercontrollers.UserController{}, "get:Put")
 	beego.Router("/", &controllers.MainController{})
 
@@ -130,6 +127,9 @@ func init() {
 		),
 		beego.NSInclude(
 			&monitorcontrollers.MonitorController{},
+		),
+		beego.NSInclude(
+			&cloudcontrollers.CloudController{},
 		),
 	)
 	beego.AddNamespace(akNs)

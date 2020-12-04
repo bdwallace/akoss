@@ -127,9 +127,8 @@ func GetString(val interface{}) string {
 	return fmt.Sprintf("%v", val)
 }
 
-
 func AddStringListSingle(s string) (res string) {
-	for _, v := range(strings.Split(s, ",")) {
+	for _, v := range strings.Split(s, ",") {
 		if res == "" {
 			res = fmt.Sprintf("'%s'", v)
 		} else {
@@ -350,8 +349,6 @@ func SubString(str string, begin, length int) (substr string) {
 	return string(rs[begin:end])
 }
 
-
-
 /**
  * 新建目录
  */
@@ -359,7 +356,6 @@ func Mkdir(dir string) (err error) {
 	err = os.MkdirAll(dir, os.ModePerm)
 	return
 }
-
 
 /**
  * 删除目录,再新建目录
@@ -370,7 +366,6 @@ func RmMkdir(dir string) (err error) {
 	}
 	return
 }
-
 
 // func DesECBEncrypt(data, key []byte) ([]byte, error) {
 func DesECBEncrypt(text string, keys string) (string, error) {
@@ -402,15 +397,11 @@ func DesECBEncrypt(text string, keys string) (string, error) {
 	return result, nil
 }
 
-
 func PKCS5Padding(ciphertext []byte, blockSize int) []byte {
 	padding := blockSize - len(ciphertext)%blockSize
 	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
 	return append(ciphertext, padtext...)
 }
-
-
-
 
 // srcFile could be a single file or a directory
 func Zip(srcFile string, destZip string) error {
@@ -460,8 +451,6 @@ func Zip(srcFile string, destZip string) error {
 	return err
 }
 
-
-
 /**
  * 判断文件是否存在  存在返回 true 不存在返回false
  */
@@ -472,7 +461,6 @@ func checkFileIsExist(filename string) bool {
 	}
 	return exist
 }
-
 
 /**
  * 覆盖文件
@@ -490,8 +478,6 @@ func FileWriter(file string, wireteString string) (err error) {
 
 	return
 }
-
-
 
 /**
  * 返回home目录
@@ -512,41 +498,70 @@ func HomeDir() (home string) {
 	return
 }
 
-
 /*
 	使用原生net/http方式请求URL
 
 */
 func HttpGet(url string, headers map[string]string) (*http.Response, error) {
-    tr := &http.Transport{    //解决x509: certificate signed by unknown authority
-        TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-    }
-    client := &http.Client{
-        Timeout:   15 * time.Second,
-        Transport: tr,    //解决x509: certificate signed by unknown authority
-    }
-    req, err := http.NewRequest("GET", url, nil)
+	tr := &http.Transport{ //解决x509: certificate signed by unknown authority
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{
+		Timeout:   15 * time.Second,
+		Transport: tr, //解决x509: certificate signed by unknown authority
+	}
+	req, err := http.NewRequest("GET", url, nil)
 
-    for k, v := range headers {
-        req.Header.Add(k, v)
-    }
+	for k, v := range headers {
+		req.Header.Add(k, v)
+	}
 
-    if err != nil {
-        return nil, err
-    }
+	if err != nil {
+		return nil, err
+	}
 
-    resp, err := client.Do(req)
-    if err != nil {
-        return nil, err
-    }
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
 	client.CloseIdleConnections()
-    return resp, nil
+	return resp, nil
 }
 
+/*
+	使用原生net/http方式请求URL
 
-/* 
+*/
+func HttpPost(url string, headers map[string]string, data []byte) (*http.Response, error) {
+	tr := &http.Transport{ //解决x509: certificate signed by unknown authority
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{
+		Timeout:   15 * time.Second,
+		Transport: tr, //解决x509: certificate signed by unknown authority
+	}
+	body := bytes.NewReader(data)
+	req, err := http.NewRequest("POST", url, body)
+
+	for k, v := range headers {
+		req.Header.Add(k, v)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	client.CloseIdleConnections()
+	return resp, nil
+}
+
+/*
 	休息，sleep
 */
 func Sleep(t int64) {
-	time.Sleep(time.Duration(t)*time.Second)
+	time.Sleep(time.Duration(t) * time.Second)
 }

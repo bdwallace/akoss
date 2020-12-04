@@ -414,6 +414,17 @@ const routes = [{
             fullView: require('pages/user/login')
         }
     }, {
+        path: '/user/cloud',
+        name: 'usercloud',
+        components: {
+            menuView: require('components/leftSlide'),
+            default: require('pages/user/cloud')
+        },
+        meta: {
+            title: "云帐号",
+            auth: true
+        }
+    }, {
         path: '/user/register',
         name: 'register',
         components: {
