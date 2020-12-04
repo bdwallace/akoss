@@ -126,6 +126,10 @@
                   title: "用户列表",
                   path: "/user/list",
                   icon: "ace-icon fa fa-desktop"
+                }, {
+                  title: "云帐号",
+                  path: "/user/cloud",
+                  icon: "ace-icon fa fa-desktop"
                 }]
               }]
             }

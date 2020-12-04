@@ -241,6 +241,123 @@ paths:
           description: 删除 deploy by deploy id 失败
         "2":
           description: User not found
+  /cloud/:
+    post:
+      tags:
+      - controllers/cloudCloudController
+      description: add cloud by new cloud
+      operationId: CloudController.add cloud by new cloud
+      responses:
+        "0":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Cloud'
+        "1":
+          description: 添加 add cloud by new cloud 失败
+        "2":
+          description: User not found
+  /cloud/copy/:
+    get:
+      tags:
+      - controllers/cloudCloudController
+      description: copy cloud by cloud id
+      operationId: CloudController.copy cloud by cloud id
+      parameters:
+      - in: query
+        name: id
+        description: cloud id
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "0":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Cloud'
+        "1":
+          description: 复制 cloud by cloud id 失败
+        "2":
+          description: User not found
+  /cloud/id/:
+    get:
+      tags:
+      - controllers/cloudCloudController
+      description: get cloud by id
+      operationId: CloudController.get cloud by id
+      parameters:
+      - in: query
+        name: id
+        description: cloud id
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "0":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Cloud'
+        "1":
+          description: 获取 cloud by id 失败
+        "2":
+          description: User not found
+    delete:
+      tags:
+      - controllers/cloudCloudController
+      description: delete cloud by cloud id
+      operationId: CloudController.delete cloud by cloud id
+      parameters:
+      - in: query
+        name: id
+        description: cloud id
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "0":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Cloud'
+        "1":
+          description: 删除 cloud by cloud id 失败
+        "2":
+          description: User not found
+  /cloud/list/:
+    get:
+      tags:
+      - controllers/cloudCloudController
+      description: get all cloud
+      operationId: CloudController.get all cloud
+      responses:
+        "0":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Cloud'
+        "1":
+          description: 获取 get all cloud 失败
+        "2":
+          description: User not found
+  /cloud/sync/:
+    get:
+      tags:
+      - controllers/cloudCloudController
+      description: sync balance cloud by cloud id
+      operationId: CloudController.sync balance cloud by cloud id
+      parameters:
+      - in: query
+        name: id
+        description: cloud id
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "0":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Cloud'
+        "1":
+          description: 同步 cloud by cloud id 失败
+        "2":
+          description: User not found
   /conf/:
     post:
       tags:
@@ -2445,6 +2562,36 @@ definitions:
   '*Task':
     title: '*Task'
     type: object
+  models.Cloud:
+    title: Cloud
+    type: object
+    properties:
+      AccessKeyId:
+        type: string
+      AccessSecret:
+        type: string
+      Account:
+        type: string
+      Balance:
+        type: number
+        format: double
+      Class:
+        type: string
+      CreatedAt:
+        type: string
+        format: datetime
+      Direction:
+        type: string
+      Id:
+        type: integer
+        format: int64
+      Link:
+        type: string
+      Name:
+        type: string
+      UpdatedAt:
+        type: string
+        format: datetime
   models.Conf:
     title: Conf
     type: object

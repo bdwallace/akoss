@@ -31,7 +31,7 @@
                 <el-table-column
                     label="链接地址"
                     prop="Link"
-                    width="300">
+                    width="600">
                     <template scope="props">
                         <a target="_blank" :href="props.row.Link">{{props.row.Link}}</a>
      

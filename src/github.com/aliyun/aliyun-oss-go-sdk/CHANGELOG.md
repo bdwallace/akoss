@@ -1,4 +1,62 @@
 # ChangeLog - Aliyun OSS SDK for Go
+## 版本号：v2.1.5 日期：2020-11-19
+### 变更内容
+- 增加：增加ListObjectsV2接口
+- 增加: 增加RestoreObjectXML接口
+
+# ChangeLog - Aliyun OSS SDK for Go
+## 版本号：v2.1.4 日期：2020-07-24
+### 变更内容
+- 修复：lifecycle配置支持输入LifecycleVersionTransition数组
+
+# ChangeLog - Aliyun OSS SDK for Go
+## 版本号：v2.1.3 日期：2020-07-10
+### 变更内容
+- 修复：lifecycle支持冷归档(ColdArchive)
+
+
+# ChangeLog - Aliyun OSS SDK for Go
+## 版本号：v2.1.2 日期：2020-06-19
+### 变更内容
+- 增加：支持禁止http跳转功能(go1.7.0版本及以上)
+
+# ChangeLog - Aliyun OSS SDK for Go
+## 版本号：v2.1.1 日期：2020-06-04
+### 变更内容
+- 增加：支持国密byok
+- 增加：支持异步任务的设置和读取
+
+# ChangeLog - Aliyun OSS SDK for Go
+## 版本号：v2.1.0 日期：2020-04-21
+### 变更内容
+- 增加：支持客户端加密、清单、冷归档功能
+- 增加：tcp连接增加keepalive心跳选项
+- 优化: 分块上传事件通知优化
+
+
+# ChangeLog - Aliyun OSS SDK for Go
+## 版本号：v2.0.8 日期：2020-04-09
+### 变更内容
+- 增加：支持用户传入自定义的header和param参数
+- 增加：增加对X-Oss-Range-Behavior支持
+
+# ChangeLog - Aliyun OSS SDK for Go
+## 版本号：v2.0.7 日期：2020-03-11
+### 变更内容
+- 增加：支持OSS V2 签名
+- 增加：增加SetBucketWebsiteXml接口,支持直接传入xml文件内容
+
+# ChangeLog - Aliyun OSS SDK for Go
+## 版本号：v2.0.6 日期：2020-02-15
+### 变更内容
+- 修复：CopyFile接口需要支持服务端加密功能
+
+# ChangeLog - Aliyun OSS SDK for Go
+## 版本号：v2.0.5 日期：2020-01-03
+### 变更内容
+- 增加：增加禁止同名覆盖选项X-Oss-Forbid-Overwrite
+- 增加：增加分块上传参数sequential, 支持分块上传返回md5校验值
+
 ## 版本号：v2.0.4 日期：2019-11-13
 ### 变更内容
 - 增加：SSR 对bucket 和 endpoint 做合法性校验，不符合要求要直接提示错误。

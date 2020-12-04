@@ -31,6 +31,7 @@ const port_crontab = require("./crontab")
 const port_link = require("./link")
 const port_sgroup = require("./sgroup")
 const port_grafana = require("./grafana")
+const port_cloud = require("./cloud")
 module.exports = {
     port_code,
     port_user,
@@ -53,5 +54,6 @@ module.exports = {
     port_crontab,
     port_link,
     port_sgroup,
-    port_grafana
+    port_grafana,
+    port_cloud
 }

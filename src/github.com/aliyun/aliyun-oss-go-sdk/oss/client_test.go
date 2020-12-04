@@ -6,6 +6,8 @@ package oss
 
 import (
 	"encoding/json"
+	"encoding/xml"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -36,6 +38,7 @@ var (
 	endpoint  = os.Getenv("OSS_TEST_ENDPOINT")
 	accessID  = os.Getenv("OSS_TEST_ACCESS_KEY_ID")
 	accessKey = os.Getenv("OSS_TEST_ACCESS_KEY_SECRET")
+	accountID = os.Getenv("OSS_TEST_ACCOUNT_ID")
 
 	// Proxy
 	proxyHost   = os.Getenv("OSS_TEST_PROXY_HOST")
@@ -57,14 +60,14 @@ var (
 	// prefix of bucket name for bucket ops test
 	bucketNamePrefix = "go-sdk-test-bucket-"
 	// bucket name for object ops test
-	bucketName        = bucketNamePrefix + randLowStr(6)
-	archiveBucketName = bucketNamePrefix + "arch-" + randLowStr(6)
+	bucketName        = bucketNamePrefix + RandLowStr(6)
+	archiveBucketName = bucketNamePrefix + "arch-" + RandLowStr(6)
 	// object name for object ops test
 	objectNamePrefix = "go-sdk-test-object-"
 	// sts region is one and only hangzhou
 	stsRegion = "cn-hangzhou"
 	// Credentials
-	credentialBucketName = bucketNamePrefix + randLowStr(6)
+	credentialBucketName = bucketNamePrefix + RandLowStr(6)
 )
 
 var (
@@ -75,7 +78,7 @@ var (
 	timeoutInOperation = 3 * time.Second
 )
 
-func randStr(n int) string {
+func RandStr(n int) string {
 	b := make([]rune, n)
 	randMarker := rand.New(rand.NewSource(time.Now().UnixNano()))
 	for i := range b {
@@ -84,7 +87,7 @@ func randStr(n int) string {
 	return string(b)
 }
 
-func createFile(fileName, content string, c *C) {
+func CreateFile(fileName, content string, c *C) {
 	fout, err := os.Create(fileName)
 	defer fout.Close()
 	c.Assert(err, IsNil)
@@ -92,11 +95,11 @@ func createFile(fileName, content string, c *C) {
 	c.Assert(err, IsNil)
 }
 
-func randLowStr(n int) string {
-	return strings.ToLower(randStr(n))
+func RandLowStr(n int) string {
+	return strings.ToLower(RandStr(n))
 }
 
-func forceDeleteBucket(client *Client, bucketName string, c *C) {
+func ForceDeleteBucket(client *Client, bucketName string, c *C) {
 	bucket, err := client.Bucket(bucketName)
 	c.Assert(err, IsNil)
 
@@ -195,7 +198,7 @@ func (s *OssClientSuite) SetUpSuite(c *C) {
 	c.Assert(err, IsNil)
 
 	for _, bucket := range lbr.Buckets {
-		forceDeleteBucket(client, bucket.Name, c)
+		ForceDeleteBucket(client, bucket.Name, c)
 	}
 
 	testLogger.Println("test client started")
@@ -217,7 +220,7 @@ func (s *OssClientSuite) TearDownSuite(c *C) {
 }
 
 func (s *OssClientSuite) deleteBucket(client *Client, bucketName string, c *C) {
-	forceDeleteBucket(client, bucketName, c)
+	ForceDeleteBucket(client, bucketName, c)
 }
 
 // SetUpTest runs after each test or benchmark runs
@@ -230,7 +233,7 @@ func (s *OssClientSuite) TearDownTest(c *C) {
 
 // TestCreateBucket
 func (s *OssClientSuite) TestCreateBucket(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
@@ -295,8 +298,8 @@ func (s *OssClientSuite) TestCreateBucket(c *C) {
 	c.Assert(err, IsNil)
 
 	// Create bucket with configuration and test GetBucketInfo
-	for _, storage := range []StorageClassType{StorageStandard, StorageIA, StorageArchive} {
-		bucketNameTest := bucketNamePrefix + randLowStr(6)
+	for _, storage := range []StorageClassType{StorageStandard, StorageIA, StorageArchive, StorageColdArchive} {
+		bucketNameTest := bucketNamePrefix + RandLowStr(6)
 		err = client.CreateBucket(bucketNameTest, StorageClass(storage), ACL(ACLPublicRead))
 		c.Assert(err, IsNil)
 		time.Sleep(timeoutInOperation)
@@ -317,8 +320,8 @@ func (s *OssClientSuite) TestCreateBucket(c *C) {
 	c.Assert(err, NotNil)
 
 	// Create bucket with configuration and test ListBuckets
-	for _, storage := range []StorageClassType{StorageStandard, StorageIA, StorageArchive} {
-		bucketNameTest := bucketNamePrefix + randLowStr(6)
+	for _, storage := range []StorageClassType{StorageStandard, StorageIA, StorageArchive, StorageColdArchive} {
+		bucketNameTest := bucketNamePrefix + RandLowStr(6)
 		err = client.CreateBucket(bucketNameTest, StorageClass(storage))
 		c.Assert(err, IsNil)
 		time.Sleep(timeoutInOperation)
@@ -335,7 +338,7 @@ func (s *OssClientSuite) TestCreateBucket(c *C) {
 }
 
 func (s *OssClientSuite) TestCreateBucketRedundancyType(c *C) {
-	bucketNameTest := bucketNamePrefix + randLowStr(6)
+	bucketNameTest := bucketNamePrefix + RandLowStr(6)
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
 
@@ -395,14 +398,14 @@ func (s *OssClientSuite) TestCreateBucketNegative(c *C) {
 	testLogger.Println(err)
 
 	// ACL invalid
-	err = client.CreateBucket(bucketNamePrefix+randLowStr(6), ACL("InvaldAcl"))
+	err = client.CreateBucket(bucketNamePrefix+RandLowStr(6), ACL("InvaldAcl"))
 	c.Assert(err, NotNil)
 	testLogger.Println(err)
 }
 
 // TestDeleteBucket
 func (s *OssClientSuite) TestDeleteBucket(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
@@ -433,7 +436,7 @@ func (s *OssClientSuite) TestDeleteBucket(c *C) {
 
 // TestDeleteBucketNegative
 func (s *OssClientSuite) TestDeleteBucketNegative(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
@@ -470,7 +473,7 @@ func (s *OssClientSuite) TestDeleteBucketNegative(c *C) {
 
 // TestListBucket
 func (s *OssClientSuite) TestListBucket(c *C) {
-	var prefix = bucketNamePrefix + randLowStr(6)
+	var prefix = bucketNamePrefix + RandLowStr(6)
 	var bucketNameLbOne = prefix + "tlb1"
 	var bucketNameLbTwo = prefix + "tlb2"
 	var bucketNameLbThree = prefix + "tlb3"
@@ -519,7 +522,7 @@ func (s *OssClientSuite) TestListBucket(c *C) {
 
 // TestListBucket
 func (s *OssClientSuite) TestIsBucketExist(c *C) {
-	var prefix = bucketNamePrefix + randLowStr(6)
+	var prefix = bucketNamePrefix + RandLowStr(6)
 	var bucketNameLbOne = prefix + "tibe1"
 	var bucketNameLbTwo = prefix + "tibe11"
 	var bucketNameLbThree = prefix + "tibe111"
@@ -572,7 +575,7 @@ func (s *OssClientSuite) TestIsBucketExist(c *C) {
 
 // TestSetBucketAcl
 func (s *OssClientSuite) TestSetBucketAcl(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
@@ -618,7 +621,7 @@ func (s *OssClientSuite) TestSetBucketAcl(c *C) {
 
 // TestSetBucketAclNegative
 func (s *OssClientSuite) TestBucketAclNegative(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
@@ -636,7 +639,7 @@ func (s *OssClientSuite) TestBucketAclNegative(c *C) {
 
 // TestGetBucketAcl
 func (s *OssClientSuite) TestGetBucketAcl(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
@@ -682,7 +685,7 @@ func (s *OssClientSuite) TestGetBucketAcl(c *C) {
 
 // TestGetBucketAcl
 func (s *OssClientSuite) TestGetBucketLocation(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
@@ -700,7 +703,7 @@ func (s *OssClientSuite) TestGetBucketLocation(c *C) {
 
 // TestGetBucketLocationNegative
 func (s *OssClientSuite) TestGetBucketLocationNegative(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
@@ -716,7 +719,7 @@ func (s *OssClientSuite) TestGetBucketLocationNegative(c *C) {
 
 // TestSetBucketLifecycle
 func (s *OssClientSuite) TestSetBucketLifecycle(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 	var rule1 = BuildLifecycleRuleByDate("rule1", "one", true, 2015, 11, 11)
 	var rule2 = BuildLifecycleRuleByDays("rule2", "two", true, 3)
 
@@ -762,7 +765,7 @@ func (s *OssClientSuite) TestSetBucketLifecycle(c *C) {
 
 // TestSetBucketLifecycleNew
 func (s *OssClientSuite) TestSetBucketLifecycleNew(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
@@ -786,7 +789,7 @@ func (s *OssClientSuite) TestSetBucketLifecycleNew(c *C) {
 
 	//invalid value of CreatedBeforeDate
 	expiration = LifecycleExpiration{
-		CreatedBeforeDate: randStr(10),
+		CreatedBeforeDate: RandStr(10),
 	}
 	rule = LifecycleRule{
 		ID:         "rule1",
@@ -964,7 +967,7 @@ func (s *OssClientSuite) TestSetBucketLifecycleNew(c *C) {
 
 // TestSetBucketLifecycleAboutVersionObject
 func (s *OssClientSuite) TestSetBucketLifecycleAboutVersionObject(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
@@ -1013,9 +1016,107 @@ func (s *OssClientSuite) TestSetBucketLifecycleAboutVersionObject(c *C) {
 	c.Assert(err, IsNil)
 }
 
+// TestSetBucketLifecycleAboutVersionObject
+func (s *OssClientSuite) TestSetBucketLifecycleAboutVersionObjectError(c *C) {
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
+
+	client, err := New(endpoint, accessID, accessKey)
+	c.Assert(err, IsNil)
+
+	err = client.CreateBucket(bucketNameTest)
+	c.Assert(err, IsNil)
+
+	deleteMark := true
+	expiration := LifecycleExpiration{
+		ExpiredObjectDeleteMarker: &deleteMark,
+	}
+
+	versionExpiration := LifecycleVersionExpiration{
+		NoncurrentDays: 20,
+	}
+
+	versionTransition := LifecycleVersionTransition{
+		NoncurrentDays: 10,
+		StorageClass:   "IA",
+	}
+
+	// NonVersionTransition and NonVersionTransitions can not both have value
+	rule := LifecycleRule{
+		Status:                "Enabled",
+		Expiration:            &expiration,
+		NonVersionExpiration:  &versionExpiration,
+		NonVersionTransition:  &versionTransition,
+		NonVersionTransitions: []LifecycleVersionTransition{versionTransition},
+	}
+	rules := []LifecycleRule{rule}
+
+	err = client.SetBucketLifecycle(bucketNameTest, rules)
+	c.Assert(err, NotNil)
+
+	err = client.DeleteBucket(bucketNameTest)
+	c.Assert(err, IsNil)
+}
+
+// TestSetBucketLifecycleAboutVersionObject
+func (s *OssClientSuite) TestSetBucketLifecycleAboutVersionObjectNew(c *C) {
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
+
+	client, err := New(endpoint, accessID, accessKey)
+	c.Assert(err, IsNil)
+
+	err = client.CreateBucket(bucketNameTest)
+	c.Assert(err, IsNil)
+
+	deleteMark := true
+	expiration := LifecycleExpiration{
+		ExpiredObjectDeleteMarker: &deleteMark,
+	}
+
+	versionExpiration := LifecycleVersionExpiration{
+		NoncurrentDays: 40,
+	}
+
+	versionTransition1 := LifecycleVersionTransition{
+		NoncurrentDays: 25,
+		StorageClass:   "IA",
+	}
+
+	versionTransition2 := LifecycleVersionTransition{
+		NoncurrentDays: 30,
+		StorageClass:   "ColdArchive",
+	}
+
+	rule := LifecycleRule{
+		Status:                "Enabled",
+		Expiration:            &expiration,
+		NonVersionExpiration:  &versionExpiration,
+		NonVersionTransitions: []LifecycleVersionTransition{versionTransition1, versionTransition2},
+	}
+	rules := []LifecycleRule{rule}
+
+	err = client.SetBucketLifecycle(bucketNameTest, rules)
+	c.Assert(err, IsNil)
+
+	res, err := client.GetBucketLifecycle(bucketNameTest)
+	c.Assert(err, IsNil)
+
+	c.Assert(res.Rules[0].Expiration, NotNil)
+	c.Assert(res.Rules[0].Expiration.Days, Equals, 0)
+	c.Assert(res.Rules[0].Expiration.Date, Equals, "")
+	c.Assert(*(res.Rules[0].Expiration.ExpiredObjectDeleteMarker), Equals, true)
+
+	c.Assert(res.Rules[0].NonVersionExpiration.NoncurrentDays, Equals, 40)
+	c.Assert(res.Rules[0].NonVersionTransition.NoncurrentDays, Equals, 25)
+	c.Assert(res.Rules[0].NonVersionTransition.StorageClass, Equals, StorageClassType("IA"))
+	c.Assert(len(res.Rules[0].NonVersionTransitions), Equals, 2)
+
+	err = client.DeleteBucket(bucketNameTest)
+	c.Assert(err, IsNil)
+}
+
 // TestDeleteBucketLifecycle
 func (s *OssClientSuite) TestDeleteBucketLifecycle(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 
 	var rule1 = BuildLifecycleRuleByDate("rule1", "one", true, 2015, 11, 11)
 	var rule2 = BuildLifecycleRuleByDays("rule2", "two", true, 3)
@@ -1060,7 +1161,7 @@ func (s *OssClientSuite) TestDeleteBucketLifecycle(c *C) {
 
 // TestSetBucketLifecycleNegative
 func (s *OssClientSuite) TestBucketLifecycleNegative(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 	var rules = []LifecycleRule{}
 
 	client, err := New(endpoint, accessID, accessKey)
@@ -1091,7 +1192,7 @@ func (s *OssClientSuite) TestBucketLifecycleNegative(c *C) {
 
 // TestSetBucketReferer
 func (s *OssClientSuite) TestSetBucketReferer(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 	var referers = []string{"http://www.aliyun.com", "https://www.aliyun.com"}
 
 	client, err := New(endpoint, accessID, accessKey)
@@ -1135,7 +1236,7 @@ func (s *OssClientSuite) TestSetBucketReferer(c *C) {
 
 // TestSetBucketRefererNegative
 func (s *OssClientSuite) TestBucketRefererNegative(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 	var referers = []string{""}
 
 	client, err := New(endpoint, accessID, accessKey)
@@ -1154,7 +1255,7 @@ func (s *OssClientSuite) TestBucketRefererNegative(c *C) {
 
 // TestSetBucketLogging
 func (s *OssClientSuite) TestSetBucketLogging(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 	var bucketNameTarget = bucketNameTest + "-target"
 
 	client, err := New(endpoint, accessID, accessKey)
@@ -1194,7 +1295,7 @@ func (s *OssClientSuite) TestSetBucketLogging(c *C) {
 
 // TestDeleteBucketLogging
 func (s *OssClientSuite) TestDeleteBucketLogging(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 	var bucketNameTarget = bucketNameTest + "-target"
 
 	client, err := New(endpoint, accessID, accessKey)
@@ -1253,7 +1354,7 @@ func (s *OssClientSuite) TestDeleteBucketLogging(c *C) {
 
 // TestSetBucketLoggingNegative
 func (s *OssClientSuite) TestSetBucketLoggingNegative(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 	var bucketNameTarget = bucketNameTest + "-target"
 
 	client, err := New(endpoint, accessID, accessKey)
@@ -1292,7 +1393,7 @@ func (s *OssClientSuite) TestSetBucketLoggingNegative(c *C) {
 
 // TestSetBucketWebsite
 func (s *OssClientSuite) TestSetBucketWebsite(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 	var indexWebsite = "myindex.html"
 	var errorWebsite = "myerror.html"
 
@@ -1347,7 +1448,7 @@ func (s *OssClientSuite) TestSetBucketWebsite(c *C) {
 
 // TestDeleteBucketWebsite
 func (s *OssClientSuite) TestDeleteBucketWebsite(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 	var indexWebsite = "myindex.html"
 	var errorWebsite = "myerror.html"
 
@@ -1395,7 +1496,7 @@ func (s *OssClientSuite) TestDeleteBucketWebsite(c *C) {
 
 // TestSetBucketWebsiteNegative
 func (s *OssClientSuite) TestSetBucketWebsiteNegative(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 	var indexWebsite = "myindex.html"
 	var errorWebsite = "myerror.html"
 
@@ -1445,7 +1546,7 @@ func (s *OssClientSuite) TestSetBucketWebsiteNegative(c *C) {
 
 // TestSetBucketWebsiteDetail
 func (s *OssClientSuite) TestSetBucketWebsiteDetail(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 	var indexWebsite = "myindex.html"
 	var errorWebsite = "myerror.html"
 
@@ -1671,9 +1772,70 @@ func (s *OssClientSuite) TestSetBucketWebsiteDetail(c *C) {
 	c.Assert(err, IsNil)
 }
 
+// TestSetBucketWebsiteXml
+func (s *OssClientSuite) TestSetBucketWebsiteXml(c *C) {
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
+	client, err := New(endpoint, accessID, accessKey)
+	c.Assert(err, IsNil)
+
+	err = client.CreateBucket(bucketNameTest)
+	c.Assert(err, IsNil)
+	time.Sleep(timeoutInOperation)
+
+	// Define one routing rule
+	ruleOk := RoutingRule{
+		RuleNumber: 1,
+		Condition: Condition{
+			KeyPrefixEquals:             "",
+			HTTPErrorCodeReturnedEquals: 404,
+		},
+		Redirect: Redirect{
+			RedirectType: "Mirror",
+			// PassQueryString: &btrue, 		// set default value
+			MirrorURL: "http://www.test.com/",
+			// MirrorPassQueryString:&btrue, 	// set default value
+			// MirrorFollowRedirect:&bfalse, 	// set default value
+			// MirrorCheckMd5:&bfalse, 			// set default value
+			MirrorHeaders: MirrorHeaders{
+				// PassAll:&bfalse, 			// set default value
+				Pass:   []string{"myheader-key1", "myheader-key2"},
+				Remove: []string{"myheader-key3", "myheader-key4"},
+				Set: []MirrorHeaderSet{
+					MirrorHeaderSet{
+						Key:   "myheader-key5",
+						Value: "myheader-value5",
+					},
+				},
+			},
+		},
+	}
+
+	// Set one routing rule
+	wxmlOne := WebsiteXML{}
+	wxmlOne.RoutingRules = append(wxmlOne.RoutingRules, ruleOk)
+	bs, err := xml.Marshal(wxmlOne)
+	c.Assert(err, IsNil)
+
+	var responseHeader http.Header
+	err = client.SetBucketWebsiteXml(bucketNameTest, string(bs), GetResponseHeader(&responseHeader))
+	c.Assert(err, IsNil)
+
+	requestId := GetRequestId(responseHeader)
+	c.Assert(len(requestId) > 0, Equals, true)
+
+	res, err := client.GetBucketWebsite(bucketNameTest)
+	c.Assert(err, IsNil)
+	c.Assert(res.RoutingRules[0].Redirect.RedirectType, Equals, "Mirror")
+	c.Assert(*res.RoutingRules[0].Redirect.PassQueryString, Equals, false)
+	c.Assert(*res.RoutingRules[0].Redirect.MirrorPassQueryString, Equals, false)
+	c.Assert(*res.RoutingRules[0].Redirect.MirrorFollowRedirect, Equals, true)
+	c.Assert(*res.RoutingRules[0].Redirect.MirrorCheckMd5, Equals, false)
+	c.Assert(*res.RoutingRules[0].Redirect.MirrorHeaders.PassAll, Equals, false)
+}
+
 // TestSetBucketCORS
 func (s *OssClientSuite) TestSetBucketCORS(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 	var rule1 = CORSRule{
 		AllowedOrigin: []string{"*"},
 		AllowedMethod: []string{"PUT", "GET", "POST"},
@@ -1767,7 +1929,7 @@ func (s *OssClientSuite) TestSetBucketCORS(c *C) {
 
 // TestDeleteBucketCORS
 func (s *OssClientSuite) TestDeleteBucketCORS(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 	var rule = CORSRule{
 		AllowedOrigin: []string{"*"},
 		AllowedMethod: []string{"PUT", "GET", "POST"},
@@ -1813,7 +1975,7 @@ func (s *OssClientSuite) TestDeleteBucketCORS(c *C) {
 
 // TestSetBucketCORSNegative
 func (s *OssClientSuite) TestSetBucketCORSNegative(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 	var rule = CORSRule{
 		AllowedOrigin: []string{"*"},
 		AllowedMethod: []string{"PUT", "GET", "POST"},
@@ -1870,7 +2032,7 @@ func (s *OssClientSuite) TestSetBucketCORSNegative(c *C) {
 
 // TestGetBucketInfo
 func (s *OssClientSuite) TestGetBucketInfo(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
@@ -1893,7 +2055,7 @@ func (s *OssClientSuite) TestGetBucketInfo(c *C) {
 
 // TestGetBucketInfoNegative
 func (s *OssClientSuite) TestGetBucketInfoNegative(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
@@ -1909,7 +2071,7 @@ func (s *OssClientSuite) TestGetBucketInfoNegative(c *C) {
 
 // TestEndpointFormat
 func (s *OssClientSuite) TestEndpointFormat(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 
 	// http://host
 	client, err := New(endpoint, accessID, accessKey)
@@ -1998,7 +2160,7 @@ func (s *OssClientSuite) _TestHTTPS(c *C) {
 
 // TestClientOption
 func (s *OssClientSuite) TestClientOption(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 
 	client, err := New(endpoint, accessID, accessKey, UseCname(true),
 		Timeout(11, 12), SecurityToken("token"), Proxy(proxyHost))
@@ -2041,12 +2203,17 @@ func (s *OssClientSuite) TestClientOption(c *C) {
 }
 
 // TestProxy
-func (s *OssClientSuite) TestProxy(c *C) {
-	bucketNameTest := bucketNamePrefix + randLowStr(6)
+func (s *OssClientSuite) ProxyTestFunc(c *C, authVersion AuthVersionType, extraHeaders []string) {
+	bucketNameTest := bucketNamePrefix + RandLowStr(6)
 	objectName := "体育/奥运/首金"
 	objectValue := "大江东去，浪淘尽，千古风流人物。 故垒西边，人道是、三国周郎赤壁。"
 
 	client, err := New(endpoint, accessID, accessKey, AuthProxy(proxyHost, proxyUser, proxyPasswd))
+
+	oldType := client.Config.AuthVersion
+	oldHeaders := client.Config.AdditionalHeaders
+	client.Config.AuthVersion = authVersion
+	client.Config.AdditionalHeaders = extraHeaders
 
 	// Create bucket
 	err = client.CreateBucket(bucketNameTest)
@@ -2061,9 +2228,16 @@ func (s *OssClientSuite) TestProxy(c *C) {
 	// Sign URL
 	str, err := bucket.SignURL(objectName, HTTPPut, 60)
 	c.Assert(err, IsNil)
-	c.Assert(strings.Contains(str, HTTPParamExpires+"="), Equals, true)
-	c.Assert(strings.Contains(str, HTTPParamAccessKeyID+"="), Equals, true)
-	c.Assert(strings.Contains(str, HTTPParamSignature+"="), Equals, true)
+	if bucket.Client.Config.AuthVersion == AuthV1 {
+		c.Assert(strings.Contains(str, HTTPParamExpires+"="), Equals, true)
+		c.Assert(strings.Contains(str, HTTPParamAccessKeyID+"="), Equals, true)
+		c.Assert(strings.Contains(str, HTTPParamSignature+"="), Equals, true)
+	} else {
+		c.Assert(strings.Contains(str, HTTPParamSignatureVersion+"=OSS2"), Equals, true)
+		c.Assert(strings.Contains(str, HTTPParamExpiresV2+"="), Equals, true)
+		c.Assert(strings.Contains(str, HTTPParamAccessKeyIDV2+"="), Equals, true)
+		c.Assert(strings.Contains(str, HTTPParamSignatureV2+"="), Equals, true)
+	}
 
 	// Put object with URL
 	err = bucket.PutObjectWithURL(str, strings.NewReader(objectValue))
@@ -2072,9 +2246,16 @@ func (s *OssClientSuite) TestProxy(c *C) {
 	// Sign URL for get object
 	str, err = bucket.SignURL(objectName, HTTPGet, 60)
 	c.Assert(err, IsNil)
-	c.Assert(strings.Contains(str, HTTPParamExpires+"="), Equals, true)
-	c.Assert(strings.Contains(str, HTTPParamAccessKeyID+"="), Equals, true)
-	c.Assert(strings.Contains(str, HTTPParamSignature+"="), Equals, true)
+	if bucket.Client.Config.AuthVersion == AuthV1 {
+		c.Assert(strings.Contains(str, HTTPParamExpires+"="), Equals, true)
+		c.Assert(strings.Contains(str, HTTPParamAccessKeyID+"="), Equals, true)
+		c.Assert(strings.Contains(str, HTTPParamSignature+"="), Equals, true)
+	} else {
+		c.Assert(strings.Contains(str, HTTPParamSignatureVersion+"=OSS2"), Equals, true)
+		c.Assert(strings.Contains(str, HTTPParamExpiresV2+"="), Equals, true)
+		c.Assert(strings.Contains(str, HTTPParamAccessKeyIDV2+"="), Equals, true)
+		c.Assert(strings.Contains(str, HTTPParamSignatureV2+"="), Equals, true)
+	}
 
 	// Get object with URL
 	body, err := bucket.GetObjectWithURL(str)
@@ -2102,13 +2283,22 @@ func (s *OssClientSuite) TestProxy(c *C) {
 	// Delete bucket
 	err = client.DeleteBucket(bucketNameTest)
 	c.Assert(err, IsNil)
+
+	client.Config.AuthVersion = oldType
+	client.Config.AdditionalHeaders = oldHeaders
+}
+
+func (s *OssClientSuite) TestProxy(c *C) {
+	s.ProxyTestFunc(c, AuthV1, []string{})
+	s.ProxyTestFunc(c, AuthV2, []string{})
+	s.ProxyTestFunc(c, AuthV2, []string{"host", "range", "user-agent"})
 }
 
 // TestProxy for https endpoint
 func (s *OssClientSuite) TestHttpsEndpointProxy(c *C) {
-	bucketNameTest := bucketNamePrefix + randLowStr(6)
-	objectName := objectNamePrefix + randLowStr(6)
-	objectValue := randLowStr(100)
+	bucketNameTest := bucketNamePrefix + RandLowStr(6)
+	objectName := objectNamePrefix + RandLowStr(6)
+	objectValue := RandLowStr(100)
 
 	httpsEndPoint := ""
 	if strings.HasPrefix(endpoint, "http://") {
@@ -2168,7 +2358,7 @@ func (s *OssClientSuite) getBucket(buckets []BucketProperties, bucket string) (b
 }
 
 func (s *OssClientSuite) TestHttpLogNotSignUrl(c *C) {
-	logName := "." + string(os.PathSeparator) + "test-go-sdk-httpdebug.log" + randStr(5)
+	logName := "." + string(os.PathSeparator) + "test-go-sdk-httpdebug.log" + RandStr(5)
 	f, err := os.OpenFile(logName, os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0660)
 	c.Assert(err, IsNil)
 
@@ -2177,7 +2367,7 @@ func (s *OssClientSuite) TestHttpLogNotSignUrl(c *C) {
 
 	client.Config.Logger = log.New(f, "", log.LstdFlags)
 
-	var testBucketName = bucketNamePrefix + randLowStr(6)
+	var testBucketName = bucketNamePrefix + RandLowStr(6)
 
 	// CreateBucket
 	err = client.CreateBucket(testBucketName)
@@ -2198,8 +2388,8 @@ func (s *OssClientSuite) TestHttpLogNotSignUrl(c *C) {
 	client.DeleteBucket(testBucketName)
 }
 
-func (s *OssClientSuite) TestHttpLogSignUrl(c *C) {
-	logName := "." + string(os.PathSeparator) + "test-go-sdk-httpdebug-signurl.log" + randStr(5)
+func (s *OssClientSuite) HttpLogSignUrlTestFunc(c *C, authVersion AuthVersionType, extraHeaders []string) {
+	logName := "." + string(os.PathSeparator) + "test-go-sdk-httpdebug-signurl.log" + RandStr(5)
 	f, err := os.OpenFile(logName, os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0660)
 	c.Assert(err, IsNil)
 
@@ -2207,7 +2397,12 @@ func (s *OssClientSuite) TestHttpLogSignUrl(c *C) {
 	client.Config.LogLevel = Debug
 	client.Config.Logger = log.New(f, "", log.LstdFlags)
 
-	var testBucketName = bucketNamePrefix + randLowStr(6)
+	oldType := client.Config.AuthVersion
+	oldHeaders := client.Config.AdditionalHeaders
+	client.Config.AuthVersion = authVersion
+	client.Config.AdditionalHeaders = extraHeaders
+
+	var testBucketName = bucketNamePrefix + RandLowStr(6)
 
 	// CreateBucket
 	err = client.CreateBucket(testBucketName)
@@ -2218,15 +2413,22 @@ func (s *OssClientSuite) TestHttpLogSignUrl(c *C) {
 	client.Config.Logger = log.New(f, "", log.LstdFlags)
 
 	bucket, _ := client.Bucket(testBucketName)
-	objectName := objectNamePrefix + randStr(8)
-	objectValue := randStr(20)
+	objectName := objectNamePrefix + RandStr(8)
+	objectValue := RandStr(20)
 
 	// Sign URL for put
 	str, err := bucket.SignURL(objectName, HTTPPut, 60)
 	c.Assert(err, IsNil)
-	c.Assert(strings.Contains(str, HTTPParamExpires+"="), Equals, true)
-	c.Assert(strings.Contains(str, HTTPParamAccessKeyID+"="), Equals, true)
-	c.Assert(strings.Contains(str, HTTPParamSignature+"="), Equals, true)
+	if bucket.Client.Config.AuthVersion == AuthV1 {
+		c.Assert(strings.Contains(str, HTTPParamExpires+"="), Equals, true)
+		c.Assert(strings.Contains(str, HTTPParamAccessKeyID+"="), Equals, true)
+		c.Assert(strings.Contains(str, HTTPParamSignature+"="), Equals, true)
+	} else {
+		c.Assert(strings.Contains(str, HTTPParamSignatureVersion+"=OSS2"), Equals, true)
+		c.Assert(strings.Contains(str, HTTPParamExpiresV2+"="), Equals, true)
+		c.Assert(strings.Contains(str, HTTPParamAccessKeyIDV2+"="), Equals, true)
+		c.Assert(strings.Contains(str, HTTPParamSignatureV2+"="), Equals, true)
+	}
 
 	// Error put object with URL
 	err = bucket.PutObjectWithURL(str, strings.NewReader(objectValue), ContentType("image/tiff"))
@@ -2245,6 +2447,15 @@ func (s *OssClientSuite) TestHttpLogSignUrl(c *C) {
 	// delete test bucket and log
 	os.Remove(logName)
 	client.DeleteBucket(testBucketName)
+
+	client.Config.AuthVersion = oldType
+	client.Config.AdditionalHeaders = oldHeaders
+}
+
+func (s *OssClientSuite) TestHttpLogSignUrl(c *C) {
+	s.HttpLogSignUrlTestFunc(c, AuthV1, []string{})
+	s.HttpLogSignUrlTestFunc(c, AuthV2, []string{})
+	s.HttpLogSignUrlTestFunc(c, AuthV2, []string{"host", "range", "user-agent"})
 }
 
 func (s *OssClientSuite) TestSetLimitUploadSpeed(c *C) {
@@ -2277,7 +2488,7 @@ func (s *OssClientSuite) TestBucketEncyptionError(c *C) {
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
 
-	bucketName := bucketNamePrefix + randLowStr(5)
+	bucketName := bucketNamePrefix + RandLowStr(5)
 	err = client.CreateBucket(bucketName)
 	c.Assert(err, IsNil)
 
@@ -2310,11 +2521,11 @@ func (s *OssClientSuite) TestBucketEncyptionError(c *C) {
 	c.Assert(err, IsNil)
 }
 
-func (s *OssClientSuite) TestBucketEncyptionPutAndGetAndDelete(c *C) {
+func (s *OssClientSuite) TestBucketEncryptionPutAndGetAndDelete(c *C) {
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
 
-	bucketName := bucketNamePrefix + randLowStr(5)
+	bucketName := bucketNamePrefix + RandLowStr(5)
 	err = client.CreateBucket(bucketName)
 	c.Assert(err, IsNil)
 
@@ -2362,11 +2573,94 @@ func (s *OssClientSuite) TestBucketEncyptionPutAndGetAndDelete(c *C) {
 	c.Assert(err, IsNil)
 }
 
+func (s *OssClientSuite) TestBucketEncryptionWithSm4(c *C) {
+	client, err := New(endpoint, accessID, accessKey)
+	c.Assert(err, IsNil)
+
+	bucketName := bucketNamePrefix + RandLowStr(5)
+	err = client.CreateBucket(bucketName)
+	c.Assert(err, IsNil)
+
+	// SetBucketEncryption:SM4 ,""
+	encryptionRule := ServerEncryptionRule{}
+	encryptionRule.SSEDefault.SSEAlgorithm = string(SM4Algorithm)
+
+	var responseHeader http.Header
+	err = client.SetBucketEncryption(bucketName, encryptionRule, GetResponseHeader(&responseHeader))
+	c.Assert(err, IsNil)
+	requestId := GetRequestId(responseHeader)
+	c.Assert(len(requestId) > 0, Equals, true)
+
+	// GetBucketEncryption
+	getResult, err := client.GetBucketEncryption(bucketName, GetResponseHeader(&responseHeader))
+	c.Assert(err, IsNil)
+	requestId = GetRequestId(responseHeader)
+	c.Assert(len(requestId) > 0, Equals, true)
+
+	// check encryption value
+	c.Assert(getResult.SSEDefault.SSEAlgorithm, Equals, string(SM4Algorithm))
+	c.Assert(getResult.SSEDefault.KMSMasterKeyID, Equals, "")
+	c.Assert(getResult.SSEDefault.KMSDataEncryption, Equals, "")
+
+	// Get default bucket info
+	bucketResult, err := client.GetBucketInfo(bucketName)
+	c.Assert(err, IsNil)
+
+	c.Assert(bucketResult.BucketInfo.SseRule.SSEAlgorithm, Equals, string(SM4Algorithm))
+	c.Assert(bucketResult.BucketInfo.SseRule.KMSMasterKeyID, Equals, "")
+	c.Assert(bucketResult.BucketInfo.SseRule.KMSDataEncryption, Equals, "")
+
+	err = client.DeleteBucket(bucketName)
+	c.Assert(err, IsNil)
+}
+
+func (s *OssClientSuite) TestBucketEncryptionWithKmsSm4(c *C) {
+	client, err := New(endpoint, accessID, accessKey)
+	c.Assert(err, IsNil)
+
+	bucketName := bucketNamePrefix + RandLowStr(5)
+	err = client.CreateBucket(bucketName)
+	c.Assert(err, IsNil)
+
+	// SetBucketEncryption:SM4 ,""
+	encryptionRule := ServerEncryptionRule{}
+	encryptionRule.SSEDefault.SSEAlgorithm = string(KMSAlgorithm)
+	encryptionRule.SSEDefault.KMSDataEncryption = string(SM4Algorithm)
+
+	var responseHeader http.Header
+	err = client.SetBucketEncryption(bucketName, encryptionRule, GetResponseHeader(&responseHeader))
+	c.Assert(err, IsNil)
+	requestId := GetRequestId(responseHeader)
+	c.Assert(len(requestId) > 0, Equals, true)
+
+	// GetBucketEncryption
+	getResult, err := client.GetBucketEncryption(bucketName, GetResponseHeader(&responseHeader))
+	c.Assert(err, IsNil)
+	requestId = GetRequestId(responseHeader)
+	c.Assert(len(requestId) > 0, Equals, true)
+
+	// check encryption value
+	c.Assert(getResult.SSEDefault.SSEAlgorithm, Equals, string(KMSAlgorithm))
+	c.Assert(getResult.SSEDefault.KMSMasterKeyID, Equals, "")
+	c.Assert(getResult.SSEDefault.KMSDataEncryption, Equals, string(SM4Algorithm))
+
+	// Get default bucket info
+	bucketResult, err := client.GetBucketInfo(bucketName)
+	c.Assert(err, IsNil)
+
+	c.Assert(bucketResult.BucketInfo.SseRule.SSEAlgorithm, Equals, string(KMSAlgorithm))
+	c.Assert(bucketResult.BucketInfo.SseRule.KMSMasterKeyID, Equals, "")
+	c.Assert(bucketResult.BucketInfo.SseRule.KMSDataEncryption, Equals, string(SM4Algorithm))
+
+	err = client.DeleteBucket(bucketName)
+	c.Assert(err, IsNil)
+}
+
 func (s *OssClientSuite) TestBucketEncyptionPutObjectSuccess(c *C) {
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
 
-	bucketName := bucketNamePrefix + randLowStr(5)
+	bucketName := bucketNamePrefix + RandLowStr(5)
 	err = client.CreateBucket(bucketName)
 	c.Assert(err, IsNil)
 
@@ -2398,25 +2692,6 @@ func (s *OssClientSuite) TestBucketEncyptionPutObjectSuccess(c *C) {
 	c.Assert(bucketResult.BucketInfo.SseRule.KMSMasterKeyID, Equals, "")
 	c.Assert(bucketResult.BucketInfo.Versioning, Equals, "")
 
-	// put and get object success
-	//bucket, err := client.Bucket(bucketName)
-	//c.Assert(err, IsNil)
-
-	// put object success
-	//objectName := objectNamePrefix + randStr(8)
-	//context := randStr(100)
-	//err = bucket.PutObject(objectName, strings.NewReader(context))
-	//c.Assert(err, IsNil)
-
-	// get object success
-	//body, err := bucket.GetObject(objectName)
-	//c.Assert(err, IsNil)
-	//str, err := readBody(body)
-	//c.Assert(err, IsNil)
-	//body.Close()
-	//c.Assert(str, Equals, context)
-
-	//bucket.DeleteObject(objectName)
 	err = client.DeleteBucket(bucketName)
 	c.Assert(err, IsNil)
 }
@@ -2425,13 +2700,15 @@ func (s *OssClientSuite) TestBucketEncyptionPutObjectError(c *C) {
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
 
-	bucketName := bucketNamePrefix + randLowStr(5)
+	bucketName := bucketNamePrefix + RandLowStr(5)
 	err = client.CreateBucket(bucketName)
 	c.Assert(err, IsNil)
 
 	// SetBucketEncryption:KMS ,""
 	encryptionRule := ServerEncryptionRule{}
 	encryptionRule.SSEDefault.SSEAlgorithm = string(KMSAlgorithm)
+	kmsId := "123"
+	encryptionRule.SSEDefault.KMSMasterKeyID = kmsId
 
 	var responseHeader http.Header
 	err = client.SetBucketEncryption(bucketName, encryptionRule, GetResponseHeader(&responseHeader))
@@ -2454,7 +2731,7 @@ func (s *OssClientSuite) TestBucketEncyptionPutObjectError(c *C) {
 	c.Assert(err, IsNil)
 
 	c.Assert(bucketResult.BucketInfo.SseRule.SSEAlgorithm, Equals, "KMS")
-	c.Assert(bucketResult.BucketInfo.SseRule.KMSMasterKeyID, Equals, "123")
+	c.Assert(bucketResult.BucketInfo.SseRule.KMSMasterKeyID, Equals, kmsId)
 	c.Assert(bucketResult.BucketInfo.Versioning, Equals, "")
 
 	// put and get object failure
@@ -2462,8 +2739,8 @@ func (s *OssClientSuite) TestBucketEncyptionPutObjectError(c *C) {
 	c.Assert(err, IsNil)
 
 	// put object failure
-	objectName := objectNamePrefix + randStr(8)
-	context := randStr(100)
+	objectName := objectNamePrefix + RandStr(8)
+	context := RandStr(100)
 	err = bucket.PutObject(objectName, strings.NewReader(context))
 	c.Assert(err, NotNil)
 
@@ -2475,7 +2752,7 @@ func (s *OssClientSuite) TestBucketTaggingOperation(c *C) {
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
 
-	bucketName := bucketNamePrefix + randLowStr(5)
+	bucketName := bucketNamePrefix + RandLowStr(5)
 	err = client.CreateBucket(bucketName)
 	c.Assert(err, IsNil)
 
@@ -2511,11 +2788,11 @@ func (s *OssClientSuite) TestListBucketsTagging(c *C) {
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
 
-	bucketName1 := bucketNamePrefix + randLowStr(5)
+	bucketName1 := bucketNamePrefix + RandLowStr(5)
 	err = client.CreateBucket(bucketName1)
 	c.Assert(err, IsNil)
 
-	bucketName2 := bucketNamePrefix + randLowStr(5)
+	bucketName2 := bucketNamePrefix + RandLowStr(5)
 	err = client.CreateBucket(bucketName2)
 	c.Assert(err, IsNil)
 
@@ -2539,7 +2816,7 @@ func (s *OssClientSuite) TestGetBucketStat(c *C) {
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
 
-	bucketName := bucketNamePrefix + randLowStr(5)
+	bucketName := bucketNamePrefix + RandLowStr(5)
 	err = client.CreateBucket(bucketName)
 	c.Assert(err, IsNil)
 
@@ -2547,12 +2824,12 @@ func (s *OssClientSuite) TestGetBucketStat(c *C) {
 	c.Assert(err, IsNil)
 
 	// put object
-	objectName := objectNamePrefix + randLowStr(5)
-	err = bucket.PutObject(objectName, strings.NewReader(randStr(10)))
+	objectName := objectNamePrefix + RandLowStr(5)
+	err = bucket.PutObject(objectName, strings.NewReader(RandStr(10)))
 	c.Assert(err, IsNil)
 
 	bucket.DeleteObject(objectName)
-	err = bucket.PutObject(objectName, strings.NewReader(randStr(10)))
+	err = bucket.PutObject(objectName, strings.NewReader(RandStr(10)))
 	c.Assert(err, IsNil)
 	bucket.DeleteObject(objectName)
 
@@ -2567,7 +2844,7 @@ func (s *OssBucketSuite) TestGetBucketVersioning(c *C) {
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
 
-	bucketName := bucketNamePrefix + randLowStr(6)
+	bucketName := bucketNamePrefix + RandLowStr(6)
 
 	var respHeader http.Header
 	err = client.CreateBucket(bucketName, GetResponseHeader(&respHeader))
@@ -2585,14 +2862,14 @@ func (s *OssBucketSuite) TestGetBucketVersioning(c *C) {
 	c.Assert(versioningResult.Status, Equals, "Enabled")
 	c.Assert(GetRequestId(respHeader) != "", Equals, true)
 
-	forceDeleteBucket(client, bucketName, c)
+	ForceDeleteBucket(client, bucketName, c)
 }
 
 func (s *OssClientSuite) TestBucketPolicy(c *C) {
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
 
-	bucketName := bucketNamePrefix + randLowStr(5)
+	bucketName := bucketNamePrefix + RandLowStr(5)
 	err = client.CreateBucket(bucketName)
 	c.Assert(err, IsNil)
 
@@ -2641,7 +2918,7 @@ func (s *OssClientSuite) TestBucketPolicyNegative(c *C) {
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
 
-	bucketName := bucketNamePrefix + randLowStr(5)
+	bucketName := bucketNamePrefix + RandLowStr(5)
 	err = client.CreateBucket(bucketName)
 	c.Assert(err, IsNil)
 
@@ -2676,7 +2953,7 @@ func (s *OssClientSuite) TestBucketPolicyNegative(c *C) {
 	err = client.DeleteBucketPolicy(bucketName, GetResponseHeader(&responseHeader))
 	c.Assert(err, IsNil)
 
-	bucketNameEmpty := bucketNamePrefix + randLowStr(5)
+	bucketNameEmpty := bucketNamePrefix + RandLowStr(5)
 	client.DeleteBucket(bucketNameEmpty)
 
 	err = client.DeleteBucketPolicy(bucketNameEmpty, GetResponseHeader(&responseHeader))
@@ -2691,7 +2968,7 @@ func (s *OssClientSuite) TestSetBucketRequestPayment(c *C) {
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
 
-	bucketName := bucketNamePrefix + randLowStr(5)
+	bucketName := bucketNamePrefix + RandLowStr(5)
 	err = client.CreateBucket(bucketName)
 	c.Assert(err, IsNil)
 
@@ -2713,7 +2990,7 @@ func (s *OssClientSuite) TestSetBucketRequestPaymentNegative(c *C) {
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
 
-	bucketName := bucketNamePrefix + randLowStr(5)
+	bucketName := bucketNamePrefix + RandLowStr(5)
 	err = client.CreateBucket(bucketName)
 	c.Assert(err, IsNil)
 
@@ -2739,7 +3016,7 @@ func (s *OssClientSuite) TestBucketQos(c *C) {
 	c.Assert(err, IsNil)
 	testLogger.Println("QosInfo:", ret)
 
-	bucketName := bucketNamePrefix + randLowStr(5)
+	bucketName := bucketNamePrefix + RandLowStr(5)
 	_ = client.DeleteBucket(bucketName)
 
 	err = client.CreateBucket(bucketName)
@@ -2874,7 +3151,7 @@ func (testInfBuild *TestCredentialsProvider) GetCredentials() Credentials {
 }
 
 func (s *OssClientSuite) TestClientCredentialInfBuild(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 	var defaultBuild TestCredentialsProvider
 	client, err := New(endpoint, "", "", SetCredentialsProvider(&defaultBuild))
 	c.Assert(err, IsNil)
@@ -2892,7 +3169,7 @@ func (s *OssClientSuite) TestClientSetLocalIpError(c *C) {
 	client, err := New(endpoint, accessID, accessKey, SetLocalAddr(localTCPAddr))
 	c.Assert(err, IsNil)
 
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 	err = client.CreateBucket(bucketNameTest)
 	c.Assert(err, NotNil)
 }
@@ -2911,7 +3188,7 @@ func (s *OssClientSuite) TestClientSetLocalIpSuccess(c *C) {
 	client, err := New(endpoint, accessID, accessKey, SetLocalAddr(localTCPAddr))
 	c.Assert(err, IsNil)
 
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 	err = client.CreateBucket(bucketNameTest)
 	c.Assert(err, IsNil)
 	err = client.DeleteBucket(bucketNameTest)
@@ -2920,7 +3197,7 @@ func (s *OssClientSuite) TestClientSetLocalIpSuccess(c *C) {
 
 // TestCreateBucketInvalidName
 func (s *OssClientSuite) TestCreateBucketInvalidName(c *C) {
-	var bucketNameTest = "-" + bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = "-" + bucketNamePrefix + RandLowStr(6)
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
 	// Create
@@ -2930,7 +3207,7 @@ func (s *OssClientSuite) TestCreateBucketInvalidName(c *C) {
 
 // TestClientProcessEndpointSuccess
 func (s *OssClientSuite) TestClientProcessEndpointSuccess(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 
 	testEndpoint := endpoint + "/" + "sina.com" + "?" + "para=abc"
 
@@ -2948,7 +3225,7 @@ func (s *OssClientSuite) TestClientProcessEndpointSuccess(c *C) {
 
 // TestClientProcessEndpointSuccess
 func (s *OssClientSuite) TestClientProcessEndpointError(c *C) {
-	var bucketNameTest = bucketNamePrefix + randLowStr(6)
+	var bucketNameTest = bucketNamePrefix + RandLowStr(6)
 
 	testEndpoint := "https://127.0.0.1/" + endpoint
 
@@ -2965,7 +3242,401 @@ func (s *OssClientSuite) TestClientBucketError(c *C) {
 	client, err := New(endpoint, accessID, accessKey)
 	c.Assert(err, IsNil)
 
-	bucketName := "-" + randLowStr(5)
+	bucketName := "-" + RandLowStr(5)
 	_, err = client.Bucket(bucketName)
 	c.Assert(err, NotNil)
+}
+
+func (s *OssClientSuite) TestSetBucketInventory(c *C) {
+	client, err := New(endpoint, accessID, accessKey)
+	c.Assert(err, IsNil)
+
+	bucketName := bucketNamePrefix + RandLowStr(5)
+	err = client.CreateBucket(bucketName)
+	c.Assert(err, IsNil)
+
+	// encryption config
+	var invSseOss InvSseOss
+	invSseKms := InvSseKms{
+		KmsId: "keyId",
+	}
+	var invEncryption InvEncryption
+
+	bl := true
+	// not any encryption
+	invConfig := InventoryConfiguration{
+		Id:        "report1",
+		IsEnabled: &bl,
+		Prefix:    "filterPrefix/",
+		OSSBucketDestination: OSSBucketDestination{
+			Format:    "CSV",
+			AccountId: accountID,
+			RoleArn:   stsARN,
+			Bucket:    "acs:oss:::" + bucketName,
+			Prefix:    "prefix1",
+		},
+		Frequency:              "Daily",
+		IncludedObjectVersions: "All",
+		OptionalFields: OptionalFields{
+			Field: []string{
+				"Size", "LastModifiedDate", "ETag", "StorageClass", "IsMultipartUploaded", "EncryptionStatus",
+			},
+		},
+	}
+
+	// case 1: not any encryption
+	err = client.SetBucketInventory(bucketName, invConfig)
+	c.Assert(err, IsNil)
+
+	// case 2: use kms encryption
+	invConfig.Id = "report2"
+	invEncryption.SseKms = &invSseKms
+	invEncryption.SseOss = nil
+	invConfig.OSSBucketDestination.Encryption = &invEncryption
+	err = client.SetBucketInventory(bucketName, invConfig)
+	c.Assert(err, IsNil)
+
+	// case 3: use SseOss encryption
+	invConfig.Id = "report3"
+	invEncryption.SseKms = nil
+	invEncryption.SseOss = &invSseOss
+	invConfig.OSSBucketDestination.Encryption = &invEncryption
+	err = client.SetBucketInventory(bucketName, invConfig)
+	c.Assert(err, IsNil)
+
+	//case 4: use two type encryption
+	invConfig.Id = "report4"
+	invEncryption.SseKms = &invSseKms
+	invEncryption.SseOss = &invSseOss
+	invConfig.OSSBucketDestination.Encryption = &invEncryption
+	err = client.SetBucketInventory(bucketName, invConfig)
+	c.Assert(err, NotNil)
+
+	err = client.DeleteBucket(bucketName)
+	c.Assert(err, IsNil)
+}
+
+func (s *OssClientSuite) TestBucketInventory(c *C) {
+	client, err := New(endpoint, accessID, accessKey)
+	c.Assert(err, IsNil)
+
+	bucketName := bucketNamePrefix + RandLowStr(5)
+	err = client.CreateBucket(bucketName)
+	c.Assert(err, IsNil)
+
+	bl := true
+	invConfig := InventoryConfiguration{
+		Id:        "report1",
+		IsEnabled: &bl,
+		Prefix:    "filterPrefix/",
+		OSSBucketDestination: OSSBucketDestination{
+			Format:    "CSV",
+			AccountId: accountID,
+			RoleArn:   stsARN,
+			Bucket:    "acs:oss:::" + bucketName,
+			Prefix:    "prefix1",
+		},
+		Frequency:              "Daily",
+		IncludedObjectVersions: "All",
+		OptionalFields: OptionalFields{
+			Field: []string{
+				"Size", "LastModifiedDate", "ETag", "StorageClass", "IsMultipartUploaded", "EncryptionStatus",
+			},
+		},
+	}
+
+	// case 1: test SetBucketInventory
+	err = client.SetBucketInventory(bucketName, invConfig)
+	c.Assert(err, IsNil)
+
+	// case 2: test GetBucketInventory
+	out, err := client.GetBucketInventory(bucketName, "report1")
+	c.Assert(err, IsNil)
+	invConfig.XMLName.Local = "InventoryConfiguration"
+	invConfig.OSSBucketDestination.XMLName.Local = "OSSBucketDestination"
+	invConfig.OptionalFields.XMLName.Local = "OptionalFields"
+	c.Assert(struct2string(invConfig, c), Equals, struct2string(out, c))
+
+	// case 3: test ListBucketInventory
+	invConfig2 := InventoryConfiguration{
+		Id:        "report2",
+		IsEnabled: &bl,
+		Prefix:    "filterPrefix/",
+		OSSBucketDestination: OSSBucketDestination{
+			Format:    "CSV",
+			AccountId: accountID,
+			RoleArn:   stsARN,
+			Bucket:    "acs:oss:::" + bucketName,
+			Prefix:    "prefix1",
+		},
+		Frequency:              "Daily",
+		IncludedObjectVersions: "All",
+		OptionalFields: OptionalFields{
+			Field: []string{
+				"Size", "LastModifiedDate", "ETag", "StorageClass", "IsMultipartUploaded", "EncryptionStatus",
+			},
+		},
+	}
+	invConfig2.XMLName.Local = "InventoryConfiguration"
+	invConfig2.OSSBucketDestination.XMLName.Local = "OSSBucketDestination"
+	invConfig2.OptionalFields.XMLName.Local = "OptionalFields"
+
+	err = client.SetBucketInventory(bucketName, invConfig2)
+	c.Assert(err, IsNil)
+
+	listInvConf, err := client.ListBucketInventory(bucketName, "", Marker("report1"), MaxKeys(2))
+	c.Assert(err, IsNil)
+	var listInvLocal ListInventoryConfigurationsResult
+	listInvLocal.InventoryConfiguration = []InventoryConfiguration{
+		invConfig,
+		invConfig2,
+	}
+	bo := false
+	listInvLocal.IsTruncated = &bo
+	listInvLocal.XMLName.Local = "ListInventoryConfigurationsResult"
+	c.Assert(struct2string(listInvLocal, c), Equals, struct2string(listInvConf, c))
+
+	for i := 3; i < 109; i++ {
+		invConfig2 := InventoryConfiguration{
+			Id:        "report" + strconv.Itoa(i),
+			IsEnabled: &bl,
+			Prefix:    "filterPrefix/",
+			OSSBucketDestination: OSSBucketDestination{
+				Format:    "CSV",
+				AccountId: accountID,
+				RoleArn:   stsARN,
+				Bucket:    "acs:oss:::" + bucketName,
+				Prefix:    "prefix1",
+			},
+			Frequency:              "Daily",
+			IncludedObjectVersions: "All",
+			OptionalFields: OptionalFields{
+				Field: []string{
+					"Size", "LastModifiedDate", "ETag", "StorageClass", "IsMultipartUploaded", "EncryptionStatus",
+				},
+			},
+		}
+		err = client.SetBucketInventory(bucketName, invConfig2)
+		c.Assert(err, IsNil)
+	}
+	token := ""
+	for {
+		listInvConf1, err := client.ListBucketInventory(bucketName, token)
+		c.Assert(err, IsNil)
+		token = listInvConf1.NextContinuationToken
+		testLogger.Println(listInvConf1.NextContinuationToken, *listInvConf1.IsTruncated, token)
+		if *listInvConf1.IsTruncated == false {
+			break
+		} else {
+			c.Assert(listInvConf1.NextContinuationToken, Equals, "report91")
+		}
+	}
+
+	// case 4: test DeleteBucketInventory
+	for i := 1; i < 109; i++ {
+		err = client.DeleteBucketInventory(bucketName, "report"+strconv.Itoa(i))
+		c.Assert(err, IsNil)
+	}
+
+	err = client.DeleteBucket(bucketName)
+	c.Assert(err, IsNil)
+}
+
+func (s *OssClientSuite) TestBucketInventoryNegative(c *C) {
+	client, err := New(endpoint, accessID, accessKey)
+	c.Assert(err, IsNil)
+
+	bucketName := bucketNamePrefix + RandLowStr(5)
+	err = client.CreateBucket(bucketName)
+	c.Assert(err, IsNil)
+
+	bl := true
+	invConfigErr := InventoryConfiguration{
+		Id:        "report1",
+		IsEnabled: &bl,
+		Prefix:    "filterPrefix/",
+		OSSBucketDestination: OSSBucketDestination{
+			Format:    "CSV",
+			AccountId: accountID,
+			RoleArn:   stsARN,
+			Bucket:    "test",
+			Prefix:    "prefix1",
+		},
+		Frequency:              "Daily",
+		IncludedObjectVersions: "All",
+		OptionalFields: OptionalFields{
+			Field: []string{
+				"Size", "LastModifiedDate", "ETag", "StorageClass", "IsMultipartUploaded", "EncryptionStatus",
+			},
+		},
+	}
+	// case 1: test SetBucketInventory
+	err = client.SetBucketInventory(bucketName, invConfigErr)
+	c.Assert(err, NotNil)
+
+	// case 2: test GetBucketInventory
+	_, err = client.GetBucketInventory(bucketName, "report1")
+	c.Assert(err, NotNil)
+
+	// case 3: test ListBucketInventory
+	_, err = client.ListBucketInventory(bucketName, "", Marker("report1"), MaxKeys(2))
+	c.Assert(err, NotNil)
+
+	// case 4: test DeleteBucketInventory
+	err = client.DeleteBucketInventory(bucketName, "report1")
+	c.Assert(err, IsNil)
+
+	err = client.DeleteBucket(bucketName)
+	c.Assert(err, IsNil)
+}
+
+func (s *OssClientSuite) TestBucketAsyncTask(c *C) {
+	client, err := New(endpoint, accessID, accessKey)
+	c.Assert(err, IsNil)
+
+	bucketName := bucketNamePrefix + RandLowStr(5)
+	err = client.CreateBucket(bucketName)
+	c.Assert(err, IsNil)
+
+	objectName := objectNamePrefix + RandLowStr(6)
+
+	// set asyn task,IgnoreSameKey is false
+	asynConf := AsyncFetchTaskConfiguration{
+		Url:           "http://www.baidu.com",
+		Object:        objectName,
+		Host:          "",
+		ContentMD5:    "",
+		Callback:      "",
+		StorageClass:  "",
+		IgnoreSameKey: false,
+	}
+
+	asynResult, err := client.SetBucketAsyncTask(bucketName, asynConf)
+	c.Assert(err, IsNil)
+	c.Assert(len(asynResult.TaskId) > 0, Equals, true)
+
+	// get asyn task
+	asynTask, err := client.GetBucketAsyncTask(bucketName, asynResult.TaskId)
+	c.Assert(err, IsNil)
+	c.Assert(asynResult.TaskId, Equals, asynTask.TaskId)
+	c.Assert(len(asynTask.State) > 0, Equals, true)
+	c.Assert(asynConf.Url, Equals, asynTask.TaskInfo.Url)
+	c.Assert(asynConf.Object, Equals, asynTask.TaskInfo.Object)
+	c.Assert(asynConf.Callback, Equals, asynTask.TaskInfo.Callback)
+	c.Assert(asynConf.IgnoreSameKey, Equals, asynTask.TaskInfo.IgnoreSameKey)
+
+	// test again,IgnoreSameKey is true
+	asynConf.IgnoreSameKey = true
+	asynResult, err = client.SetBucketAsyncTask(bucketName, asynConf)
+	c.Assert(err, IsNil)
+	c.Assert(len(asynResult.TaskId) > 0, Equals, true)
+
+	asynTask, err = client.GetBucketAsyncTask(bucketName, asynResult.TaskId)
+	c.Assert(asynConf.IgnoreSameKey, Equals, asynTask.TaskInfo.IgnoreSameKey)
+
+	err = client.DeleteBucket(bucketName)
+	c.Assert(err, IsNil)
+}
+
+func (s *OssClientSuite) TestClientOptionHeader(c *C) {
+	// create a bucket with default proprety
+	client, err := New(endpoint, accessID, accessKey)
+	c.Assert(err, IsNil)
+
+	bucketName := bucketNamePrefix + RandLowStr(6)
+
+	var respHeader http.Header
+	err = client.CreateBucket(bucketName, GetResponseHeader(&respHeader))
+	c.Assert(err, IsNil)
+	c.Assert(GetRequestId(respHeader) != "", Equals, true)
+
+	// put bucket version:enabled
+	var versioningConfig VersioningConfig
+	versioningConfig.Status = string(VersionEnabled)
+	err = client.SetBucketVersioning(bucketName, versioningConfig)
+	c.Assert(err, IsNil)
+
+	// get bucket version success,use payer
+	options := []Option{RequestPayer(BucketOwner), GetResponseHeader(&respHeader)}
+	versioningResult, err := client.GetBucketVersioning(bucketName, options...)
+	c.Assert(versioningResult.Status, Equals, "Enabled")
+	c.Assert(GetRequestId(respHeader) != "", Equals, true)
+
+	//list buckets,use payer
+	_, err = client.ListBuckets(options...)
+	c.Assert(err, IsNil)
+
+	ForceDeleteBucket(client, bucketName, c)
+}
+
+// compare with go1.7
+func compareVersion(goVersion string) bool {
+	nowVersion := runtime.Version()
+	nowVersion = strings.Replace(nowVersion, "go", "", -1)
+	pSlice1 := strings.Split(goVersion, ".")
+	pSlice2 := strings.Split(nowVersion, ".")
+	for k, v := range pSlice2 {
+		n2, _ := strconv.Atoi(string(v))
+		n1, _ := strconv.Atoi(string(pSlice1[k]))
+		if n2 > n1 {
+			return true
+		}
+		if n2 < n1 {
+			return false
+		}
+	}
+	return true
+}
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/redirectTo", http.StatusFound)
+}
+func targetHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "You have been redirected here!")
+}
+
+func (s *OssClientSuite) TestClientRedirect(c *C) {
+	// must go1.7.0 onward
+	if !compareVersion("1.7.0") {
+		return
+	}
+
+	// get port
+	rand.Seed(time.Now().Unix())
+	port := 10000 + rand.Intn(10000)
+
+	// start http server
+	httpAddr := fmt.Sprintf("127.0.0.1:%d", port)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/redirectTo", targetHandler)
+	mux.HandleFunc("/", homeHandler)
+	svr := &http.Server{
+		Addr:           httpAddr,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+		Handler:        mux,
+	}
+
+	go func() {
+		svr.ListenAndServe()
+	}()
+
+	url := "http://" + httpAddr
+
+	// create client 1,redirect disable
+	client1, err := New(endpoint, accessID, accessKey, RedirectEnabled(false))
+	resp, err := client1.Conn.client.Get(url)
+	c.Assert(err, IsNil)
+	c.Assert(resp.StatusCode, Equals, http.StatusFound)
+	resp.Body.Close()
+
+	// create client2, redirect enabled
+	client2, err := New(endpoint, accessID, accessKey, RedirectEnabled(true))
+	resp, err = client2.Conn.client.Get(url)
+	c.Assert(err, IsNil)
+	c.Assert(resp.StatusCode, Equals, 200)
+	data, err := ioutil.ReadAll(resp.Body)
+	c.Assert(string(data), Equals, "You have been redirected here!")
+	resp.Body.Close()
 }
