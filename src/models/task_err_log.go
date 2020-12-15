@@ -119,7 +119,7 @@ func GetAllTaskErrLog(query map[string]string, fields []string, sortby []string,
 	}
 	return nil, err
 }
-
+/*
 // UpdateTaskErrLog updates TaskErrLog by Id and returns error if
 // the record to be updated doesn't exist
 func UpdateTaskErrLogById(m *TaskErrLog) (err error) {
@@ -133,7 +133,7 @@ func UpdateTaskErrLogById(m *TaskErrLog) (err error) {
 		}
 	}
 	return
-}
+}*/
 
 // DeleteTaskErrLog deletes TaskErrLog by Id and returns error if
 // the record to be deleted doesn't exist

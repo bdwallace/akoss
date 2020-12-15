@@ -121,7 +121,7 @@ func GetAllGroup(query map[string]string, fields []string, sortby []string, orde
 	return nil, err
 }
 
-// UpdateGroup updates Group by Id and returns error if
+/*// UpdateGroup updates Group by Id and returns error if
 // the record to be updated doesn't exist
 func UpdateGroupById(m *Group) (err error) {
 	o := orm.NewOrm()
@@ -134,7 +134,7 @@ func UpdateGroupById(m *Group) (err error) {
 		}
 	}
 	return
-}
+}*/
 
 // DeleteGroup deletes Group by Id and returns error if
 // the record to be deleted doesn't exist

@@ -203,16 +203,6 @@ func GetAllRecord(query map[string]string, fields []string, sortby []string, ord
 // the record to be updated doesn't exist
 func UpdateRecordById(m *Record) (err error) {
 	o := orm.NewOrm()
-/*
-	v := Record{Id: m.Id}
-	// ascertain id exists in the database
-	if err = o.Read(&v); err == nil {
-		var num int64
-		if num, err = o.Update(m); err == nil {
-			fmt.Println("Number of records updated in database:", num)
-		}
-	}
-*/
 	if _, err = o.Update(m); err != nil {
 		return
 	}
@@ -226,11 +216,14 @@ func UpdateRecordByTaskHost(m *Record) (err error) {
 	o := orm.NewOrm()
 	v := Record{Id: m.Id}
 	// ascertain id exists in the database
-	if err = o.Read(&v); err == nil {
-		var num int64
-		if num, err = o.Update(m); err == nil {
-			fmt.Println("Number of records updated in database:", num)
-		}
+	if err = o.Read(v); err != nil {
+		fmt.Println("error: UpdateRecordByTaskHost Read", err)
+		return
+	}
+
+	if _, err = o.Update(m); err != nil {
+		fmt.Println("error: UpdateRecordByTaskHost Update", err)
+		return
 	}
 	return
 }
