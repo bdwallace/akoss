@@ -216,7 +216,7 @@ func UpdateRecordByTaskHost(m *Record) (err error) {
 	o := orm.NewOrm()
 	v := Record{Id: m.Id}
 	// ascertain id exists in the database
-	if err = o.Read(v); err != nil {
+	if err = o.Read(&v); err != nil {
 		fmt.Println("error: UpdateRecordByTaskHost Read", err)
 		return
 	}

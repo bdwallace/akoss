@@ -114,9 +114,9 @@ func GetCrontabLogById(id int) (v *CrontabLog, err error) {
 // the record to be updated doesn't exist
 func UpCrontabLog(m *CrontabLog) (err error) {
 	o := orm.NewOrm()
-	v := &CrontabLog{Id: m.Id}
+	v := CrontabLog{Id: m.Id}
 	// ascertain id exists in the database
-	if err = o.Read(v); err != nil {
+	if err = o.Read(&v); err != nil {
 		fmt.Println("error: UpCrontabLog Read", err)
 		return
 	}
@@ -132,9 +132,9 @@ func UpCrontabLog(m *CrontabLog) (err error) {
 // the record to be deleted doesn't exist
 func DeleteCrontabLog(id int) (err error) {
 	o := orm.NewOrm()
-	v := &CrontabLog{Id: id}
+	v := CrontabLog{Id: id}
 	// ascertain id exists in the database
-	if err = o.Read(v); err == nil {
+	if err = o.Read(&v); err == nil {
 		var num int64
 		if num, err = o.Delete(&CrontabLog{Id: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)

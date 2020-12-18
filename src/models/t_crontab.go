@@ -112,8 +112,8 @@ func GetCrontabByProjectlName(level int, name string) (m []Crontab, err error) {
 // the record to be updated doesn't exist
 func UpCrontab(m *Crontab) (err error) {
 	o := orm.NewOrm()
-	v := &Crontab{Id: m.Id}
-	if err = o.Read(v); err != nil {
+	v := Crontab{Id: m.Id}
+	if err = o.Read(&v); err != nil {
 		fmt.Println("error: UpCrontab Read", err)
 		return
 	}

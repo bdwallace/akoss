@@ -128,7 +128,7 @@ func UpdateApiSystemById(m *ApiSystem) (err error) {
 	o := orm.NewOrm()
 	v := ApiSystem{Id: m.Id}
 	// ascertain id exists in the database
-	if err = o.Read(v); err != nil {
+	if err = o.Read(&v); err != nil {
 		fmt.Println("error: UpdateApiSystemById Read", err)
 		return
 	}
