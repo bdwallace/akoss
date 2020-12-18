@@ -7,8 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
-
-	"github.com/astaxie/beego"
 )
 
 type ConfController struct {
@@ -30,7 +28,7 @@ type ConfController struct {
 // @router /conf/ [post]
 func (c *ConfController)AddConf() {
 
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var conf *models.Conf
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &conf)
 	if err != nil {

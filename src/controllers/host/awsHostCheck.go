@@ -41,7 +41,7 @@ func (c *HostCheckController)AwsRsync() {
 	// hostId, _ := c.GetInt("hostId", 0)
 	// host, _ := models.GetHostById(hostId)
 	// ip := c.GetString("ip")
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var host models.Host
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &host)
 	if err != nil {
@@ -207,7 +207,7 @@ func (c *HostCheckController) AwsRsyncUpdate() {
 // @router /awsHost/awsStatus/ [post]
 func (c *HostCheckController) AwsStatus() {
 
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var host models.Host
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &host)
 	if err != nil {
@@ -244,7 +244,7 @@ func (c *HostCheckController) AwsStatus() {
 // @router /awsHost/awsStop/ [post]
 func (c *HostCheckController) AwsStop() {
 
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var host models.Host
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &host)
 	if err != nil {
@@ -292,7 +292,7 @@ func (c *HostCheckController) AwsStop() {
 func (c *HostCheckController) AwsStart() {
 
 
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var host models.Host
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &host)
 	if err != nil {
@@ -413,7 +413,7 @@ func (c *HostCheckController) AwsCheckStop() {
 // @Failure 2 User not found
 // @router /awsHost/awsSetStopTime/ [post]
 func (c *HostCheckController) AwsSetStopTime() {
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var hosts []*models.Host
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &hosts)
 	if err != nil {

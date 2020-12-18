@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"models"
-
-	"github.com/astaxie/beego"
 )
 
 type DeployController struct {
@@ -213,7 +211,7 @@ func  (c *DeployController)DeleteDeploy(id int) () {
 // @router /deploy [post]
 func (c *DeployController) AddDeploy() {
 
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var services []models.Service
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &services)
 	if err != nil {
@@ -270,7 +268,7 @@ func (c *DeployController) AddDeploy() {
 // @router /deploy/build [post]
 func (c *DeployController) AddDeployFromBuild() {
 
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var service models.Service
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &service)
 	if err != nil {
@@ -352,7 +350,7 @@ func (c *DeployController) AddDeployFromBuild() {
 // @router /deploy/tagcmd [post]
 func (c *DeployController) AddDeployTagCmd() {
 
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var deploy models.Deploy
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &deploy)
 	if err != nil {
@@ -403,8 +401,7 @@ func (c *DeployController) AddDeployTagCmd() {
 // @router /deploy/service [post]
 func (c *DeployController) DeployService() {
 
-	fmt.Println("deploy service...")
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//fmt.Println("deploy service...")
 	var deploy *models.Deploy
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &deploy)
 	if err != nil {

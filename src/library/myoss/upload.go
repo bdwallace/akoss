@@ -11,21 +11,21 @@ func Upload(remote string, local string) (err error) {
 
 	client, err := oss.New(Oss.Endpoint, Oss.AccessKeyId, Oss.AccessKeySecret)
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("error:", err)
 		return
 	}
 
 	// 获取存储空间。
 	bucket, err := client.Bucket(Oss.Bucket)
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("error:", err)
 		return
 	}
 
 	// 上传本地文件。
 	err = bucket.PutObjectFromFile(remote, local)
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("error:", err)
 		return
 	}
 	return

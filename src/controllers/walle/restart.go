@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"library/components"
 	"models"
-
-	"github.com/astaxie/beego"
 )
 
 
@@ -22,7 +20,7 @@ import (
 func (c *WalleController)Restart() {
 
 
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	// var domain *models.Domain
 	operationRecord := new(models.OperationRecord)
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, operationRecord)

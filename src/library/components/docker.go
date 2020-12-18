@@ -60,7 +60,6 @@ func (c *BaseDocker) SetBaseComponents(b BaseComponents) {
 */
 func (c *BaseDocker) InitBaseParam()error{
 
-	fmt.Printf("---%+v-------\n", c.BaseComponents.Service)
 
 	if c.BaseComponents.Service.DockerName == ""{
 		c.BaseParam.DockerName = c.BaseComponents.Service.Name + "_" + c.BaseComponents.Project.Alias
@@ -150,7 +149,6 @@ func (c *BaseDocker)DockerServiceHealth(host *models.Host, port string, have443 
 	}
 
 	response, err := common.HttpGet(urlUse, nil)
-	fmt.Println("check health request url=",urlUse," err=",err," resp=",response)
 	if err != nil {
 		return
 	}
@@ -210,10 +208,8 @@ func (c *BaseDocker) DockerPs(lineData string) (res []map[string]string, err err
 		}
 
 		cmd := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s ps -a -f name='^%s$' --format {{.Status}}#{{.CreatedAt}}#{{.Image}}", host.UseIp, c.BaseComponents.Docker.Port, c.BaseComponents.Docker.Name)
-		beego.Info(cmd)
+		//beego.Info(cmd)
 
-		fmt.Println("docker ps cmd:",cmd)
-		//s, _, err := c.BaseComponents.RunLocal(cmd, 3, host.UseIp, "")
 
 		s, err := c.BaseComponents.RunDockerPs(cmd, 3, host.UseIp)
 		if err != nil {
@@ -365,7 +361,7 @@ func (c *BaseDocker) CreateDomainDockerCmd(host *models.Host)(cmd string,err err
 	//if _, err = os.Stat(domainDir); os.IsNotExist(err) {
 	err = common.Mkdir(domainDir)
 	if err != nil {
-		fmt.Println("----新建目录upload失败")
+		fmt.Println("error: CreateDomainDockerCmd common.Mkdir ",err)
 		return "",err
 	}
 
@@ -607,8 +603,6 @@ func (c *BaseDocker) CreateDockerCmd(task *models.Task, count int,serviceClass s
 	task.Count = count
 	task.Cmd = c.Cmds
 
-	fmt.Println("*************")
-	fmt.Println("task cmd:",task.Cmd)
 
 	return
 }
@@ -901,7 +895,7 @@ func (c *BaseDocker) Build(operationRecord *models.OperationRecord) (repoTag str
 
 	err = common.RmMkdir(dir)
 	if err != nil {
-		fmt.Println(fmt.Sprintf("--------新建%s目录出错---------", dir))
+		fmt.Printf("error: Build common.RmMkdir \"%s\"  %s\n ", dir, err)
 		return
 	}
 	err = c.BaseComponents.LocalOtherNull(fmt.Sprintf("新建初始化目录：%s", dir), 10, operationRecord)
@@ -912,7 +906,7 @@ func (c *BaseDocker) Build(operationRecord *models.OperationRecord) (repoTag str
 	dockerFilePath := fmt.Sprintf("%s/Dockerfile", dir)
 	err = common.FileWriter(dockerFilePath, dockerFile)
 	if err != nil {
-		fmt.Println(fmt.Sprintf("--------写%s文件出错---------", dockerFilePath))
+		fmt.Println("error: Build common.FileWriter   ", err)
 		return
 	}
 	err = c.BaseComponents.LocalOtherNull(fmt.Sprintf("新建Dockerfile：%s", dockerFilePath), 20, operationRecord)
@@ -1070,7 +1064,7 @@ func (c *BaseDocker) DownloadZip(operationRecord *models.OperationRecord) (strin
 	dir := fmt.Sprintf("upload/download/%d/%s", c.BaseComponents.Service.Project.Id, c.BaseComponents.Service.Name)
 	err := common.RmMkdir(dir)
 	if err != nil {
-		fmt.Println(fmt.Sprintf("--------新建%s目录出错---------", dir))
+		fmt.Println("error: DownloadZip common.RmMkdir  ", dir, "  ",err)
 		return "", err
 	}
 

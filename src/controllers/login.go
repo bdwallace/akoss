@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
-
 	"encoding/json"
 	"github.com/astaxie/beego/orm"
 	"golang.org/x/crypto/bcrypt"
@@ -17,7 +15,7 @@ type LoginController struct {
 
 func (c *LoginController) Post() {
 	//哈希校验成功后 更新 auth_key
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	postData := map[string]string{"user_password": "", "user_name": "", "ProjectId": "", "ProjectName": ""}
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &postData)
 	if err != nil {
@@ -35,7 +33,7 @@ func (c *LoginController) Post() {
 	var user models.User
 	o := orm.NewOrm()
 	err = o.Raw("SELECT * FROM `user` WHERE username= ?", userName).QueryRow(&user)
-	beego.Info(user)
+	//beego.Info(user)
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
 	if err != nil {
 		c.SetJson(1, nil, "用户名或密码错误")

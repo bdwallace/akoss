@@ -35,7 +35,7 @@ func (c *WalleController) GetTagList() {
 	repo_repository := strings.Split(imagePath, "/")[1]
 	tag_url := fmt.Sprintf("%s/api/v2.0/projects/%s/repositories/%s/artifacts", repoApi, repo_project, repo_repository)
 	tag_url = fmt.Sprintf("%s?with_tag=true&with_scan_overview=true&with_label=true&page_size=100&page=1", tag_url)
-	beego.Info(tag_url)
+	//beego.Info(tag_url)
 
 	req := httplib.Get(tag_url)
 	req.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
@@ -139,12 +139,12 @@ func (c *WalleController) LineChange() {
 	content := content1 + content2 + content3 + content4 + strings.Trim(strings.Join(lineList, ","), ",")
 	// content := content1 + content2 + content3 + content4 + strings.Trim(lineListStr, ",")
 	reqPost.Param("content", content)
-	resultPost, err := reqPost.String()
+	_, err = reqPost.String()
 	if err != nil {
 		c.SetJson(1, err.Error(), "向nacos发送数据失败")
 		return
 	}
-	beego.Info(fmt.Sprintf("%s %s %s", hostPort, line, resultPost))
+	//beego.Info(fmt.Sprintf("%s %s %s", hostPort, line, resultPost))
 
 	c.SetJson(0, "", "")
 	return

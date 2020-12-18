@@ -16,18 +16,16 @@ func main() {
 	cfg.Auth.Password = "gopub"
 	cfg.DownDir = "/data/gcz/gopub/src/agent/testData1/"
 
-	ss, err := common.ParserConfig(&cfg)
+	_, err := common.ParserConfig(&cfg)
 	cfg.Net.DataPort = 45002
 	cfg.Net.MgntPort = 45003
-	fmt.Print("111111111111", ss, err)
 	svc, err := server.NewServer(&cfg)
 	if err != nil {
-		fmt.Printf("start server error, %s.\n", err.Error())
+		fmt.Printf("start server error, %s\n", err)
 		os.Exit(4)
 	}
-	fmt.Print("111111111111", svc, err)
 	if err = svc.Start(); err != nil {
-		fmt.Printf("Start service failed, %s.\n", err.Error())
+		fmt.Printf("Start service failed, %s\n", err)
 		os.Exit(4)
 	}
 	quitChan := listenSigInt()

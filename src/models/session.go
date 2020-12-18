@@ -119,7 +119,7 @@ func GetAllSession(query map[string]string, fields []string, sortby []string, or
 	}
 	return nil, err
 }
-
+/*
 // UpdateSession updates Session by Id and returns error if
 // the record to be updated doesn't exist
 func UpdateSessionById(m *Session) (err error) {
@@ -134,7 +134,7 @@ func UpdateSessionById(m *Session) (err error) {
 	}
 	return
 }
-
+*/
 // DeleteSession deletes Session by Id and returns error if
 // the record to be deleted doesn't exist
 func DeleteSession(id int) (err error) {

@@ -7,8 +7,6 @@ import (
 
 	"encoding/json"
 	"fmt"
-
-	"github.com/astaxie/beego"
 )
 
 type HostController struct {
@@ -29,7 +27,7 @@ type HostController struct {
 // @router /host [post]
 func (c *HostController)AddHost(){
 
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var host models.Host
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &host)
 	if err != nil {
@@ -86,7 +84,7 @@ func (c *HostController)GetAllHost() {
 	// }else {
 		resHosts, err = models.SearchHosts(projectId, awsRegion, searchText)
 		if err != nil{
-			fmt.Println("error: SearchHosts()",err)
+			fmt.Println("error: SearchHosts ",err)
 			c.SetJson(1,err,"搜索 host匹配内容 失败")
 			return
 		}

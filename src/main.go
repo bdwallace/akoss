@@ -33,7 +33,7 @@ func initArgs() {
 func init() {
 	//初始化数据库
 	initArgs()
-	beego.Info("开始启动")
+	//beego.Info("开始启动")
 	//连接MySQL
 	dbUser := beego.AppConfig.String("mysqluser")
 	dbPass := beego.AppConfig.String("mysqlpass")
@@ -67,13 +67,13 @@ func init() {
 	maxIdleConn, _ := beego.AppConfig.Int("mysql_max_idle_conn")
 	maxOpenConn, _ := beego.AppConfig.Int("mysql_max_open_conn")
 	dbLink := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8", dbUser, dbPass, dbHost, dbPort, dbName) + "&loc=Asia%2FShanghai"
-	//utils.Display("dbLink", dbLink)
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 	orm.RegisterDataBase("default", "mysql", dbLink, maxIdleConn, maxOpenConn)
-
+/*
 	if beego.BConfig.RunMode == "dev" {
 		orm.Debug = true
 	}
+*/
 	//设置日志
 	fn := "logs/run.log"
 	if _, err := os.Stat(fn); err != nil {
@@ -128,10 +128,7 @@ func main() {
 
 	}
 
-	beego.Info(beego.BConfig.RunMode)
-	fmt.Println("----------------------")
-	fmt.Println("RunMode:  ",beego.BConfig.RunMode)
-
+	//beego.Info(beego.BConfig.RunMode)
 
 	// 初始化 ~/.aws/credentials 文件
 	aws.InitCredentials()
@@ -141,7 +138,6 @@ func main() {
 	if err != nil {
 		beego.Error("Panic error:", err)
 	}
-
 
 	beego.SetStaticPath("/upload", "upload")
 

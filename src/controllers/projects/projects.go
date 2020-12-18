@@ -4,7 +4,6 @@ import (
 	"controllers"
 	"encoding/json"
 	"fmt"
-	"github.com/astaxie/beego"
 	"models"
 	"strconv"
 )
@@ -41,7 +40,7 @@ func (c *ProjectController)URLMapping(){
 func (c *ProjectController)AddProject(){
 
 
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var project models.Project
 	var resId int64
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &project)
@@ -54,7 +53,7 @@ func (c *ProjectController)AddProject(){
 		// update project
 		resId, err := models.UpdateProject(&project)
 		if err != nil{
-			fmt.Println(err)
+			fmt.Println("error: AddProject  ",err)
 			c.SetJson(1,err,"更新 project 失败")
 			return
 		}
@@ -65,7 +64,7 @@ func (c *ProjectController)AddProject(){
 		// add	project
 		resId, err = models.AddProject(&project)
 		if err != nil{
-			fmt.Println("error: AddProject(pro)  ",err)
+			fmt.Println("error: AddProject  ",err)
 			c.SetJson(1,err,"添加 project 失败")
 			return
 		}
@@ -99,7 +98,7 @@ func (c *ProjectController)GetAllProject(){
 
 	proRes, err := models.GetAllProject()
 	if err != nil{
-		fmt.Println("error: GetAllProject() ",err)
+		fmt.Println("error: GetAllProject ",err)
 		c.SetJson(1, nil, "获取所有 project 失败")
 		return
 	}
@@ -124,7 +123,7 @@ func (c *ProjectController)GetProjectById(){
 
 	proRes, err := models.GetProjectById(intId)
 	if err != nil{
-		fmt.Println("error: GetProjectById(pro.Id) ",err)
+		fmt.Println("error: GetProjectById ",err)
 		c.SetJson(1, err, "获取 project by id 失败")
 		return
 	}
@@ -153,7 +152,7 @@ func (c *ProjectController)GetProjectByAlias(){
 
 	proRes, err := models.GetProjectByAlias(alias)
 	if err != nil{
-		fmt.Println("error: GetProjectByAlias() ",err)
+		fmt.Println("error: GetProjectByAlias ",err)
 		c.SetJson(1,err,"获取 project by alias 失败")
 		return
 	}

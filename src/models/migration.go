@@ -119,7 +119,7 @@ func GetAllMigration(query map[string]string, fields []string, sortby []string, 
 	return nil, err
 }
 
-// UpdateMigration updates Migration by Id and returns error if
+/*// UpdateMigration updates Migration by Id and returns error if
 // the record to be updated doesn't exist
 func UpdateMigrationById(m *Migration) (err error) {
 	o := orm.NewOrm()
@@ -133,7 +133,7 @@ func UpdateMigrationById(m *Migration) (err error) {
 	}
 	return
 }
-
+*/
 // DeleteMigration deletes Migration by Id and returns error if
 // the record to be deleted doesn't exist
 func DeleteMigration(id int) (err error) {

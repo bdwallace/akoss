@@ -49,7 +49,7 @@ func BackupSql() (backPath string, err error) {
 	backDir, _ := path.Split(backPath)
 	err = common.Mkdir(backDir)
 	if err != nil {
-		fmt.Println("--新目录备份目录失败---:", err)
+		fmt.Println("error: BackupSql 新目录备份目录失败  ", err)
 		return
 	}
 	err = mysql.Backup(backPath)
@@ -94,28 +94,27 @@ func (c *Mysql) Backup(sqlPath string) (err error) {
 	} else {
 		cmd_str = "mysqldump" + " --opt" + " -h" + c.Host + " -P" + c.Port + " -u" + c.User + " -p" + c.Password + " " + c.Database + " " + c.Table + " >" + sqlPath
 	}
-	fmt.Println("---cmd---:", cmd_str)
 	cmd = exec.Command("/bin/sh", "-c", cmd_str)
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		fmt.Println("--1.初始化命令管道失败--")
+		fmt.Println("error: Backup  初始化命令管道失败  ", err)
 		return err
 	}
 
 	if err := cmd.Start(); err != nil {
-		fmt.Println("--2.执行命令失败--")
+		fmt.Println("error: Backup 执行命令失败  ", err)
 		return err
 	}
 
 	_, err = ioutil.ReadAll(stdout)
 	if err != nil {
-		fmt.Println("--3.获取命令结果失败--")
+		fmt.Println("error: Backup 获取命令结果失败  ",err)
 		return err
 	}
 
 	if err := cmd.Wait(); err != nil {
-		fmt.Println("--4.等待任务执行完--")
+		fmt.Println("error: Backup 等待任务执行完  ",err)
 		return err
 	}
 
@@ -186,7 +185,7 @@ func BackupService(serviceClass string) (data []map[string]interface{}, backPath
 	backDir, _ := path.Split(backPath)
 	err = common.Mkdir(backDir)
 	if err != nil {
-		fmt.Println("--新目录备份目录失败---:", err)
+		fmt.Println("error: BackupService 新目录备份目录失败  ", err)
 		return
 	}
 	err = f.SaveAs(backPath)
@@ -272,7 +271,7 @@ func GetServiceTag(serviceClass string) (serviceObj [][]ServiceRelatedProject,  
 			}
 
 			if serviceName == "" {
-				fmt.Println("serviceName == nil")
+				fmt.Println("error:  serviceName == nil")
 			}
 
 			sameNameOfServices = append(sameNameOfServices,serviceRelatedProjectOjb)
@@ -411,16 +410,11 @@ func GetService(serviceClass string) (data []map[string]interface{},err error) {
 			if err != nil{
 				return nil,err
 			}
-			fmt.Printf("service: %+v\n",service)
-			for _, h := range service.Hosts{
-				fmt.Printf("host: %+v\n",h)
-			}
 
 			if len(service.Hosts) == 0 {
 				continue
 			}
 
-			fmt.Printf("service.project: %+v\n",service.Project)
 			s := components.BaseComponents{}
 			s.SetProject(service.Project)
 			s.SetService(service)
@@ -428,9 +422,6 @@ func GetService(serviceClass string) (data []map[string]interface{},err error) {
 
 			d := components.BaseDocker{}
 			d.SetBaseComponents(s)
-
-			fmt.Println("s.project: ",s.Project)
-			fmt.Println("d.project: ",d.BaseComponents.Project.Alias)
 
 			res, _ := d.DockerPs("")
 

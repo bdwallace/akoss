@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"library/crontab"
 	"models"
-
-	"github.com/astaxie/beego"
 )
 
 type CrontabController struct {
@@ -53,7 +51,7 @@ func (c *CrontabController) GetAllCrontab() {
 // @router /crontab/ [post]
 func (c *CrontabController) AddCrontab() {
 	//projectId,_:=c.GetInt("projectId",0)
-	beego.Info(string(c.Ctx.Input.RequestBody))
+	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var crontab models.Crontab
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &crontab)
 	if err != nil {

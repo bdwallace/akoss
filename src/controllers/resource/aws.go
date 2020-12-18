@@ -33,7 +33,7 @@ func (c *ResourceController) Aws() {
 
 	project, err := models.GetProjectById(c.User.ProjectId)
 	if err != nil{
-		fmt.Println("error: GetProjectById(pro.Id) ",err)
+		fmt.Println("error: GetProjectById ",err)
 		c.SetJson(1, err, "获取 project by id 失败")
 		return
 	}

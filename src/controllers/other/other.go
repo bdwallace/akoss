@@ -2,7 +2,6 @@ package othercontrollers
 
 import (
 	"controllers"
-	"fmt"
 	"github.com/astaxie/beego"
 )
 
@@ -34,7 +33,6 @@ func (c *OtherController) AppConfig() {
 	app["mysqldb"] = beego.AppConfig.String("mysqldb")
 
 	app["Alias"] = beego.AppConfig.String("Alias")
-	fmt.Println("------", app)
 	c.SetJson(0, app, "")
 	return
 }
