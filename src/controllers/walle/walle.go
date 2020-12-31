@@ -34,7 +34,7 @@ func (c *WalleController) GetTagList() {
 	repo_project := strings.Split(imagePath, "/")[0]
 	repo_repository := strings.Split(imagePath, "/")[1]
 	tag_url := fmt.Sprintf("%s/api/v2.0/projects/%s/repositories/%s/artifacts", repoApi, repo_project, repo_repository)
-	tag_url = fmt.Sprintf("%s?with_tag=true&with_scan_overview=true&with_label=true&page_size=100&page=1", tag_url)
+	tag_url = fmt.Sprintf("%s?with_tag=true&with_scan_overview=true&with_label=true&page_size=220&page=1", tag_url)
 	//beego.Info(tag_url)
 
 	req := httplib.Get(tag_url)
