@@ -26,6 +26,7 @@ type User struct {
 	ProjectId			   int		 `orm:"column(project_id)"`
 	ProjectName			   string    `orm:"column(project_name)"`
 	IsDel 				   int 		 `orm:"column(is_del);default(0)"`
+	XToken				   string    `orm:"column(x_token);size(512);null"`
 
 	CreatedAt              time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
 	UpdatedAt              time.Time `orm:"column(updated_at);type(datetime);auto_now;"`

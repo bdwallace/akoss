@@ -2,9 +2,10 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/astaxie/beego/orm"
-	"golang.org/x/crypto/bcrypt"
 	"library/common"
+	"library/components"
 	"models"
 	"time"
 )
@@ -12,7 +13,7 @@ import (
 type LoginController struct {
 	BaseController
 }
-
+/*
 func (c *LoginController) Post() {
 	//哈希校验成功后 更新 auth_key
 	//beego.Info(string(c.Ctx.Input.RequestBody))
@@ -53,4 +54,68 @@ func (c *LoginController) Post() {
 		c.SetJson(0, user, "")
 		return
 	}
+}
+
+ */
+func (c *LoginController) Post() {
+	//哈希校验成功后 更新 auth_key
+	//beego.Info(string(c.Ctx.Input.RequestBody))
+	postData := map[string]string{"user_password": "", "user_name": "", "ProjectId": "", "ProjectName": ""}
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &postData)
+	if err != nil {
+		c.SetJson(1, nil, "数据格式错误")
+		return
+	}
+	password := postData["user_password"]
+	userName := postData["user_name"]
+	ProjectId := common.StrToInt(postData["ProjectId"])
+	ProjectName := postData["ProjectName"]
+	if userName == "" || password == "" {
+		c.SetJson(1, nil, "用户名或密码不存在")
+		return
+	}
+
+	var user models.User
+	o := orm.NewOrm()
+	err = o.Raw("SELECT * FROM `user` WHERE username= ?", userName).QueryRow(&user)
+	if err != nil{
+		c.SetJson(1,nil,"akoss登录失败")
+		return
+	}
+	reqAuth := &components.AuthRequest{
+		UserName:   userName,
+		UserPwd:    password,
+		XToken:     user.XToken,
+		RequestUri: c.Controller.Ctx.Input.URL(),
+		Method:     c.Controller.Ctx.Input.Method(),
+	}
+	respAuth, err := c.AkossAuth(reqAuth)
+	if err != nil{
+		c.SetJson(1,nil,respAuth.Msg)
+		return
+	}
+
+	if !respAuth.AuthPassed {
+		fmt.Println("*************************")
+		fmt.Println("reqAuth.Uri: ",reqAuth.RequestUri)
+		fmt.Println("respAuth.AuthPassed: ",respAuth.AuthPassed)
+		fmt.Println("respAuth.Msg: ",respAuth.Msg)
+		fmt.Println("*************************")
+
+		if respAuth.Msg == "Couldn't handle this token:"{
+			c.SetJson(1,nil,"登录状态已过期，请重新登录")
+		}else {
+			c.SetJson(1,nil,respAuth.Msg)
+		}
+	}
+
+	userAuth := common.Md5String(user.Username + common.GetString(time.Now().Unix()))
+	user.AuthKey = userAuth
+	user.ProjectId = ProjectId
+	user.ProjectName = ProjectName
+	user.XToken = respAuth.XToken
+	models.UpdateUserById(&user)
+	user.PasswordHash = ""
+	c.SetJson(0, user, "")
+	return
 }

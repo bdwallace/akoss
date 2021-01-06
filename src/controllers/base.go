@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"fmt"
+	"library/components"
 	"runtime"
 
 	"models"
@@ -40,6 +42,7 @@ func (c *BaseController) Prepare() {
 		}
 	}()
 
+	c.User = new(models.User)
 	token := ""
 	if ah := c.Ctx.Input.Header("Authorization"); ah != "" {
 		if len(ah) > 5 && strings.ToUpper(ah[0:5]) == "TOKEN" {
@@ -52,12 +55,69 @@ func (c *BaseController) Prepare() {
 					c.User = &(users[0])
 				}
 				if s == 0 {
-					c.SetJson(1, "", "帐号已在其它地方登录!")
+					c.SetJson(1, "", "状态已过期，请重新登录")
 					return
 				}
 			}
 		}
 	}
+	c.BaseAkossAuth()
+}
+
+func (c *BaseController) BaseAkossAuth(){
+
+	inputURL :=  c.Controller.Ctx.Input.URL()
+	if CancelAuth(inputURL){
+		return
+	}
+	reqAuth := c.InitAuthRequestParam()
+	respAuth, err := c.AkossAuth(reqAuth)
+	if err != nil{
+		c.SetJson(1,nil,"鉴权已过期，请重新登录" )
+		return
+	}
+
+	if !respAuth.AuthPassed {
+		fmt.Println("=========================")
+		fmt.Println("reqAuth.Uri: ",reqAuth.RequestUri)
+		fmt.Println("respAuth.AuthPassed: ",respAuth.AuthPassed)
+		fmt.Println("respAuth.Msg: ",respAuth.Msg)
+		fmt.Println("=========================")
+
+		if respAuth.Msg == "Couldn't handle this token:"{
+			c.SetJson(1,nil,"登录状态已过期，请重新登录")
+		}else {
+			c.SetJson(1,nil,respAuth.Msg)
+		}
+	}
+}
+
+
+
+const CancelAuthUriProjectList = "/api/project/list"
+const CancelAuthUriLogin = "/login"
+const CancelAuthUriChangePwd = "/changePasswd"
+func CancelAuth(inputUrl string)bool{
+	cancelAuthList := make([]string,0)
+	cancelAuthList = append(cancelAuthList, CancelAuthUriProjectList)
+	cancelAuthList = append(cancelAuthList, CancelAuthUriLogin)
+	cancelAuthList = append(cancelAuthList, CancelAuthUriChangePwd)
+
+	for _, v := range cancelAuthList{
+		if v == inputUrl{
+			return true
+		}
+	}
+	return false
+}
+
+
+func (c *BaseController) AkossAuth(reqAuth *components.AuthRequest)(components.AuthRespones, error){
+
+	authUrl := beego.AppConfig.String("AuthUrl")
+	respAuth, err := reqAuth.HttpAuth(authUrl)
+
+	return respAuth,err
 }
 
 func (c *BaseController) SetJson(code int, data interface{}, Msg string) {
@@ -80,4 +140,36 @@ func (c *BaseController) ErrExit(errType string, Msg string) {
 	}
 	c.Data["json"] = map[string]interface{}{"code": 1, "msg": Msg, "data": nil}
 	c.ServeJSON()
+}
+
+/*
+	获取http鉴权所需参数
+ */
+func (c *BaseController) InitAuthRequestParam()(authReq *components.AuthRequest){
+
+	if c.User.XToken != "" {
+		c.Ctx.SetCookie("x-token",c.User.XToken)
+	}
+	authReq = &components.AuthRequest{
+		UserName:   c.User.Username,
+		UserPwd:    c.User.PasswordHash,
+		XToken:		c.User.XToken,
+		RequestUri: c.Controller.Ctx.Input.URL(),
+		Method:     c.Controller.Ctx.Input.Method(),
+	}
+
+	if authReq.UserName == "" {
+		fmt.Println("authReq.UserName is empty")
+	}
+	if authReq.UserPwd == "" {
+		fmt.Println("authReq.UserPwd is empty")
+	}
+	if authReq.RequestUri == "" {
+		fmt.Println("authReq.RequestUrl is empty")
+	}
+	if authReq.Method == "" {
+		fmt.Println("authReq.Method is empty")
+	}
+
+	return
 }

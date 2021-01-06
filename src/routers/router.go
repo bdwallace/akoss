@@ -49,7 +49,7 @@ func init() {
 	beego.Router("/logout", &controllers.LogoutController{})
 	beego.Router("/loginbydocke", &controllers.LoginByDockerController{})
 	beego.Router("/changePasswd", &controllers.ChangePasswdController{})
-	beego.Router("/register", &controllers.RegisterController{})
+	//beego.Router("/register", &controllers.RegisterController{})
 	beego.Router("/changeProject", &controllers.ProjectChangeController{})
 
 	beego.Router("/api/get/user", &usercontrollers.UserController{})
