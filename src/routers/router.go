@@ -6,6 +6,7 @@ package routers
 
 import (
 	"controllers"
+	akauthcontroller "controllers/akAuth"
 	backupcontrollers "controllers/backup"
 	cloudcontrollers "controllers/cloud"
 	confcontrollers "controllers/conf"
@@ -130,6 +131,9 @@ func init() {
 		),
 		beego.NSInclude(
 			&cloudcontrollers.CloudController{},
+		),
+		beego.NSInclude(
+			&akauthcontroller.AkAuthController{},
 		),
 	)
 	beego.AddNamespace(akNs)
