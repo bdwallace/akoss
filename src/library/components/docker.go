@@ -39,9 +39,14 @@ type BaseDocker struct {
 	*CMD
 	serviceAllCmd 		string
 	Cmds 				string
-
+	DockerCmd 			CmdObj
 }
 
+type CmdObj struct {
+	PullCmd 	string `json:"pull"`
+	RunCmd 		string `json:"run"`
+	CheckCmd 	string `json:"check"`
+}
 
 func (c *BaseDocker) SetBaseComponents(b BaseComponents) {
 	c.BaseComponents = b
@@ -587,15 +592,22 @@ func (c *BaseDocker) CreateDockerCmd(task *models.Task, count int,serviceClass s
 
 	if len(domainCmdAll) < 1 {
 		if isCheck {
-			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n","check",checkDeployHostsResultCmd, "pull",serviceCmdPullAll,"run",serviceCmdRunAll)
+			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n","docker-check",checkDeployHostsResultCmd, "docker-pull",serviceCmdPullAll,"docker-run",serviceCmdRunAll)
 		}else{
-			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n","pull",serviceCmdPullAll,"run",serviceCmdRunAll)
+			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n","docker-pull",serviceCmdPullAll,"docker-run",serviceCmdRunAll)
 		}
+
+		/*if isCheck {
+			c.DockerCmd.CheckCmd = checkDeployHostsResultCmd
+			c.DockerCmd.PullCmd = serviceCmdPullAll
+		} else {
+
+		}*/
 	}else{
 		if isCheck{
-			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n","check",checkDeployHostsResultCmd,"pull",serviceCmdPullAll,"run",serviceCmdRunAll,"domain",domainCmdAll)
+			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n","docker-check",checkDeployHostsResultCmd,"docker-pull",serviceCmdPullAll,"docker-run",serviceCmdRunAll,"docker-domain",domainCmdAll)
 		}else{
-			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n","pull",serviceCmdPullAll,"run",serviceCmdRunAll,"domain",domainCmdAll)
+			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n","docker-pull",serviceCmdPullAll,"docker-run",serviceCmdRunAll,"docker-domain",domainCmdAll)
 		}
 	}
 

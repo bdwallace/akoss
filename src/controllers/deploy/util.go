@@ -142,12 +142,12 @@ func (c *DeployController) getEveryoneCmd(cmd string) (retCmds []string){
 */
 func (c *DeployController) AnalyzeDockerCmd(allCmd string,class string) (checkResCmd string, pullResCmds []string,runResCmds []string,domainResCmds []string){
 
-	pullIndex := strings.Index(allCmd,"pull")
-	runIndex := strings.Index(allCmd,"run")
-	domainIndex := strings.Index(allCmd,"domain")
+	pullIndex := strings.Index(allCmd,"docker-pull")
+	runIndex := strings.Index(allCmd,"docker-run")
+	domainIndex := strings.Index(allCmd,"docker-domain")
 
 	if class == "java"{
-		checkIndex := strings.Index(allCmd,"check")
+		checkIndex := strings.Index(allCmd,"docker-check")
 		if checkIndex >= 0 {
 			checkAllCmd := allCmd[checkIndex:pullIndex]
 			checkResCmd = c.getCheckCmd(checkAllCmd)
