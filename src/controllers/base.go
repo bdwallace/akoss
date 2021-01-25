@@ -97,11 +97,13 @@ func (c *BaseController) BaseAkossAuth(){
 const CancelAuthUriProjectList = "/api/project/list"
 const CancelAuthUriLogin = "/login"
 const CancelAuthUriChangePwd = "/changePasswd"
+const CancelAuthToAkoss= "/api/akAuth"
 func CancelAuth(inputUrl string)bool{
 	cancelAuthList := make([]string,0)
 	cancelAuthList = append(cancelAuthList, CancelAuthUriProjectList)
 	cancelAuthList = append(cancelAuthList, CancelAuthUriLogin)
 	cancelAuthList = append(cancelAuthList, CancelAuthUriChangePwd)
+	cancelAuthList = append(cancelAuthList, CancelAuthToAkoss)
 
 	for _, v := range cancelAuthList{
 		if v == inputUrl{
@@ -130,6 +132,17 @@ func (c *BaseController) SetJson(code int, data interface{}, Msg string) {
 	c.Data["json"] = map[string]interface{}{"code": code, "msg": Msg, "data": data}
 	c.ServeJSON()
 }
+
+func (c *BaseController) SetAkAuthJson(code int, users []components.AkossUser, errMsg string) {
+	status := false
+	if code == 0 {
+		status = true
+	}
+
+	c.Data["json"] = map[string]interface{}{"status": status, "FailedUsers": users,"ErrMsg":errMsg}
+	c.ServeJSON()
+}
+
 
 func (c *BaseController) ErrExit(errType string, Msg string) {
 	switch errType {

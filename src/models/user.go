@@ -27,7 +27,7 @@ type User struct {
 	ProjectName			   string    `orm:"column(project_name)"`
 	IsDel 				   int 		 `orm:"column(is_del);default(0)"`
 	XToken				   string    `orm:"column(x_token);size(512);null"`
-
+	UserMenus			   string    `orm:"column(menus);size(4096);null"`
 	CreatedAt              time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
 	UpdatedAt              time.Time `orm:"column(updated_at);type(datetime);auto_now;"`
 }
@@ -54,6 +54,17 @@ func GetUserById(id int) (v *User, err error) {
 	o := orm.NewOrm()
 	v = &User{Id: id}
 	if err = o.Read(v); err == nil {
+		return v, nil
+	}
+	return nil, err
+}
+
+// GetUserById retrieves User by Id. Returns error if
+// Id doesn't exist
+func GetUserByName(name string) (v *User, err error) {
+	o := orm.NewOrm()
+	v = &User{Username: name}
+	if err = o.Read(v,"username"); err == nil {
 		return v, nil
 	}
 	return nil, err

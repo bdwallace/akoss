@@ -107,6 +107,7 @@ func (c *LoginController) Post() {
 		}else {
 			c.SetJson(1,nil,respAuth.Msg)
 		}
+		return
 	}
 
 	userAuth := common.Md5String(user.Username + common.GetString(time.Now().Unix()))
@@ -114,7 +115,20 @@ func (c *LoginController) Post() {
 	user.ProjectId = ProjectId
 	user.ProjectName = ProjectName
 	user.XToken = respAuth.XToken
-	models.UpdateUserById(&user)
+	menusBase := respAuth.Menus
+	rootMenu := components.FindRootMenu(menusBase)
+	menusTree := components.FindChild(&menusBase,&rootMenu)
+
+	menusJson, err := json.Marshal(menusTree.Child)
+	if err != nil{
+		c.SetJson(1,nil,"登录状态已过期，请重新登录")
+		return
+	}
+	user.UserMenus = string(menusJson)
+	if err := models.UpdateUserById(&user); err != nil{
+		fmt.Println("error: models.UpdateUserById failed  ",err)
+		c.SetJson(1, nil, "用户权限获取失败")
+	}
 	user.PasswordHash = ""
 	c.SetJson(0, user, "")
 	return
