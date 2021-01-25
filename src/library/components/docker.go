@@ -39,9 +39,14 @@ type BaseDocker struct {
 	*CMD
 	serviceAllCmd 		string
 	Cmds 				string
-
+	DockerCmd 			CmdObj
 }
 
+type CmdObj struct {
+	PullCmd 	string `json:"pull"`
+	RunCmd 		string `json:"run"`
+	CheckCmd 	string `json:"check"`
+}
 
 func (c *BaseDocker) SetBaseComponents(b BaseComponents) {
 	c.BaseComponents = b
@@ -51,12 +56,12 @@ func (c *BaseDocker) SetBaseComponents(b BaseComponents) {
 
 ///////////
 /*
-	docker run
+docker run
 */
 
 /*
-	初始化 基础参数
-	app.conf  docker 等配置
+初始化 基础参数
+app.conf  docker 等配置
 */
 func (c *BaseDocker) InitBaseParam()error{
 
@@ -73,7 +78,7 @@ func (c *BaseDocker) InitBaseParam()error{
 
 
 /*
-	初始化 app.conf 默认参数
+初始化 app.conf 默认参数
 */
 func (c *BaseDocker) InitDefaultParam()error{
 
@@ -88,7 +93,7 @@ func (c *BaseDocker) InitDefaultParam()error{
 
 
 /*
-	初始化 端口格式
+初始化 端口格式
 */
 func (c *BaseDocker) InitPort()error{
 
@@ -157,7 +162,7 @@ func (c *BaseDocker)DockerServiceHealth(host *models.Host, port string, have443 
 	if strings.Index(url, "/actuator/health") != -1 {
 		// 后端服务
 		body, _ := ioutil.ReadAll(response.Body)
-	if index := strings.Index(string(body), "UP"); index > 0 {
+		if index := strings.Index(string(body), "UP"); index > 0 {
 			health = "200"
 		}else {
 			health = "-1"
@@ -176,7 +181,7 @@ func (c *BaseDocker)DockerServiceHealth(host *models.Host, port string, have443 
 
 
 /*
-	执行 docker ps 查看容器和上下线状态
+执行 docker ps 查看容器和上下线状态
 */
 func (c *BaseDocker) DockerPs(lineData string) (res []map[string]string, err error) {
 	if lineData == "" {
@@ -259,8 +264,8 @@ func (c *BaseDocker) createDockerPull(dockerTag string, host *models.Host) (cmdP
 
 
 /*
-	执行 docker run 启动镜像
-	记录日志 等操作
+执行 docker run 启动镜像
+记录日志 等操作
 */
 func (c *BaseDocker) createDockerRun(dockerTag string, host *models.Host,ports string, public string,platformParam string)(cmdRun string, err error){
 
@@ -497,7 +502,7 @@ func (c *BaseDocker) CreateDockerCmd(task *models.Task, count int,serviceClass s
 	var encryptionDomain string
 	if serviceClass != "java" && len(task.Service.Platforms) != 0 {
 
-/*
+		/*
 		// 添加 playfrom param
 		if c.BaseComponents.Platform != nil{
 
@@ -521,7 +526,7 @@ func (c *BaseDocker) CreateDockerCmd(task *models.Task, count int,serviceClass s
 				return
 			}
 		}
-*/
+		*/
 		// 添加 playfrom param
 		if c.BaseComponents.Platform != nil{
 
@@ -587,15 +592,22 @@ func (c *BaseDocker) CreateDockerCmd(task *models.Task, count int,serviceClass s
 
 	if len(domainCmdAll) < 1 {
 		if isCheck {
-			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n","check",checkDeployHostsResultCmd, "pull",serviceCmdPullAll,"run",serviceCmdRunAll)
+			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n","docker-check",checkDeployHostsResultCmd, "docker-pull",serviceCmdPullAll,"docker-run",serviceCmdRunAll)
 		}else{
-			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n","pull",serviceCmdPullAll,"run",serviceCmdRunAll)
+			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n","docker-pull",serviceCmdPullAll,"docker-run",serviceCmdRunAll)
 		}
+
+		/*if isCheck {
+			c.DockerCmd.CheckCmd = checkDeployHostsResultCmd
+			c.DockerCmd.PullCmd = serviceCmdPullAll
+		} else {
+
+		}*/
 	}else{
 		if isCheck{
-			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n","check",checkDeployHostsResultCmd,"pull",serviceCmdPullAll,"run",serviceCmdRunAll,"domain",domainCmdAll)
+			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n","docker-check",checkDeployHostsResultCmd,"docker-pull",serviceCmdPullAll,"docker-run",serviceCmdRunAll,"docker-domain",domainCmdAll)
 		}else{
-			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n","pull",serviceCmdPullAll,"run",serviceCmdRunAll,"domain",domainCmdAll)
+			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n","docker-pull",serviceCmdPullAll,"docker-run",serviceCmdRunAll,"docker-domain",domainCmdAll)
 		}
 	}
 
@@ -674,7 +686,7 @@ func (c *BaseDocker)CreateCheckDeployHostsResultCmd(host *models.Host) (checkDep
 
 
 /*
-	解析 platform value 配置
+解析 platform value 配置
 */
 func (c *BaseDocker) AnalyzePlatformParam(encryptionDomain string) (resPlatformValue string, err error) {
 
@@ -701,6 +713,9 @@ func (c *BaseDocker) AnalyzePlatformParam(encryptionDomain string) (resPlatformV
 			keyStr = v.Value
 		}
 
+		if v.Key == "CHANNEL_NAME" || v.Key == "KEYWORDS" || v.Key == "META_DESC"{
+			v.Value = "'" + v.Value + "'"
+		}
 		subPara := fmt.Sprintf("-e %s=%s ",v.Key,v.Value)
 		resPlatformValue = resPlatformValue + subPara
 	}
@@ -728,8 +743,8 @@ func (c *BaseDocker) AnalyzePlatformParam(encryptionDomain string) (resPlatformV
 
 		vueEncryptValue, err := common.DesECBEncrypt(vueStr, keyStr)
 		if err != nil{
-				 return "", err
-				 }
+			return "", err
+		}
 
 		EncryptKey = "VUE_APP_CONFIG_ENCRYPTED_STR"
 		EncryptValue = vueEncryptValue
@@ -747,7 +762,7 @@ func (c *BaseDocker) AnalyzePlatformParam(encryptionDomain string) (resPlatformV
 
 
 /*
-	解析 public conf 配置
+解析 public conf 配置
 */
 func (c *BaseDocker) GetPublicEncryptParam(emqttPublicParam string) (emqttUser string, emqttPwd string) {
 
@@ -807,7 +822,7 @@ func (c *BaseDocker) GetPublicEncryptParam(emqttPublicParam string) (emqttUser s
 
 
 /*
-	解析 public conf 配置
+解析 public conf 配置
 */
 
 func (c *BaseDocker) AnalyzePublicParam() (public string, err error) {
@@ -855,7 +870,7 @@ func (c *BaseDocker)AnalyzeServiceValueHostId(serviceValue string)string{
 }
 
 /*
-	解析 service_Value 公共 配置
+解析 service_Value 公共 配置
 */
 
 func (c *BaseDocker) AnalyzePrivateParam(hostId int) (private string ,err error){
@@ -880,8 +895,8 @@ func (c *BaseDocker) AnalyzePrivateParam(hostId int) (private string ,err error)
 
 
 /**
- * build镜像
- */
+* build镜像
+*/
 func (c *BaseDocker) Build(operationRecord *models.OperationRecord) (repoTag string, err error) {
 	name := c.BaseComponents.Service.Name
 
@@ -945,8 +960,8 @@ func (c *BaseDocker) Build(operationRecord *models.OperationRecord) (repoTag str
 
 
 /**
- * 控制docker重启
- */
+* 控制docker重启
+*/
 func (c *BaseDocker) Restart(operationRecord *models.OperationRecord) error {
 	//dockermanager := beego.AppConfig.String("dockerManager")
 	//c.BaseComponents.Docker.Port
@@ -981,8 +996,8 @@ func (c *BaseDocker) Restart(operationRecord *models.OperationRecord) error {
 
 
 /**
- * 控制docker关闭
- */
+* 控制docker关闭
+*/
 func (c *BaseDocker) Stop(operationRecord *models.OperationRecord) error {
 	//dockermanager := beego.AppConfig.String("dockerManager")
 	//c.BaseComponents.Docker.Port
@@ -1018,8 +1033,8 @@ func (c *BaseDocker) Stop(operationRecord *models.OperationRecord) error {
 
 
 /**
- * 控制docker nginx reload 重载
- */
+* 控制docker nginx reload 重载
+*/
 func (c *BaseDocker)Reload(operationRecord *models.OperationRecord) error {
 	//dockermanager := beego.AppConfig.String("dockerManager")
 
@@ -1049,8 +1064,8 @@ func (c *BaseDocker)Reload(operationRecord *models.OperationRecord) error {
 
 
 /**
- * 下载站之类的应用下载ZIP包
- */
+* 下载站之类的应用下载ZIP包
+*/
 func (c *BaseDocker) DownloadZip(operationRecord *models.OperationRecord) (string, error) {
 	dockermanager := beego.AppConfig.String("dockerManager")
 
@@ -1093,8 +1108,8 @@ func (c *BaseDocker) DownloadZip(operationRecord *models.OperationRecord) (strin
 
 
 /**
- * 检查docker的项目某hots的ps数
- */
+* 检查docker的项目某hots的ps数
+*/
 func (c *BaseDocker) GetStatusHost(host string) (res []map[string]string, err error) {
 
 	dockerPort := beego.AppConfig.String("dockerport")
