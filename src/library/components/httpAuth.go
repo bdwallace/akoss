@@ -35,8 +35,8 @@ type AuthRespones struct {
 type MenusAuth struct {
 	Id 			int 	`gorm:"id" json:"id"`
 	ParentId 	int		`gorm:"parent_id" json:"parent_id"`
-	Title 		string	`gorm:"title" json:"tile"`
-	Name 		string	`gorm:"name" json:"name"`
+	Title 		string	`gorm:"title" json:"title"`
+	//Name 		string	`gorm:"name" json:"name"`
 	Path 		string	`gorm:"path" json:"path"`
 	Icon 		string	`gorm:"icon" json:"icon"`
 	Child 		[]MenusAuth

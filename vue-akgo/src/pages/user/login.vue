@@ -59,7 +59,7 @@
                 load_data: false
             }
         },
-        
+
         created() {
           this.get_project_list()
         },
@@ -77,7 +77,7 @@
                     this.load_data = false
                 })
             },
-            
+
         //提交
         submit_form() {
             this.$refs.form.validate((valid) => {

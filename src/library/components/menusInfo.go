@@ -61,7 +61,7 @@ func FindChild(menus *[]MenusAuth, m *MenusAuth)(Node *MenusAuth){
 	if menusLen == 0 {
 		return nil
 	}
-	m.Title = m.Name
+	//m.Title = m.
 	m.Icon = MenuIcon(m)
 	for i := 0; i < menusLen; i++ {
 		if m.Id == (*menus)[i].ParentId {

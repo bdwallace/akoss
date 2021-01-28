@@ -489,15 +489,21 @@ router.beforeEach((to, from, next) => {
     let is_login = store.state.user_info.login
 
 
+    // 未登录， 并且 toName == searchtaskList
     if (!is_login && toName === 'searchtaskList') {
         next();
+
+      // 未登录， 并且 toName == searchtaskRelease
     } else if (!is_login && toName === 'searchtaskRelease') {
         next({});
+
+      // 未登录， 并且 toName != login
     } else if (!is_login && toName !== 'login') {
         next({
             name: 'login'
         });
     } else {
+        // 已登录， toName == login
         if (is_login && toName === 'login') {
             next({
                 path: '/task/list'
