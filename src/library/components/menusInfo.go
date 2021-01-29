@@ -1,4 +1,11 @@
 package components
+
+import (
+	"models"
+	"strconv"
+	"strings"
+)
+
 /*
 func UserMenusInfo(menus []MenusAuth)(rootNode MenusAuth) {
 
@@ -75,6 +82,15 @@ func FindChild(menus *[]MenusAuth, m *MenusAuth)(Node *MenusAuth){
 	respMenus := make([]MenusAuth,0)
 	copy(respMenus,m.Child)
 	return m
+}
+
+
+func FindDeployList(menus *[]MenusAuth, u models.User) {
+	for i := 0; i < len(*menus); i++ {
+		if  strings.Contains((*menus)[i].Path,"/deploy/list/") {
+			(*menus)[i].Path += strconv.Itoa(u.Id)
+		}
+	}
 }
 
 func MenuIcon(m *MenusAuth) (icon string){

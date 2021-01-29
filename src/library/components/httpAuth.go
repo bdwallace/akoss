@@ -39,7 +39,7 @@ type MenusAuth struct {
 	//Name 		string	`gorm:"name" json:"name"`
 	Path 		string	`gorm:"path" json:"path"`
 	Icon 		string	`gorm:"icon" json:"icon"`
-	Child 		[]MenusAuth
+	Child 		[]MenusAuth `json:"child"`
 }
 
 

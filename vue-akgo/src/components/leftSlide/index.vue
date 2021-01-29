@@ -17,7 +17,7 @@
                         :key="index">
                     <el-menu-item
                             class="menu-list"
-                            v-if="typeof item.child === 'undefined'"
+                            v-if="typeof item.child === 'null'"
                             :index="item.path">
                         <i class="icon fa" :class="item.icon"></i>
                         <span v-text="item.title" class="text"></span>
@@ -48,7 +48,6 @@
   export default {
     data(){
       return{
-        // current_user:
         title: store.state.user_info.user.ProjectName,
         user_menus: [],
       }

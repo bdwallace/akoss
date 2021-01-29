@@ -116,9 +116,9 @@ func (c *LoginController) Post() {
 	user.ProjectName = ProjectName
 	user.XToken = respAuth.XToken
 	menusBase := respAuth.Menus
+	components.FindDeployList(&menusBase,user)
 	rootMenu := components.FindRootMenu(menusBase)
 	menusTree := components.FindChild(&menusBase,&rootMenu)
-
 	menusJson, err := json.Marshal(menusTree.Child)
 	if err != nil{
 		c.SetJson(1,nil,"登录状态已过期，请重新登录")
