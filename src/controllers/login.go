@@ -130,6 +130,14 @@ func (c *LoginController) Post() {
 		c.SetJson(1, nil, "用户权限获取失败")
 	}
 	user.PasswordHash = ""
+	if c.User.XToken != "" {
+		c.Ctx.SetCookie("x-token",c.User.XToken)
+	}
+	resUserInfo := map[string]interface{}{"user": user, "login": true}
+	userInfoJson, err := json.Marshal(resUserInfo)
+
+	c.Ctx.SetCookie("gopub_userinfo", string(userInfoJson), 3600*24*2, "/")
+
 	c.SetJson(0, user, "")
 	return
 }

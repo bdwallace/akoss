@@ -160,9 +160,9 @@ func (c *BaseController) ErrExit(errType string, Msg string) {
  */
 func (c *BaseController) InitAuthRequestParam()(authReq *components.AuthRequest){
 
-	if c.User.XToken != "" {
-		c.Ctx.SetCookie("x-token",c.User.XToken)
-	}
+	//if c.User.XToken != "" {
+	//	c.Ctx.SetCookie("x-token",c.User.XToken)
+	//}
 	authReq = &components.AuthRequest{
 		UserName:   c.User.Username,
 		UserPwd:    c.User.PasswordHash,
