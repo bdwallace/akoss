@@ -24,7 +24,9 @@ RUN npm config set strict-ssl false && \
     npm install vue-wechat-title  && \
     npm install file-saver xlsx  && \
     npm install node-sass sass-loader --unsafe-perm  && \
-    npm install --unsafe-perm 
+    npm install --unsafe-perm && \
+    npm install vuex-persistedstate --save
+
 #RUN npm config set unsafe_perm true && \
 #    npm config set strict-ssl false && \
 #    npm install --unsafe-perm
