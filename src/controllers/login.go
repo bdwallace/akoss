@@ -119,6 +119,10 @@ func (c *LoginController) Post() {
 	components.FindDeployList(&menusBase,user)
 	rootMenu := components.FindRootMenu(menusBase)
 	menusTree := components.FindChild(&menusBase,&rootMenu)
+	if menusTree == nil{
+		c.SetJson(1,nil,"菜单权限校验失败,请联系管理员")
+		return
+	}
 	menusJson, err := json.Marshal(menusTree.Child)
 	if err != nil{
 		c.SetJson(1,nil,"登录状态已过期，请重新登录")
