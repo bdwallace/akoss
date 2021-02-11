@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"fmt"
 	"reflect"
 	"strings"
 	"time"
@@ -152,16 +151,9 @@ func GetAllUser(query map[string]string, fields []string, sortby []string, order
 // the record to be updated doesn't exist
 func UpdateUserById(m *User) (err error) {
 	o := orm.NewOrm()
-	v := User{Id: m.Id}
-	// ascertain id exists in the database
-	if err = o.Read(&v); err != nil {
-		fmt.Println("error: UpdateUserById Read", err)
-		return
-	}
 
 	if _, err = o.Update(m); err != nil {
-		fmt.Println("error: UpdateUserById Update", err)
-		return
+		return err
 	}
 
 	return
