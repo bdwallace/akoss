@@ -138,6 +138,9 @@ func (req *AkossRequest) AkossRigsterUser() (akossResp AkossResponse, err error)
 	registerUser.CreatedAt = time.Now()
 	registerUser.UpdatedAt = time.Now()
 
+	fmt.Println("query user name: ",req.Users[0].UserName)
+	fmt.Println("u.name: ",u.Username, "  u.AuthKey: ",u.AuthKey, "  u.xtoken: ",u.XToken)
+
 	if u.Id != 0 {
 		//akossResp.Status = false
 		//respUser.UserName = req.Users[0].UserName
@@ -145,8 +148,10 @@ func (req *AkossRequest) AkossRigsterUser() (akossResp AkossResponse, err error)
 		//akossResp.FailedUsers = append(akossResp.FailedUsers,respUser)
 		//err = fmt.Errorf("akoss 该用户存在")
 
+		fmt.Println("用户已存在，更新用户信息")
 		// 用户存在 更新用户信息
 		if err := models.UpdateUserById(registerUser); err != nil{
+			fmt.Println("更新用户失败")
 			akossResp.Status = false
 			respUser.UserName = req.Users[0].UserName
 			respUser.Msg = "akoss用户已存在， 更新用户信息失败"
@@ -154,8 +159,10 @@ func (req *AkossRequest) AkossRigsterUser() (akossResp AkossResponse, err error)
 		}
 
 	}else {
+		fmt.Println("用户已存在，添加用户")
 		// 用户不存在 添加用户
 		if _, err = models.AddUser(registerUser); err != nil{
+			fmt.Println("添加用户失败")
 			akossResp.Status = false
 			respUser.UserName = req.Users[0].UserName
 			respUser.Msg = "akoss用户不存在， 添加用户失败"
