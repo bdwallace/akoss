@@ -118,5 +118,7 @@ func (c *ChangePasswdController) Post() {
 	} else {
 		c.SetJson(1, nil, "两次密码输入不一致，请重新输入")
 	}
+
+	c.SetJson(0, nil, "密码更改成功请重新登录")
 	return
 }
