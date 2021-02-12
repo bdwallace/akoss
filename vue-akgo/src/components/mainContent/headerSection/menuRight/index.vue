@@ -20,12 +20,12 @@
                             <span>密码修改</span>
                         </a>
                     </el-dropdown-item>
-                    <el-dropdown-item class="dropdown-list">
-                        <a href="javascript:" class="dropdown-btn" @click="user_click(2)">
-                            <i class="icon fa fa-cog"></i>
-                            <span>注册用户</span>
-                        </a>
-                    </el-dropdown-item>
+<!--                    <el-dropdown-item class="dropdown-list">-->
+<!--                        <a href="javascript:" class="dropdown-btn" @click="user_click(2)">-->
+<!--                            <i class="icon fa fa-cog"></i>-->
+<!--                            <span>注册用户</span>-->
+<!--                        </a>-->
+<!--                    </el-dropdown-item>-->
                     <el-dropdown-item class="dropdown-list">
                         <a href="javascript:" class="dropdown-btn" @click="user_click(0)">
                             <i class="icon fa fa-sign-out"></i>
@@ -130,7 +130,7 @@
                     this.project_list = data
                 })
             },
-            
+
             project_change(project) {
                 this.$http.get(port_user.projectchange, {
                         params: {
