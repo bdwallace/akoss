@@ -3,7 +3,6 @@ package components
 import (
 	"models"
 	"strconv"
-	"strings"
 )
 
 /*
@@ -87,7 +86,8 @@ func FindChild(menus *[]MenusAuth, m *MenusAuth)(Node *MenusAuth){
 
 func FindDeployList(menus *[]MenusAuth, u models.User) {
 	for i := 0; i < len(*menus); i++ {
-		if  strings.Contains((*menus)[i].Path,"/deploy/list/") {
+		//if  strings.Contains((*menus)[i].Path,"/deploy/list/") {
+		if (*menus)[i].Path == "/deploy/list/" {
 			(*menus)[i].Path += strconv.Itoa(u.Id)
 		}
 	}

@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"library/components"
+	"os"
 	"runtime"
 
 	"models"
@@ -116,7 +117,8 @@ func CancelAuth(inputUrl string)bool{
 
 func (c *BaseController) AkossAuth(reqAuth *components.AuthRequest)(components.AuthRespones, error){
 
-	authUrl := beego.AppConfig.String("AuthUrl")
+	//authUrl := beego.AppConfig.String("AuthUrl")
+	authUrl := os.Getenv("auth_url")
 	respAuth, err := reqAuth.HttpAuth(authUrl)
 
 	return respAuth,err
