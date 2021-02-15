@@ -87,14 +87,13 @@ func (c *DomainController)AddDomain(){
 			return
 		}
 
-		id, err := models.AddDomain(domains)
+		_, err := models.AddDomain(domains)
 		if err != nil{
 			fmt.Println("error:  ",err)
 			c.SetJson(1,nil,"新建 domain 失败")
 			return
 		}
 
-		domain.Id = int(id)
 		err = models.AddDomainAndRelated(domain)
 		if err != nil{
 			fmt.Println("error:  ",err)
@@ -312,7 +311,7 @@ func (c *DomainController)DeleteDomainById(){
 
 	num, err := models.DeleteDomainById(id)
 	if err != nil {
-		c.SetJson(1,err,"删除 host 失败")
+		c.SetJson(1,err,"删除 domian 失败,请先删除关联关系")
 		return
 	}
 

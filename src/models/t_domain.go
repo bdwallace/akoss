@@ -329,11 +329,21 @@ func AddDomainAndRelated(domain *Domain)error {
 
 	o := orm.NewOrm()
 
+	tempDomain := new(Domain)
+	tempDomain.Name = domain.Name
+	err := o.QueryTable(domainTableName).Filter("name", tempDomain.Name).RelatedSel().One(tempDomain)
+	if err != nil {
+		err = fmt.Errorf("error: get domain by domain name fail %s\n",err)
+		return err
+	}
+	domain.Id = tempDomain.Id
+
 	// 校验 platform 数据 是否为 nil
 	if len(domain.Platforms) != 0{
 		// 建立 platform 关系, 插入domain_platform表 platform 数据
 		m2mForDomainAndPlatform := o.QueryM2M(domain,"Platforms")
-		_, err := m2mForDomainAndPlatform.Add(domain.Platforms)
+		n, err := m2mForDomainAndPlatform.Add(domain.Platforms)
+		fmt.Println("n = ",n)
 		if err != nil{
 			fmt.Println("error:  m2mForServiceAndHost.Add(domain.Plaftforms):  ",err)
 			return err
@@ -405,8 +415,6 @@ func UpdateDomainAndRelated(domain *Domain) (err error) {
 	if _, err = m2mForDomainAndPlatforms.Clear(); err != nil{
 		return
 	}
-
-
 
 
 	// // 加载到domain加载的Services关系，直接全部清除
