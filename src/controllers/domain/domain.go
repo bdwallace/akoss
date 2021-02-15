@@ -93,12 +93,15 @@ func (c *DomainController)AddDomain(){
 			c.SetJson(1,nil,"新建 domain 失败")
 			return
 		}
-
-		err = models.AddDomainAndRelated(domain)
-		if err != nil{
-			fmt.Println("error:  ",err)
-			c.SetJson(1,nil,"添加 domain 多对多关系 失败")
-			return
+		for _, d := range domains{
+			resDomian, err := models.GetDomainByDomain(d)
+			d.Id = resDomian.Id
+			err = models.AddDomainAndRelated(d)
+			if err != nil{
+				fmt.Println("error:  ",err)
+				c.SetJson(1,nil,"添加 domain 多对多关系 失败")
+				return
+			}
 		}
 	}
 

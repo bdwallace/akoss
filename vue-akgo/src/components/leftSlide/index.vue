@@ -58,8 +58,6 @@
     methods: {
      get_user_menus() {
        this.user_menus = JSON.parse(store.state.user_info.user.UserMenus)
-       console.log('------',this.user_menus)
-       console.log('string------',store.state.user_info.login)
      }
     }
   }
