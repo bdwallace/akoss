@@ -1462,7 +1462,7 @@
                 }
             }
         },
-        "/domain/platformAndClass/": {
+        "/domain/platformAndClass": {
             "get": {
                 "tags": [
                     "controllers/domainDomainController"

@@ -973,7 +973,7 @@ paths:
           description: 删除 domain host by id 失败
         "2":
           description: User not found
-  /domain/platformAndClass/:
+  /domain/platformAndClass:
     get:
       tags:
       - controllers/domainDomainController

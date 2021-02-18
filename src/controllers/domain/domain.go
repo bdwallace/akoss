@@ -166,7 +166,7 @@ func (c *DomainController)GetDomainList() {
 // @Success 0 {object} models.Domain
 // @Failure 1 获取所有 domain 失败
 // @Failure 2 User not found
-// @router /domain/platformAndClass/ [get]
+// @router /domain/platformAndClass [get]
 func (c *DomainController)GetDomainByPlatformAndClass() {
 
 	platformId, err := c.GetInt("platform_id")

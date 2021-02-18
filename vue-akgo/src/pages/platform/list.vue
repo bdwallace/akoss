@@ -16,8 +16,13 @@
                 <el-button type="success" size="small" icon="setting" @click="get_service_status_all()" :loading="on_submit_loading">全部检测</el-button>
             </div>
 
-            <div style="float: left;margin-right: 10px;margin-top: 5px;">
-                <el-select v-model="Class" clearable placeholder="按类型发布" style="width:120px">
+          <div style="float: left;margin-right: 10px;margin-top: 5px;">
+            <el-button type="warning" size="small" icon="setting" @click=" " :loading="on_submit_loading">批量重载</el-button>
+          </div>
+
+
+          <div style="float: left;margin-right: 10px;margin-top: 5px;">
+                <el-select v-model="Class" clearable placeholder="服务类型选择" style="width:120px">
                     <el-option
                     v-for="item in itemClass"
                     :key="item"
@@ -53,7 +58,7 @@
                     style="width: 100%;">
                 <el-table-column type="expand">
                     <template scope="props">
-                        
+
                     <!-- @select="select"
                     @select-all="select_all(props.$index)" -->
             <el-table
@@ -93,7 +98,7 @@
                         sortable
                         label="最新版本">
                 </el-table-column>
-                
+
                 <el-table-column
                         prop="Port"
                         label="端口"
@@ -135,7 +140,7 @@
 
                             <el-input readonly style="width: 220px" size="mini" v-model="item.ps_image">
                             </el-input>
-                                                       
+
                             <div style="display: inline-block;margin-right:10px">
                                 <el-tooltip effect="light" :content="item.url" placement="left">
                                     j<el-tag v-if="item.health=='200'" size="mini" type="primary">健康</el-tag>
@@ -144,10 +149,10 @@
                             </div>
 
                             <el-button style="margin-right:-12px" size="mini" type="primary" @click="reload(service_props.row, service_props.row.Hosts[index])" :loading="on_submit_loading">重载
-                            </el-button>    
+                            </el-button>
 
                             <el-button style="margin-right:-12px" size="mini" type="primary" @click="stop(service_props.row, service_props.row.Hosts[index])" :loading="on_submit_loading">关闭
-                            </el-button> 
+                            </el-button>
 
                             <el-button style="margin-right:-12px" v-if="service_props.row.ReleaseTo !== ''" size="mini" type="primary" @click="download(props.row.Project, service_props.row, service_props.row.Hosts[index])">下载</el-button>
                         </div>
@@ -162,7 +167,7 @@
                     <template scope="service_props">
                         <router-link v-if="service_props.row.ReleaseTo" :to="{name: 'serviceUpload', params: {id: service_props.row.Id}}" tag="span">
                             <el-button  type="primary" size="mini" >上传</el-button>
-                        </router-link>  
+                        </router-link>
                     </template>
                 </el-table-column>
 
@@ -238,13 +243,13 @@
             @update:visible="close_dialog()"
             @close="close_dialog()"
             :close-on-click-modal="true" -->
-        <el-dialog title="确认发布以下服务" 
+        <el-dialog title="确认发布以下服务"
             :visible.sync="is_classDialog"
             :modal="true"
             :show-close="false"
             :modal-append-to-body="false">
             <!-- <div  v-for="(item, index) in dialogForm" :key="item" style="width: 200px;display: inline-block;">
-                <el-tag :closable="true" type="primary" 
+                <el-tag :closable="true" type="primary"
                     @close="dialogForm.splice(index, 1)"
                     style="align:online">
                     {{item.Name}}
@@ -260,7 +265,7 @@
             </div>
         </el-dialog>
 
-        <el-dialog title="以下有未解除关联的域名，是否同时删除！" 
+        <el-dialog title="以下有未解除关联的域名，是否同时删除！"
             :visible.sync="is_delDomainDialog"
             :modal="true"
             :show-close="false"
@@ -312,7 +317,7 @@
     export default{
         data(){
             return {
-                ProjectId: store.state.user_info.user.ProjectId, 
+                ProjectId: store.state.user_info.user.ProjectId,
                 table_data: [],
                 checkTable: [],
                 form: [],
@@ -328,7 +333,7 @@
                 is_classDialog: false,
                 is_delDomainDialog: false,
                 del_Domain: [],
-                
+
                 stop: walle_stop.stop,
                 restart: walle_restart.restart,
                 reload: walle_reload.reload,
@@ -360,10 +365,10 @@
                     this.load_data = false
                 })
             },
-            
+
             // handleSelectionChange(val) {
             //     this.form = val;
-            // }, 
+            // },
 
             initItemClass() {
                 this.itemClass = []
@@ -372,7 +377,7 @@
                     this.checkTable.push(null)
                     for(let j in this.table_data[i].Services) {
                         if (this.itemClass.indexOf(this.table_data[i].Services[j].Class) == -1) {
-                           this.itemClass.push(this.table_data[i].Services[j].Class) 
+                           this.itemClass.push(this.table_data[i].Services[j].Class)
                         }
                     }
                 }
@@ -381,14 +386,14 @@
             getRowKeys(row) {
                 return row.Id;
             },
-            
+
             select(val, row) {
                 // this.form = val;
                 // console.log("---val---", val)
                 // console.log("---row---", row)
                 // let v = val.indexOf(row)
                 // if (v == -1) {
-                //     this.form.splice(v) 
+                //     this.form.splice(v)
                 // } else {
                 //     this.form.push(row)
                 // }
@@ -396,14 +401,14 @@
                 if (v == -1) {
                     this.form.push(row)
                 } else {
-                    this.form.splice(v) 
+                    this.form.splice(v)
                 }
                 // console.log("---form---", this.form)
-            }, 
+            },
 
             select_change(selection, index) {
                 this.checkTable[index] = selection
-            }, 
+            },
 
             select_all(index) {
                 // console.log("---i---", index)
@@ -416,7 +421,7 @@
                         }
                     }
                 }
-            }, 
+            },
 
             expand(row, expanded) {
                 let index = this.table_data.indexOf(row)
@@ -493,7 +498,7 @@
                     for(let i in this.table_data) {
                         for(let j in this.table_data[i].Services) {
                             if (this.table_data[i].Services[j].Class == this.Class) {
-                                this.dialogFormAll.push(this.table_data[i].Services[j]) 
+                                this.dialogFormAll.push(this.table_data[i].Services[j])
                             }
                         }
                     }
@@ -550,7 +555,7 @@
                 this.load_data = false
                 this.on_submit_loading = false
             },
-            
+
             download(project, service, host) {
                 this.on_submit_loading = true
                 this.load_data = true
@@ -597,7 +602,7 @@
                     this.$http.post(port_walle.reload, walle_form)
                     .then(({data: {data}}) => {
                         this.on_submit_loading = false
-                        this.load_data = false                                
+                        this.load_data = false
                         this.$message({
                             message: "发送重载成功",
                             type: 'success'
@@ -631,7 +636,7 @@
                     this.$http.post(port_walle.stop, walle_form)
                     .then(({data: {data}}) => {
                         this.on_submit_loading = false
-                        this.load_data = false                                
+                        this.load_data = false
                         this.$message({
                            message: "发送关闭成功",
                             type: 'success'
@@ -743,7 +748,7 @@
                     this.load_data = false
                 })
             },
-            
+
             //复制项目
             copy_data(index, id){
                 this.$confirm('是否复制项目?', '提示', {

@@ -11,6 +11,6 @@ exports.copy = "/api/domain/copy"
 //提交tag
 exports.tagcmd = "/api/domain/tagcmd"
 //按平台id和class查询域名
-exports.noquickenlist = "/api/domain/platformAndClass/"
+exports.noquickenlist = "/api/domain/platformAndClass"
 //列出domain中所有的class
 exports.class = "/api/domain/class"
