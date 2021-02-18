@@ -73,7 +73,7 @@ func init() {
     beego.GlobalControllerRouter["controllers/domain:DomainController"] = append(beego.GlobalControllerRouter["controllers/domain:DomainController"],
         beego.ControllerComments{
             Method: "GetDomainByPlatformAndClass",
-            Router: `/domain/platformAndClass/`,
+            Router: `/domain/platformAndClass`,
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,

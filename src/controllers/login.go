@@ -79,7 +79,7 @@ func (c *LoginController) Post() {
 	o := orm.NewOrm()
 	err = o.Raw("SELECT * FROM `user` WHERE username= ?", userName).QueryRow(&user)
 	if err != nil{
-		c.SetJson(1,nil,"akoss登录失败")
+		c.SetJson(1,nil,"登录失败，没有该用户，请联系管理员")
 		return
 	}
 	reqAuth := &components.AuthRequest{

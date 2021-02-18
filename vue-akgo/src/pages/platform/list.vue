@@ -16,9 +16,9 @@
                 <el-button type="success" size="small" icon="setting" @click="get_service_status_all()" :loading="on_submit_loading">全部检测</el-button>
             </div>
 
-          <div style="float: left;margin-right: 10px;margin-top: 5px;">
-            <el-button type="warning" size="small" icon="setting" @click=" " :loading="on_submit_loading">批量重载</el-button>
-          </div>
+<!--          <div style="float: left;margin-right: 10px;margin-top: 5px;">-->
+<!--            <el-button type="warning" size="small" icon="setting" @click=" " :loading="on_submit_loading">批量重载</el-button>-->
+<!--          </div>-->
 
 
           <div style="float: left;margin-right: 10px;margin-top: 5px;">
