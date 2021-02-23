@@ -181,7 +181,7 @@ func (c *BaseComponents) LocalOther(command string, timeout int, action int, re 
 		s.Result = fmt.Sprintf("%s: cmd time out", re.Host.UseIp)
 		beego.Error(s.Result)
 	}
-	duration := common.GetInt(s.EndTime.Sub(s.StartTime).Seconds())
+	//duration := common.GetInt(s.EndTime.Sub(s.StartTime).Seconds())
 	//createdAt := time.Now()
 	status := 1
 	if s.Error != nil {
@@ -197,7 +197,7 @@ func (c *BaseComponents) LocalOther(command string, timeout int, action int, re 
 	re.Command = command
 	sResult, _ := json.Marshal(s)
 	re.Memo = string(sResult)
-	re.Duration = duration
+	//re.Duration = duration
 	re.Status = int16(status)
 	re.User = c.User
 	_, err = models.AddOperationRecord(re)

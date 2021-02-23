@@ -14,6 +14,8 @@ exports.download = "/api/walle/download"
 exports.build = "/api/walle/build"
 //重载docker
 exports.reload = "/api/walle/reload"
+//批量重载docker
+exports.multireload = "/api/walle/multiReload"
 //重启docker
 exports.restart = "/api/walle/restart"
 //停止docker
