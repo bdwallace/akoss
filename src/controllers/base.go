@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"library/components"
 	"os"
 	"runtime"
@@ -94,19 +96,25 @@ func (c *BaseController) BaseAkossAuth(){
 }
 
 
+var apiWhiteList map[string]string
 
-const CancelAuthUriProjectList = "/api/project/list"
-const CancelAuthUriLogin = "/login"
-const CancelAuthUriChangePwd = "/changePasswd"
-const CancelAuthToAkoss= "/api/akAuth"
+func init(){
+	apiWhiteList = make(map[string]string)
+
+	apiWhiteListPath := beego.AppConfig.String("apiWhiteListPath")
+	confData, err := ioutil.ReadFile(apiWhiteListPath)
+	if err != nil{
+		panic("读取配置文件失败 apiWhiteList ")
+	}
+
+	if err := json.Unmarshal(confData,&apiWhiteList); err != nil{
+		panic("解析配置文件失败 apiWhiteList ")
+	}
+}
+
 func CancelAuth(inputUrl string)bool{
-	cancelAuthList := make([]string,0)
-	cancelAuthList = append(cancelAuthList, CancelAuthUriProjectList)
-	cancelAuthList = append(cancelAuthList, CancelAuthUriLogin)
-	cancelAuthList = append(cancelAuthList, CancelAuthUriChangePwd)
-	cancelAuthList = append(cancelAuthList, CancelAuthToAkoss)
 
-	for _, v := range cancelAuthList{
+	for _, v := range apiWhiteList {
 		if v == inputUrl{
 			return true
 		}

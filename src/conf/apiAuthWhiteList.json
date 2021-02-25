@@ -1,0 +1,7 @@
+{
+  "apiProjectList" : "/api/project/list",
+  "apiLogin" : "/login",
+  "apiChangePwd" : "/changePasswd",
+  "apiAuthToAkoss" : "/api/akAuth",
+  "apiDomainMonitor" : "/api/domain/monitor"
+}
