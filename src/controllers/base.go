@@ -33,6 +33,22 @@ type BaseController struct {
 
 }
 
+var apiWhiteList map[string]string
+
+func init(){
+	apiWhiteList = make(map[string]string)
+
+	apiWhiteListPath := beego.AppConfig.String("apiWhiteListPath")
+	confData, err := ioutil.ReadFile(apiWhiteListPath)
+	if err != nil{
+		panic("读取配置文件失败 apiWhiteList ")
+	}
+
+	if err := json.Unmarshal(confData,&apiWhiteList); err != nil{
+		panic("解析配置文件失败 apiWhiteList ")
+	}
+}
+
 // Prepare implemented Prepare method for baseRouter.
 func (c *BaseController) Prepare() {
 
@@ -96,21 +112,6 @@ func (c *BaseController) BaseAkossAuth(){
 }
 
 
-var apiWhiteList map[string]string
-
-func init(){
-	apiWhiteList = make(map[string]string)
-
-	apiWhiteListPath := beego.AppConfig.String("apiWhiteListPath")
-	confData, err := ioutil.ReadFile(apiWhiteListPath)
-	if err != nil{
-		panic("读取配置文件失败 apiWhiteList ")
-	}
-
-	if err := json.Unmarshal(confData,&apiWhiteList); err != nil{
-		panic("解析配置文件失败 apiWhiteList ")
-	}
-}
 
 func CancelAuth(inputUrl string)bool{
 
@@ -125,8 +126,14 @@ func CancelAuth(inputUrl string)bool{
 
 func (c *BaseController) AkossAuth(reqAuth *components.AuthRequest)(components.AuthRespones, error){
 
-	//authUrl := beego.AppConfig.String("AuthUrl")
-	authUrl := os.Getenv("auth_url")
+	var authUrl string
+
+	if beego.BConfig.RunMode == "dev" {
+		authUrl = beego.AppConfig.String("AuthUrl")
+	}else{
+		authUrl = os.Getenv("auth_url")
+	}
+
 	respAuth, err := reqAuth.HttpAuth(authUrl)
 
 	return respAuth,err
@@ -170,9 +177,6 @@ func (c *BaseController) ErrExit(errType string, Msg string) {
  */
 func (c *BaseController) InitAuthRequestParam()(authReq *components.AuthRequest){
 
-	//if c.User.XToken != "" {
-	//	c.Ctx.SetCookie("x-token",c.User.XToken)
-	//}
 	authReq = &components.AuthRequest{
 		UserName:   c.User.Username,
 		UserPwd:    c.User.PasswordHash,
@@ -184,9 +188,9 @@ func (c *BaseController) InitAuthRequestParam()(authReq *components.AuthRequest)
 	if authReq.UserName == "" {
 		fmt.Println("authReq.UserName is empty")
 	}
-	if authReq.UserPwd == "" {
+/*	if authReq.UserPwd == "" {
 		fmt.Println("authReq.UserPwd is empty")
-	}
+	}*/
 	if authReq.RequestUri == "" {
 		fmt.Println("authReq.RequestUrl is empty")
 	}

@@ -60,6 +60,9 @@ export default new class Cookie {
    * @returns {Cookie}
    */
   set(key, value, options) {
+    console.log("prefix--->",this.prefix)
+
+
     options = tools_verify.isObject(options) ? options : {expires: options}
     // 如果expires为空的话那么就设置为session.
     let expires = options.expires !== undefined ? options.expires : (this.defaults.expires || ''),
@@ -82,7 +85,8 @@ export default new class Cookie {
     let secure = options.secure || this.defaults.secure ? ';secure' : ''
     if (options.secure === false) secure = ''
     //设置cookie
-    document.cookie = tools_uri.encode(this.prefix + key) + '=' + tools_uri.encode(JSON.stringify(value)) + expires + path + domain + secure
+    //document.cookie = tools_uri.encode(this.prefix + key) + '=' + tools_uri.encode(JSON.stringify(value)) + expires + path + domain + secure
+    document.cookie = tools_uri.encode(this.prefix + key) + "=" + JSON.stringify(value) + expires + path + domain + secure;
     return this
   }
 
