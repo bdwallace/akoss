@@ -396,7 +396,7 @@ func UpdateDomainAndRelated(domain *Domain) (err error) {
 		return
 	}
 
-	if len(tempDomain.Services) != 0 {
+	if len(tempDomain.Platforms) != 0 && len(domain.Platforms) != 0 {
 		if tempDomain.Platforms[0].Id != domain.Platforms[0].Id {
 			err = fmt.Errorf("error: The domain name is already bound to other services, please delete the domain name and service association first\n")
 			return
