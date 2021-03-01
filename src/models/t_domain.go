@@ -345,15 +345,15 @@ func AddDomainAndRelated(domain *Domain)error {
 
 	// 校验 service 数据 是否为 nil
 	// 在域名保存时不修改与service的关系
-	// if len(domain.Services) != 0{
-	// 	// 建立 service 关系, 插入domain_service表 service 数据
-	// 	m2mForDomainAndService := o.QueryM2M(domain,"Services")
-	// 	_, err := m2mForDomainAndService.Add(domain.Services)
-	// 	if err != nil{
-	// 		fmt.Println("error:  m2mForServiceAndHost.Add(domain.Domains):  ",err)
-	// 		return err
-	// 	}
-	// }
+	//if len(domain.Services) != 0{
+		// 建立 service 关系, 插入domain_service表 service 数据
+	//	m2mForDomainAndService := o.QueryM2M(domain,"Services")
+	//	_, err := m2mForDomainAndService.Add(domain.Services)
+	//	if err != nil{
+	//		fmt.Println("error:  m2mForServiceAndHost.Add(domain.Domains):  ",err)
+	//		return err
+	//	}
+	//}
 
 
 	return nil
@@ -412,10 +412,10 @@ func UpdateDomainAndRelated(domain *Domain) (err error) {
 
 	// // 加载到domain加载的Services关系，直接全部清除
 	// 在域名保存时不修改与service的关系
-	// m2mForDomainAndServices := o.QueryM2M(domain,"Services")
-	// if _, err = m2mForDomainAndServices.Clear(); err != nil{
-	// 	return
-	// }
+	m2mForDomainAndServices := o.QueryM2M(domain,"Services")
+	if _, err = m2mForDomainAndServices.Clear(); err != nil{
+		return
+	}
 
 	// 不存在关联关系,需要建立关联关系
 	if err := AddDomainAndRelated(domain); err != nil{
