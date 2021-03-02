@@ -3,5 +3,7 @@
   "apiLogin" : "/login",
   "apiChangePwd" : "/changePasswd",
   "apiAuthToAkoss" : "/api/akAuth",
-  "apiDomainMonitor" : "/api/domain/monitor"
+  "apiDomainMonitor" : "/api/domain/monitor",
+  "apiCrontabAwsHostSync" : "/api/awsHost/awsRsyncUpdate",
+  "apiCrontabMonitor" : "/api/monitor"
 }
