@@ -10,6 +10,15 @@
     },
     "basePath": "/api",
     "paths": {
+        "/akAuth": {
+            "post": {
+                "tags": [
+                    "controllers/akAuthAkAuthController"
+                ],
+                "description": "当akAuth新增用户后， http请求到akoss，添加用户并更新token, 返回akAuth response",
+                "operationId": "AkAuthController.akAuth -\u003e akoss 添加用户"
+            }
+        },
         "/awsHost/awsCheckStop/": {
             "get": {
                 "tags": [
@@ -3636,6 +3645,37 @@
                 }
             }
         },
+        "/walle/multiReload/": {
+            "post": {
+                "tags": [
+                    "controllers/walleWalleController"
+                ],
+                "description": "批量服务主机重载",
+                "operationId": "WalleController.reload",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "OperationRecord[]",
+                        "description": "OperationsRecord",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/obj"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "{id} int64"
+                    },
+                    "1": {
+                        "description": "reload 失败"
+                    },
+                    "2": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
         "/walle/reload/": {
             "post": {
                 "tags": [
@@ -4516,10 +4556,20 @@
                     "type": "string",
                     "format": "datetime"
                 },
+                "UserMenus": {
+                    "type": "string"
+                },
                 "Username": {
+                    "type": "string"
+                },
+                "XToken": {
                     "type": "string"
                 }
             }
+        },
+        "obj": {
+            "title": "obj",
+            "type": "object"
         },
         "object": {
             "title": "object",

@@ -54,6 +54,15 @@ func init() {
 
     beego.GlobalControllerRouter["controllers/walle:WalleController"] = append(beego.GlobalControllerRouter["controllers/walle:WalleController"],
         beego.ControllerComments{
+            Method: "MultiReload",
+            Router: `/walle/multiReload/`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["controllers/walle:WalleController"] = append(beego.GlobalControllerRouter["controllers/walle:WalleController"],
+        beego.ControllerComments{
             Method: "Reload",
             Router: `/walle/reload/`,
             AllowHTTPMethods: []string{"post"},
