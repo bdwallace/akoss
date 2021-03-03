@@ -15,7 +15,7 @@
                 <el-button type="primary" icon="plus" size="small">新增白名单</el-button>
             </router-link>
         </panel-title>
-        
+
         <div class="panel-body" style="clear: both;margin-top:5px;margin-bottom:15px;padding:15px;">
             <el-collapse>
                 <!-- <el-collapse-item disabled v-for="(list,index) in table_data" :key="list.ToPort" :title="list.title" :name="index"> -->
@@ -60,8 +60,8 @@
         data(){
             return {
                 project_list: [],
-                ProjectId: store.state.user_info.user.ProjectId, 
-                // project: 
+                ProjectId: store.state.user_info.user.ProjectId,
+                // project:
                 on_submit_loading: false,
                 table_data: [],
                 //请求时的loading效果
@@ -139,7 +139,7 @@
                         }]
                     }
                 }
-                this.$http.post(port_sgroup.del, revoke_data)
+                this.$http.delete(port_sgroup.del, revoke_data)
                         .then(({data: {data}}) => {
                             this.get_table_data()
                     this.$message({

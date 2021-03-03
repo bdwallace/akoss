@@ -97,7 +97,7 @@ func (c *SgroupController) SetSgroup() {
 // @Success 0 {id} int64
 // @Failure 1 删除 sgroup 失败
 // @Failure 2 User not found
-// @router /fast/deleteSgroup [post]
+// @router /fast/deleteSgroup [delete]
 func (c *SgroupController) DeleteSgroup() {
 	//beego.Info(string(c.Ctx.Input.RequestBody))
 
@@ -120,7 +120,7 @@ func (c *SgroupController) DeleteSgroup() {
 	myAws.GroupIds = []string{*sgroup.Data.GroupId}
 	iprangstr := sgroup.Data.IpPermissions
 
-	data, err := myAws.SetSgroup(iprangstr)
+	data, err := myAws.DeleteSgroup(iprangstr)
 	if err != nil {
 		c.SetJson(1, nil, "删除安全组失败")
 		return

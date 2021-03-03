@@ -146,7 +146,7 @@ func (c *BaseAws) IngressSgroup() (result *ec2.AuthorizeSecurityGroupIngressOutp
 /*
 	???
 */
-func (c *BaseAws) SetSgroup(iprangstr []*ec2.IpPermission) (result *ec2.RevokeSecurityGroupIngressOutput, err error) {
+func (c *BaseAws) DeleteSgroup(iprangstr []*ec2.IpPermission) (result *ec2.RevokeSecurityGroupIngressOutput, err error) {
 	input := &ec2.RevokeSecurityGroupIngressInput{
 		GroupId:       aws.String(c.GroupIds[0]),
 		IpPermissions: iprangstr,

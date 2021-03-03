@@ -14,7 +14,7 @@
                 <i class="fa fa-refresh"></i>
             </el-button>
             <router-link :to="{name: 'confAdd'}" tag="span">
-                <el-button type="primary" icon="plus" size="small">创建域名</el-button>
+                <el-button type="primary" icon="plus" size="small">创建配置</el-button>
             </router-link>
         </panel-title>
 
@@ -34,8 +34,8 @@
                             <tr v-for="(item, index) in props.row.json" :key="item" >
                                 <td align="right" style="width:300px;border-style:none;padding-right:10px">
                                     <el-button v-show="props.row.json[index].key_show" size="mini"
-                                        v-clipboard:copy="item.Key" 
-                                        v-clipboard:success="copy" 
+                                        v-clipboard:copy="item.Key"
+                                        v-clipboard:success="copy"
                                         v-clipboard:error="onError">
                                         复制
                                     </el-button>
@@ -53,8 +53,8 @@
                                 <td align="left" style="width:500px;border-style:none;padding:10px">
                                     <!-- <span>{{item.Value}}</span>
                                     <el-button size="mini"
-                                        v-clipboard:copy="item.Value" 
-                                        v-clipboard:success="copy" 
+                                        v-clipboard:copy="item.Value"
+                                        v-clipboard:success="copy"
                                         v-clipboard:error="onError">
                                         复制
                                     </el-button> -->
@@ -67,8 +67,8 @@
                                     </el-popover>
 
                                     <el-button v-show="props.row.json[index].value_show" size="mini"
-                                        v-clipboard:copy="item.Value" 
-                                        v-clipboard:success="copy" 
+                                        v-clipboard:copy="item.Value"
+                                        v-clipboard:success="copy"
                                         v-clipboard:error="onError">
                                         复制
                                     </el-button>
@@ -114,7 +114,7 @@
                     width="150"
                     :formatter="dateFormat">
                 </el-table-column> -->
-                
+
                 <!-- <el-table-column
                     label="创建时间"
                     prop="CreatedAt"
@@ -129,7 +129,7 @@
                         <router-link :to="{name: 'confUpdate', params: {id: props.row.Id}}" tag="span">
                             <el-button type="info" size="small" icon="edit">修改</el-button>
                         </router-link>
- 
+
                         <el-button type="warning" size="small" icon="document" @click="copy_data(props.row.Id)">复制
                         </el-button>
 
@@ -161,10 +161,10 @@
     export default{
         data(){
             return {
-                ProjectId: store.state.user_info.user.ProjectId, 
+                ProjectId: store.state.user_info.user.ProjectId,
                 table_data: [],
-                conf_key: null, 
-                conf_value: null, 
+                conf_key: null,
+                conf_value: null,
                 //当前页码
                 currentPage: 1,
                 //数据总条目
@@ -189,7 +189,7 @@
         },
         created(){
             this.get_table_data()
-            
+
             if(this.conf_key === ''){
                 this.$refs.test.focus();
             }
@@ -224,7 +224,7 @@
 
             dateFormat(row, column, cellValue, format='YY-MM-DD hh:mm:ss'){
                 var date = new Date(cellValue);
- 
+
                 var year = date.getFullYear(),
                     month = date.getMonth()+1,//月份是从0开始的
                     day = date.getDate(),
@@ -234,14 +234,14 @@
                 var preArr = Array.apply(null,Array(10)).map(function(elem, index) {
                     return '0'+index;
                 });//开个长度为10的数组 格式为 ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09"]
- 
+
                 var newTime = format.replace(/YY/g,year)
                     .replace(/MM/g,preArr[month]||month)
                     .replace(/DD/g,preArr[day]||day)
                     .replace(/hh/g,preArr[hour]||hour)
                     .replace(/mm/g,preArr[min]||min)
                     .replace(/ss/g,preArr[sec]||sec);
- 
+
                 return newTime
             },
 
@@ -281,7 +281,7 @@
                     this.load_data = false
                 })
             },
-           
+
             //根据id删除数据
             delete_data(id){
                 this.$confirm('此操作将删除该数据, 是否继续?', '提示', {
