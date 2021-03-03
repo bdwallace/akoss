@@ -1039,7 +1039,7 @@ paths:
         "2":
           description: User not found
   /fast/deleteSgroup:
-    post:
+    delete:
       tags:
       - controllers/fastSgroupController
       description: delete sgroup

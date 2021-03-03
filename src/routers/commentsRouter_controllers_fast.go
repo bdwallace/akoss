@@ -11,7 +11,7 @@ func init() {
         beego.ControllerComments{
             Method: "DeleteSgroup",
             Router: `/fast/deleteSgroup`,
-            AllowHTTPMethods: []string{"post"},
+            AllowHTTPMethods: []string{"delete"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})

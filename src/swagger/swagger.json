@@ -1561,7 +1561,7 @@
             }
         },
         "/fast/deleteSgroup": {
-            "post": {
+            "delete": {
                 "tags": [
                     "controllers/fastSgroupController"
                 ],
