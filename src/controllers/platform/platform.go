@@ -83,6 +83,55 @@ func (c *PlatformController)GetAllPlatform() {
 	return
 }
 
+// @Title 获取所有 platform
+// @Description 获取全部平台以及平台所关联域名， 不需要参数
+// @Success 0 {object} models.Platform
+// @Failure 1 获取所有 platform 失败
+// @Failure 2 User not found
+// @router /platform/domains [get]
+func (c *PlatformController)GetAllPlatformforMonitor() {
+
+	projects, err := models.GetProjectAll()
+	if err != nil{
+		c.SetJson(1, err, "获取 all project 失败")
+		return
+	}
+
+
+
+	resPlatform := make([]*models.PlatformDomains,0)
+	for _, p := range projects{
+
+		projectAllPlatform, err := models.GetPlatformByProjectId(p.Id)
+		if err != nil{
+			c.SetJson(1, err, "获取 platform 失败")
+			return
+		}
+
+		for _, platform := range projectAllPlatform {
+
+			platformDomains := new(models.PlatformDomains)
+			platformDomains.Domains =  make([]string,0)
+			platformRel, err := models.GetPlatformAndDomainRelated(platform)
+			if err != nil{
+				continue
+			}
+			if len(platformRel.Domains) == 0 {
+				continue
+			}
+			platformDomains.PlatformName = platformRel.Name
+
+			for _, domain := range platformRel.Domains{
+				platformDomains.Domains = append(platformDomains.Domains,domain.Name)
+			}
+			resPlatform = append(resPlatform,platformDomains)
+		}
+	}
+
+	c.SetJson(0,resPlatform,"")
+	return
+}
+
 
 
 // @Title 获取 platform by id

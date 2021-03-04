@@ -35,6 +35,11 @@ type PlatformValue struct {
 //     return "t_platform"
 // }
 
+type PlatformDomains struct {
+	PlatformName		string
+	Domains 			[]string
+}
+
 func init(){
 	// orm.RegisterModel(new(Platform))
 	orm.RegisterModelWithPrefix("t_",new(Platform))

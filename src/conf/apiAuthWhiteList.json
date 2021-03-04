@@ -5,5 +5,6 @@
   "apiAuthToAkoss" : "/api/akAuth",
   "apiDomainMonitor" : "/api/domain/monitor",
   "apiCrontabAwsHostSync" : "/api/awsHost/awsRsyncUpdate",
-  "apiCrontabMonitor" : "/api/monitor"
+  "apiCrontabMonitor" : "/api/monitor",
+  "apiPlatformDomains" : "/api/platform/domains"
 }
