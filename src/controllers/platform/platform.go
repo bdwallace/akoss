@@ -122,7 +122,7 @@ func (c *PlatformController)GetAllPlatformforMonitor() {
 			platformDomains.PlatformName = platformRel.Name
 
 			for _, domain := range platformRel.Domains{
-				platformDomains.Domains = append(platformDomains.Domains,domain.Name)
+				platformDomains.Domains = append(platformDomains.Domains,domain.Domain)
 			}
 			resPlatform = append(resPlatform,platformDomains)
 		}
