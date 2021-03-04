@@ -42,6 +42,7 @@ func (c *MonitorController)Monitor(){
 		waitgroup := new(sync.WaitGroup)
 		for _, host := range hosts{
 			waitgroup.Add(2)
+
 			go DeployCadvisor(host.UseIp, waitgroup)
 			go DeployNodeExporter(host.UseIp, waitgroup)
 		}
@@ -52,6 +53,21 @@ func (c *MonitorController)Monitor(){
 	}
 
 }
+
+func monitorContainerUpdate(host, dockerName string) {
+
+	dockerPort := beego.AppConfig.String("dockerport")
+	repoUser := beego.AppConfig.String("repouser")
+	repoPasswd := beego.AppConfig.String("repopass")
+	repoImageAddress :=  beego.AppConfig.String("repoimage")
+
+	deployCmd := fmt.Sprintf("docker -H tcp://%s:%s login -u %s -p %s %s ; docker -H tcp://%s:%s container update --name %s --restart=always -d ", host, dockerPort, repoUser, repoPasswd, repoImageAddress, host, dockerPort,dockerName)
+
+	if err := runDeployMonitor(host, "docker container update node_exporter", deployCmd); err != nil{
+		return
+	}
+}
+
 
 // 检查容器是否已启动
 func monitorCheckRes(host string, dockerName string) (sshexec.ExecResult, error) {
@@ -84,6 +100,8 @@ func runDeployMonitor(host, dockerName, deployCmd string) error{
 func DeployCadvisor(host string, waitgroup * sync.WaitGroup) {
 
 	defer waitgroup.Done()
+
+	monitorContainerUpdate(host,"cadvisor")
 
 	// 检查是否启动 cadvisor 容器
 	s, err := monitorCheckRes(host,"cadvisor")
@@ -143,6 +161,9 @@ func DeployCadvisor(host string, waitgroup * sync.WaitGroup) {
 func DeployNodeExporter(host string, waitgroup * sync.WaitGroup) {
 
 	defer waitgroup.Done()
+
+	monitorContainerUpdate(host,"node_exporter")
+
 	s, err := monitorCheckRes(host, "node_exporter")
 	if err != nil{
 		fmt.Println("error: node_exporter monitor check res ",err)
@@ -165,7 +186,7 @@ func DeployNodeExporter(host string, waitgroup * sync.WaitGroup) {
 
 		// user   pass  addressimage
 
-		dockerRun := fmt.Sprintf("docker -H tcp://%s:%s login -u %s -p %s %s ; docker -H tcp://%s:%s run --name node-exporter -d ", host, dockerPort, repoUser, repoPasswd, repoImageAddress, host, dockerPort)
+		dockerRun := fmt.Sprintf("docker -H tcp://%s:%s login -u %s -p %s %s ; docker -H tcp://%s:%s run --name node-exporter --restart=always -d ", host, dockerPort, repoUser, repoPasswd, repoImageAddress, host, dockerPort)
 		deployCmd := dockerRun +
 			" -v \"/proc:/host/proc\"" +
 			" -v \"/sys:/host/sys\"" +
