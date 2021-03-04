@@ -18,8 +18,8 @@ func init() {
 
     beego.GlobalControllerRouter["controllers/platform:PlatformController"] = append(beego.GlobalControllerRouter["controllers/platform:PlatformController"],
         beego.ControllerComments{
-            Method: "GetPlatformById",
-            Router: `/platform/id/`,
+            Method: "GetAllPlatformforMonitor",
+            Router: `/platform/domains`,
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
@@ -30,6 +30,15 @@ func init() {
             Method: "DeletePlatformId",
             Router: `/platform/id/`,
             AllowHTTPMethods: []string{"delete"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["controllers/platform:PlatformController"] = append(beego.GlobalControllerRouter["controllers/platform:PlatformController"],
+        beego.ControllerComments{
+            Method: "GetPlatformById",
+            Router: `/platform/id/`,
+            AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})

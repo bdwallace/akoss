@@ -1486,6 +1486,21 @@ paths:
           description: 添加 platform 失败
         "2":
           description: User not found
+  /platform/domains:
+    get:
+      tags:
+      - controllers/platformPlatformController
+      description: 获取全部平台以及平台所关联域名， 不需要参数
+      operationId: PlatformController.获取所有 platform
+      responses:
+        "0":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Platform'
+        "1":
+          description: 获取所有 platform 失败
+        "2":
+          description: User not found
   /platform/id/:
     get:
       tags:
