@@ -143,7 +143,7 @@
                         .then(({data: {data}}) => {
                             this.get_table_data()
                     this.$message({
-                        message: "保存成功",
+                        message: "删除安全组成功",
                         type: 'success'
                     })
                     this.load_data = false
