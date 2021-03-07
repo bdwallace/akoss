@@ -139,7 +139,7 @@
                         }]
                     }
                 }
-                this.$http.delete(port_sgroup.del, revoke_data)
+                this.$http.post(port_sgroup.del, revoke_data)
                         .then(({data: {data}}) => {
                             this.get_table_data()
                     this.$message({

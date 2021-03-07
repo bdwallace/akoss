@@ -97,7 +97,7 @@ func (c *SgroupController) SetSgroup() {
 // @Success 0 {id} int64
 // @Failure 1 删除 sgroup 失败
 // @Failure 2 User not found
-// @router /fast/deleteSgroup [delete]
+// @router /fast/deleteSgroup [post]
 func (c *SgroupController) DeleteSgroup() {
 	//beego.Info(string(c.Ctx.Input.RequestBody))
 
