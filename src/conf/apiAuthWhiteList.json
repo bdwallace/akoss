@@ -6,5 +6,6 @@
   "apiDomainMonitor" : "/api/domain/monitor",
   "apiCrontabAwsHostSync" : "/api/awsHost/awsRsyncUpdate",
   "apiCrontabMonitor" : "/api/monitor",
-  "apiPlatformDomains" : "/api/platform/domains"
+  "apiPlatformDomains" : "/api/platform/domains",
+  "apiGrafanaExec" : "/api/inspectgrafana/exec"
 }

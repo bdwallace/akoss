@@ -161,7 +161,7 @@ func (c *GrafanaController)ExecAllInspectGrafana() {
 		return
 	}
 
-	for _, v := range(resInspectGrafanas) {
+	for _, v := range resInspectGrafanas {
 		inspect.Grafana(v)
 	}
 	
