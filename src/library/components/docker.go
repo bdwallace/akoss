@@ -447,7 +447,41 @@ func (c *BaseDocker) CreateDomainDockerCmd(host *models.Host)(cmd string,err err
 	return cmd,nil
 }
 
+func (c *BaseDocker) CreateH5BlackListCmd(host *models.Host)(cmd string,err error) {
 
+	if c.BaseComponents.Service.Class != "h5" {
+		return
+	}
+
+	blackListDir := fmt.Sprintf("black_list/%s/%s",c.BaseComponents.Project.Alias, c.BaseComponents.Service.Name)
+
+	err = common.Mkdir(blackListDir)
+	if err != nil {
+		fmt.Println("error: MkdirH5ClackList common.Mkdir ",err)
+		return
+	}
+
+	srcFilePath := fmt.Sprintf("%s/deny.conf", blackListDir)
+
+	// echo > deny.conf
+	echoCmd :=fmt.Sprintf(`echo '%s' > %s`, c.BaseComponents.Service.BlackList,srcFilePath)
+	_, _, err = c.BaseComponents.RunLocal(c.BaseComponents.Task, echoCmd, 0, host.UseIp, "")
+	if err != nil {
+		return
+	}
+
+	//docker cp 命令
+	blackListCmds := make([]string,0)
+	blackListCmds = append(blackListCmds, "date +%Y%m%d-%H%M%S-%s")
+	cc := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s ", host.UseIp, c.BaseComponents.Docker.Port)
+	blackListCmds = append(blackListCmds, fmt.Sprintf("%s cp %s %s:/etc/nginx/conf.d/deny.conf", cc, srcFilePath, c.BaseComponents.Docker.Name))
+
+	blackListCmds = append(blackListCmds, fmt.Sprintf("sleep 1s; %s restart %s ", cc, c.BaseComponents.Docker.Name))
+	cmd = strings.Join(blackListCmds, " ; ")
+	cmd = fmt.Sprintf("%s:%s##\n",host.UseIp,cmd)
+
+	return
+}
 
 
 func (c *BaseDocker) checkCreateCmdParam(task *models.Task)(err error){
@@ -483,6 +517,7 @@ func (c *BaseDocker) CreateDockerCmd(task *models.Task, count int,serviceClass s
 	serviceCmdPullAll := make([]string,0)
 	serviceCmdRunAll := make([]string,0)
 	domainCmdAll := make([]string,0)
+	blackListCmd := ""
 	checkDeployHostsResultCmd := ""
 	isCheck := false
 
@@ -588,8 +623,13 @@ func (c *BaseDocker) CreateDockerCmd(task *models.Task, count int,serviceClass s
 				domainCmdAll = append(domainCmdAll,domainCmd)
 			}
 		}
+
+		if c.BaseComponents.Service.Class == "h5"{
+			blackListCmd, err = c.CreateH5BlackListCmd(host)
+		}
 	}
 
+	fmt.Println(blackListCmd)
 	if len(domainCmdAll) < 1 {
 		if isCheck {
 			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n","docker-check",checkDeployHostsResultCmd, "docker-pull",serviceCmdPullAll,"docker-run",serviceCmdRunAll)
@@ -611,6 +651,9 @@ func (c *BaseDocker) CreateDockerCmd(task *models.Task, count int,serviceClass s
 		}
 	}
 
+	if c.BaseComponents.Service.Class == "h5"{
+		c.Cmds += fmt.Sprintf("%s\n[%s]","h5-black-list",blackListCmd)
+	}
 
 	task.Count = count
 	task.Cmd = c.Cmds

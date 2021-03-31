@@ -1,14 +1,14 @@
 <template>
   <el-form ref="form" :model="form" :rules="rules">
-    <div class="panel"> 
+    <div class="panel">
       <panel-title :title="$route.meta.title">
       </panel-title>
-                        
+
     </div>
     <div class="panel-body" v-loading="load_data" element-loading-text="拼命加载中">
       <el-row>
         <el-col :span="11">
-            <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px"> 
+            <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px">
               <el-form-item label="服务名称:" prop="Name" label-width="100px">
                 <el-input v-model="form.Name" placeholder="请输入项目名称" style="width: 400px">
                           </el-input>
@@ -57,27 +57,27 @@
                             style="width: 400px;"></el-input>
                 </el-tooltip>
               </el-form-item>
-            </div> 
+            </div>
 
-            <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px"> 
+            <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px">
                   <el-form-item label="上传地址:" prop="ReleaseTo" label-width="100px">
                     <el-input v-model="form.ReleaseTo" style="width: 400px;" placeholder="发布目录"></el-input>
                   </el-form-item>
             </div>
 
-            <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px"> 
+            <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px">
               <el-form-item label="机器列表:" prop="Hosts" label-width="100px">
                 <el-form-item v-for="(item, hostindex) in form.Hosts" :key="hostindex" style="margin-top: 5px">
                   <el-button @click.stop="get_itemHost()" size="mini">
                     <i class="fa fa-refresh"></i>
                   </el-button>
-                  <el-select v-model="form.Hosts[hostindex]" placeholder="选择主机" 
+                  <el-select v-model="form.Hosts[hostindex]" placeholder="选择主机"
                               filterable
                               clearable
                               value-key="Id"
                               style="width: 400px;">
                       <!-- :label="`${item.Name} / ${item.PrivateIp} / ${item.PublicIp} / ${item.UseIp}`" -->
-                    <el-option   
+                    <el-option
                       v-for="item in itemHost"
                       :key="item"
                       :label="`${item.Name} / ${item.UseIp}`"
@@ -91,18 +91,18 @@
               <el-button type="primary" icon="plus" size="mini" @click="add_Host()">添加</el-button>
             </div>
 
-            <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px"> 
+            <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px">
               <el-form-item label="自定义参数:" v-for="(list,index) in valueJson" :key="index" label-width="100px">
-                <el-input v-model="valueJson[index].Value" placeholder="请输入自定义参数" 
-                      type="textarea" autosize 
+                <el-input v-model="valueJson[index].Value" placeholder="请输入自定义参数"
+                      type="textarea" autosize
                       style="width: 400px;">
                 </el-input>
 
-                <el-select v-model="valueJson[index].HostId" placeholder="不选为全部主机" 
+                <el-select v-model="valueJson[index].HostId" placeholder="不选为全部主机"
                             filterable
                             clearable
                             style="width: 150px;">
-                  <el-option   
+                  <el-option
                     v-for="item in form.Hosts"
                     :key="item.Id"
                     :label="`${item.Name} / ${item.UseIp}`"
@@ -117,7 +117,18 @@
               <el-button type="primary" icon="plus" size="mini"   @click="add_valueJson()">添加</el-button>
             </div>
 
+          <el-form-item v-if="form.Class == 'h5'">
+            <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px">
+
+            <el-form-item label="黑名单列表:" prop="BlackList" label-width="100px">
+              <el-input type="textarea" :rows="3" placeholder="请输入黑名单ip，以回车换行符分割"
+                    v-model.trim="form.BlackList" style="width: 599px;"></el-input>
+            </el-form-item>
+          </div>
+
+          </el-form-item>
         </el-col>
+
 
         <el-col :span="12" style="margin-left: 10px">
           <!-- <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px">
@@ -133,11 +144,11 @@
 
           <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px">
             <el-form-item label="关联公有参数:" v-for="(conf,confindex) in form.Confs" :key="confindex">
-              <el-select v-model="form.Confs[confindex]" placeholder="选择已有公有类" 
+              <el-select v-model="form.Confs[confindex]" placeholder="选择已有公有类"
                           filterable
                           value-key="Id"
                           style="width: 400px;">
-                <el-option   
+                <el-option
                   v-for="item in itemConf"
                   :key="item"
                   :label="item.Name"
@@ -172,28 +183,28 @@
 
           <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px">
             <el-form-item label="服务类型:" label-width="100px">
-              <el-select v-model="form.Class" placeholder="选择服务" 
+              <el-select v-model="form.Class" placeholder="选择服务"
                           filterable
                           style="width: 400px;"
                           @change="change_class()">
-                <el-option   
+                <el-option
                   v-for="item in itemClass"
                   :key="item"
                   :label="item"
                   :value="item">
                 </el-option>
               </el-select>
-            </el-form-item>                  
+            </el-form-item>
 
             <el-form-item v-if="form.Class != 'java'">
             <el-form-item label="所属平台:" label-width="100px">
-              <el-select v-model="form.Platforms[0]" placeholder="选择平台" 
+              <el-select v-model="form.Platforms[0]" placeholder="选择平台"
                           value-key="Id"
                           filterable
                           clearable
                           style="width: 400px;"
                           @change="change_platform()">
-                <el-option   
+                <el-option
                   v-for="item in itemPlatform"
                   :key="item.Name"
                   :label="item.Name"
@@ -226,14 +237,14 @@
                 <!-- <el-button @click.stop="get_itemDomain()" size="mini">
                   <i class="fa fa-refresh"></i>
                 </el-button> -->
-                <el-select v-model="form.Domains[index]" placeholder="请指定加速域名" 
+                <el-select v-model="form.Domains[index]" placeholder="请指定加速域名"
                             value-key="Id"
                             filterable
                             clearable
                             style="width: 400px;"
                             @change="change_domain(index)">
                     <!-- v-for="item in form.Platforms[0].Domains" -->
-                  <el-option   
+                  <el-option
                     value-key
                     v-for="item in itemDomain"
                     :key="item.Name"
@@ -265,7 +276,7 @@
       <el-button @click="$router.back()">取消</el-button>
     </el-form-item>
     </div>
-  </el-form> 
+  </el-form>
 </template>
 <script type="text/javascript">
   import {panelTitle} from 'components'
@@ -275,7 +286,7 @@
   export default {
     data() {
       return {
-        ProjectId: store.state.user_info.user.ProjectId, 
+        ProjectId: store.state.user_info.user.ProjectId,
         form: {
           Id: 0,
           // UserId: store.state.user_info.user.Id,
@@ -284,6 +295,7 @@
           ImagePath: null,
           Port: "",
           LogKeyword: "Started .* seconds",
+          BlackList:"",
           // IsRegister: 0,
           Health: "",
           DockerName: "",
@@ -301,15 +313,15 @@
         },
         itemConf: [],
         itemClass: [
-          "java", 
-          "h5", 
+          "java",
+          "h5",
           "merchant",
-          "download", 
-          "download-share", 
-          "agent", 
-          "share-agent", 
-          "customer", 
-          "chat-backend", 
+          "download",
+          "download-share",
+          "agent",
+          "share-agent",
+          "customer",
+          "chat-backend",
           "other"
         ],
 
@@ -318,7 +330,7 @@
           Value: null,
           HostId: null
         }],
-        
+
         itemHost: [],
 
         // addPlatform:[null],
@@ -378,7 +390,7 @@
             this.itemDomain.push(this.form.Platforms[0].Domains[i])
           }
         }
-        
+
         this.load_data = false
       },
 
@@ -407,7 +419,7 @@
         this.form.Domains.push(null);
         this.load_data = false
       },
-      
+
       del_addDomain(index){
         this.load_data = true
         this.form.Domains.splice(index,1)
@@ -438,7 +450,7 @@
         this.form.Platforms.push(null);
         this.load_data = false
       },
-      
+
       del_addplatform(index){
         this.load_data = true
         this.form.Platforms.splice(index,1)
@@ -516,7 +528,7 @@
         this.form.Hosts.push({});
         this.load_data = false
       },
-      
+
       del_Host(index){
         this.load_data = true
         this.form.Hosts.splice(index,1)
@@ -531,13 +543,13 @@
         });
         this.load_data = false
       },
-      
+
       del_valueJson(index){
         this.load_data = true
         this.valueJson.splice(index, 1)
         this.load_data = false
       },
-            
+
       //下拉框获取已有公有类型
       get_itemConf(){
         this.load_data = true
@@ -565,7 +577,7 @@
         this.form.Confs.push({});
         this.load_data = false
       },
-      
+
       del_Conf(index){
         this.load_data = true
         this.form.Confs.splice(index,1);
@@ -624,7 +636,7 @@
                 message: msg,
                 type: 'success'
               })
-              setTimeout(() => {           
+              setTimeout(() => {
                   this.load_data = true
                   this.$router.back()
                 },
@@ -638,7 +650,7 @@
 
             this.load_data = false
             this.on_submit_loading = false
-          
+
         })
       }
     },

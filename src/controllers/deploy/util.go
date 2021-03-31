@@ -140,7 +140,7 @@ func (c *DeployController) getEveryoneCmd(cmd string) (retCmds []string){
 /*
 	解析发布命令
 */
-func (c *DeployController) AnalyzeDockerCmd(allCmd string,class string) (checkResCmd string, pullResCmds []string,runResCmds []string,domainResCmds []string){
+func (c *DeployController) AnalyzeDockerCmd(allCmd string,class string) (checkResCmd string, pullResCmds []string,runResCmds []string,domainResCmds []string, blackListCmds []string){
 
 	pullIndex := strings.Index(allCmd,"docker-pull")
 	runIndex := strings.Index(allCmd,"docker-run")
@@ -153,30 +153,43 @@ func (c *DeployController) AnalyzeDockerCmd(allCmd string,class string) (checkRe
 			checkResCmd = c.getCheckCmd(checkAllCmd)
 		}
 	}
+	var blackListIndex int
+	if class == "h5" {
+		blackListIndex = strings.Index(allCmd,"h5-black-list")
+	}
+
 
 	pullAllCmd := allCmd[pullIndex:runIndex]
 	pullResCmds = c.getEveryoneCmd(pullAllCmd)
-
+	blackListCmds = make([]string,0)
 
 	if class != "java"{
+		if class == "h5"{
+			blackListCmd := allCmd[blackListIndex:]
+			blackListCmds = append(blackListCmds,c.getEveryoneCmd(blackListCmd)...)
+		}
 		if domainIndex == -1{
 			runAllCmd := allCmd[runIndex:]
 			runResCmds = c.getEveryoneCmd(runAllCmd)
-
-			return "",pullResCmds, runResCmds,nil
+			return "",pullResCmds, runResCmds,nil,blackListCmds
 		}else {
 			runAllCmd := allCmd[runIndex:domainIndex]
 			runResCmds = c.getEveryoneCmd(runAllCmd)
-			domainAllCmd := allCmd[domainIndex:]
+			var domainAllCmd string
+			if blackListIndex == -1{
+				domainAllCmd = allCmd[domainIndex:]
+			}else {
+				domainAllCmd = allCmd[domainIndex:blackListIndex]
+			}
 			domainResCmds = c.getEveryoneCmd(domainAllCmd)
 
-			return "",pullResCmds, runResCmds,domainResCmds
+			return "",pullResCmds, runResCmds,domainResCmds,blackListCmds
 		}
 	}else {
 		runAllCmd := allCmd[runIndex:]
 		runResCmds = c.getEveryoneCmd(runAllCmd)
 
-		return checkResCmd,pullResCmds, runResCmds,nil
+		return checkResCmd,pullResCmds, runResCmds,nil,nil
 	}
 }
 
@@ -198,7 +211,7 @@ type deployCmd struct {
 */
 func (c *DeployController)releaseHandling(ch chan int,task *models.Task,deploy *models.Deploy,hosts []*models.Host) {
 
-	checkCmd, pullCmds, runCmds, domainCmds := c.AnalyzeDockerCmd(task.Cmd,deploy.Class)
+	checkCmd, pullCmds, runCmds, domainCmds,blackListCmds := c.AnalyzeDockerCmd(task.Cmd,deploy.Class)
 
 	var err error
 
@@ -281,7 +294,26 @@ func (c *DeployController)releaseHandling(ch chan int,task *models.Task,deploy *
 		// }
 
 	}
+	if deploy.Class == "h5"{
+		var blackListResId int64
+		for _, cmd := range blackListCmds {
+			if blackListResId, err = c.RunDockerCmd(task, "black-list",cmd); err != nil && runResId > 0{
+				if err := UpdateRecordActionAndCount(blackListResId,120,deploy.Count); err != nil{
+					fmt.Println("error:  UpdateRecordCount: ",err)
+					return
+				}
+				c.SetJson(1, nil, "运行 docker cp black-list file  失败")
+				return
+			}
+			if blackListResId > 0{
+				if err := UpdateRecordActionAndCount(blackListResId,80,deploy.Count); err != nil {
+					fmt.Println("error:  UpdateRecordCount: ",err)
+					return
+				}
+			}
 
+		}
+	}
 	// domain
 	if deploy.Class != "java" {
 
@@ -434,6 +466,15 @@ func (c *DeployController)RunDockerCmd(task * models.Task ,cmdType string, docke
 		}
 	}
 
+	// docker run cp black-list
+	if cmdType == "black-list"	{
+		sshExec, resId, err = docker.BaseComponents.RunLocal(task, cmd, 60, host,"add")
+		if err != nil{
+			fmt.Println("error black-list cp docker cmd ",err)
+			fmt.Println("sshEcec result : ",sshExec.Result)
+			return resId, err
+		}
+	}
 	return resId, err
 }
 

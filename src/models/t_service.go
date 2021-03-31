@@ -20,6 +20,7 @@ type Service struct {
 	Tag      		string              `orm:"column(tag);size(100);null"`           				// 当前tag
 	LastTag      	string              `orm:"column(last_tag);size(100);null"`           				// 上次服务tag
 	LogKeyword		string				`orm:"column(log_keyworld);size(100);null"`
+	BlackList		string 				`orm:"column(black_list);size(100);null"`
 
 	CreatedAt              				time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
 	UpdatedAt              				time.Time `orm:"column(updated_at);type(datetime);auto_now;"`
