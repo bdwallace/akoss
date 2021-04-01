@@ -164,7 +164,7 @@ func (c *DeployController) AnalyzeDockerCmd(allCmd string,class string) (checkRe
 	blackListCmds = make([]string,0)
 
 	if class != "java"{
-		if class == "h5"{
+		if class == "h5" && blackListIndex > 0{
 			blackListCmd := allCmd[blackListIndex:]
 			blackListCmds = append(blackListCmds,c.getEveryoneCmd(blackListCmd)...)
 		}
@@ -294,9 +294,12 @@ func (c *DeployController)releaseHandling(ch chan int,task *models.Task,deploy *
 		// }
 
 	}
-	if deploy.Class == "h5"{
+	if deploy.Class == "h5" && blackListCmds != nil{
 		var blackListResId int64
 		for _, cmd := range blackListCmds {
+			if cmd == ""{
+				continue
+			}
 			if blackListResId, err = c.RunDockerCmd(task, "black-list",cmd); err != nil && runResId > 0{
 				if err := UpdateRecordActionAndCount(blackListResId,120,deploy.Count); err != nil{
 					fmt.Println("error:  UpdateRecordCount: ",err)

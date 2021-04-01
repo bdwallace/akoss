@@ -121,7 +121,10 @@
             <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px">
 
             <el-form-item label="黑名单列表:" prop="BlackList" label-width="100px">
-              <el-input type="textarea" :rows="3" placeholder="请输入黑名单ip，以回车换行符分割"
+              <el-input type="textarea" :rows="5" placeholder="eg:
+deny 1.1.1.1;
+deny 2.2.2.2；
+allow all;"
                     v-model.trim="form.BlackList" style="width: 599px;"></el-input>
             </el-form-item>
           </div>
