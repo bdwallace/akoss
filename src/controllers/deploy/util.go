@@ -153,10 +153,7 @@ func (c *DeployController) AnalyzeDockerCmd(allCmd string,class string) (checkRe
 			checkResCmd = c.getCheckCmd(checkAllCmd)
 		}
 	}
-	var blackListIndex int
-	if class == "h5" {
-		blackListIndex = strings.Index(allCmd,"h5-black-list")
-	}
+	blackListIndex := strings.Index(allCmd,"h5-black-list")
 
 
 	pullAllCmd := allCmd[pullIndex:runIndex]

@@ -4,6 +4,7 @@ import (
 	"controllers"
 	"encoding/json"
 	"fmt"
+	"library/blacklist"
 	"models"
 )
 
@@ -392,6 +393,16 @@ func (c *ServiceController) AddServiceAllRelatedByService(){
 			fmt.Println("error: UpdateServiceAndRelated  ",err)
 			c.SetJson(1,nil,"更新 service 多对多关系 失败")
 			return
+		}
+
+		// black list
+		if service.BlackList != ""{
+			if cmdErr := blacklist.H5BlackListCP(service); cmdErr != nil{
+				fmt.Println("error: H5BlackListCP ",err)
+				c.SetJson(1,nil,"更新 service h5黑名单 失败")
+				return
+			}
+
 		}
 	}else {
 		// add
