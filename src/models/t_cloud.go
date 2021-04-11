@@ -15,7 +15,7 @@ type Cloud struct {
 	Link         string  `orm:"column(link);"`
 	Balance      float64 `orm:"column(balance)"`
 	AccessKeyId  string  `orm:"column(access_key_id)"`
-	AccessSecret string  `orm:"column(access_secret)"`
+	AccessSecret string  `orm:"column(access_secret);type(text)'"`
 
 	CreatedAt time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
 	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);auto_now;"`
