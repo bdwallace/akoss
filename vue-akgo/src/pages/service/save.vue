@@ -61,7 +61,7 @@
 
             <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px">
                   <el-form-item label="上传地址:" prop="ReleaseTo" label-width="100px">
-                    <el-input v-model="form.ReleaseTo" style="width: 400px;" placeholder="发布目录"></el-input>
+                    <el-input v-model="form.ReleaseTo" style="width: 400px;" placeholder="download html 上传目录"></el-input>
                   </el-form-item>
             </div>
 
