@@ -19,22 +19,11 @@
               <tr>
                 <th style="text-align:right;width:300px;padding-right:10px">key值</th>
                 <th style="text-align:left;width:500px;padding-left:10px">value值</th>
-                <!-- <th style="padding-left: 20px">编辑</th> -->
                 <th style="padding-left: 20px">删除</th>
               </tr>
 
               <tr v-for="(item, index) in jsons" :key="item" style="margin-bottom:50px">
-                <!-- <td style="text-align:right;width:300px;padding-right:10px">{{key}}</td>
-                <td style="text-align:left;width:500px;padding-left:10px">{{jsons[key]}}</td> -->
-                <!-- <td style="text-align:right;width:300px;padding-right:10px">
-                    <el-input type="textarea" autosize placeholder="输入内容" v-model="key" style="direction: rtl;" v-if="inpub[key]"></el-input>
-                    <el-input type="textarea" autosize placeholder="输入内容" v-model="key" style="direction: rtl;" v-else disabled></el-input>
-                </td>
 
-                <td style="text-align:left;width:500px;padding-left:10px">
-                    <el-input type="textarea" autosize placeholder="输入内容" v-model="jsons[key]" v-if="inpub[key]"></el-input>
-                    <el-input type="textarea" autosize placeholder="输入内容" v-model="jsons[key]" v-else disabled></el-input>
-                </td> -->
                 <td style="text-align:right;width:300px;padding-right:10px">
                     <el-input type="textarea" autosize placeholder="输入内容" v-model="item.Key" style="direction: rtl;"></el-input>
                 </td>
@@ -42,12 +31,6 @@
                 <td style="text-align:left;width:500px;padding-left:10px">
                     <el-input type="textarea" autosize placeholder="输入内容" v-model="item.Value"></el-input>
                 </td>
-
-                <!-- <td style="padding-left: 20px">
-                  <el-button type="warning" size="mini" @click="etc_value(index, key)">
-                      <i class="el-icon-edit"></i>
-                  </el-button>
-                </td> -->
 
                 <td style="padding-left: 20px">
                   <el-button type="danger" size="mini" @click="del_value(index)">
@@ -74,6 +57,41 @@
 
               <tr><td> &nbsp; </td></tr>
             </table>
+            </el-form-item>
+
+            <el-form-item label="获取RSA：" label-width="120px">
+              <el-button @click.stop="get_rsa()" size="mini" >
+                <i class="fa fa-refresh"></i>
+              </el-button>
+              <table class="table">
+                <tr>
+                  <th style="text-align:right;width:300px;padding-right:10px">key值</th>
+                  <th style="text-align:left;width:500px;padding-left:10px">value值</th>
+                  <th style="padding-left: 20px">添加</th>
+                </tr>
+                <tr>
+                  <td style="text-align:right;width:300px;padding-right:10px">
+                    <el-input type="textarea" autosize placeholder="输入RSA public key" v-model="RsaPubName"></el-input>
+                  </td>
+                  <td style="text-align:left;width:500px;padding-left:10px">
+                    <el-input type="textarea" autosize placeholder="点击获取RSA证书内容" v-model="RsaPublic"></el-input>
+                  </td>
+                  <td style="padding-left: 20px;">
+                    <el-button type="primary" icon="plus" size="mini"   @click="add_rsa_pub()"></el-button>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="text-align:right;width:300px;padding-right:10px">
+                    <el-input type="textarea" autosize placeholder="输入RSA private key" v-model="RsaPriName"></el-input>
+                  </td>
+                  <td style="text-align:left;width:500px;padding-left:10px">
+                    <el-input type="textarea" autosize placeholder="点击获取RSA证书内容" v-model="RsaPrivate"></el-input>
+                  </td>
+                  <td style="padding-left: 20px;">
+                    <el-button type="primary" icon="plus" size="mini"   @click="add_rsa_pri()"></el-button>
+                  </td>
+                </tr>
+              </table>
             </el-form-item>
 
             <el-form-item label="关联服务：" prop="Services" label-width="120px">
@@ -114,13 +132,17 @@
           Services: [],
           Project: {
             Id: store.state.user_info.user.ProjectId
-          } 
+          }
         },
         jsons: [],
         input: {
           Key: "",
           Value: ""
         },
+        RsaPubName:"",
+        RsaPriName:"",
+        RsaPublic: "",
+        RsaPrivate: "",
         itemService: [],
         keyService: [],
         titles: ["未关联", "已关联"],
@@ -144,7 +166,6 @@
       // filterMethod(query, item) {
       //   return item..indexOf(query) > -1;
       // },
-        
       // 获取services数据
       get_itemService() {
         this.load_data = true
@@ -167,9 +188,53 @@
           this.load_data = false
         })
       },
-        
+
+      //获取数据RSA
+      get_rsa() {
+        this.load_data = true
+        this.$http.get(port_conf.rsa,{
+          params:{
+            name:this.name
+          }
+        })
+          .then(({data: {data}}) => {
+            this.RsaPublic = data.PublicKey
+            this.RsaPrivate = data.PrivateKey
+            this.load_data = false
+          })
+          .catch(() => {
+            this.load_data = false
+          })
+
+      },
+      add_rsa_pub(){
+        if(this.RsaPubName !== '' && this.RsaPublic !== ''){
+          this.jsons.push({Key:this.RsaPubName, Value:this.RsaPublic})
+          this.RsaPubName = ''
+          this.RsaPublic = ''
+        }else {
+          this.$message({
+            message: "RSA key:value均不可为空",
+            type: 'warning'
+          })
+        }
+      },
+      add_rsa_pri(){
+        if(this.RsaPriName !== '' && this.RsaPrivate !== ''){
+          this.jsons.push({Key: this.RsaPriName, Value: this.RsaPrivate})
+          this.RsaPriName = ''
+          this.RsaPrivate = ''
+        }else {
+          this.$message({
+            message: "RSA key:value均不可为空",
+            type: 'warning'
+          })
+        }
+
+      },
+
       // 获取数据
-      get_form_data() {
+        get_form_data() {
         this.load_data = true
         this.$http.get(port_conf.id, {
           params: {
@@ -241,6 +306,7 @@
         }
         this.on_submit_loading = true
         this.form.Value = JSON.stringify(this.jsons)
+        console.log(this.jsons)
         this.form.Services = []
         for(let i in this.keyService) {
           this.form.Services.push({Id: this.keyService[i]})

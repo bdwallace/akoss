@@ -2,6 +2,7 @@ package confcontrollers
 
 import (
 	"controllers"
+	"library/rsa"
 	"models"
 
 	"encoding/json"
@@ -236,6 +237,25 @@ func (c *ConfController) CopyConfById() {
 
 	c.SetJson(0, resConf, "")
 	return
-
 }
 
+
+// @Title get rsa
+// @Description get rsa
+// @Success 0 {ok} bool
+// @Failure 1 拷贝 get rsa 失败
+// @Failure 2 User not found
+// @router /conf/rsa [get]
+func (c *ConfController) GetRSA(){
+
+	rsa, err := rsa.GenRsaKey(1024)
+	if err != nil{
+		c.SetJson(1, err, "获取 RSA 失败")
+		return
+	}
+
+	c.SetJson(0,rsa,"")
+	return
+
+
+}

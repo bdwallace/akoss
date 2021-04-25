@@ -8,4 +8,5 @@ exports.id = "/api/conf/id"
 exports.save = "/api/conf"
 //复制数据
 exports.copy = "/api/conf/copy"
-
+//rsa
+exports.rsa = "/api/conf/rsa"
