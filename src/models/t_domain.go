@@ -182,7 +182,7 @@ func GetDomainByDomain(domain *Domain) (d *Domain, err error) {
 
 
 func SearchDomain(projectId, start, length int, class, platforms, services, searchText string)(total int, d []*Domain, err error){
-	base := fmt.Sprintf("SELECT `t_domain`.`id`, `t_domain`.`name`, `t_domain`.`domain`, `t_domain`.`class`, `t_domain`.`monitor`, `t_domain`.`port`, `t_domain`.`crt`, `t_domain`.`key` FROM `%s` `t_domain`", domainTableName)
+	base := fmt.Sprintf("SELECT `t_domain`.`id`, `t_domain`.`name`, `t_domain`.`domain`, `t_domain`.`class`, `t_domain`.`monitor`, `t_domain`.`quicken`,`t_domain`.`port`, `t_domain`.`crt`, `t_domain`.`key` FROM `%s` `t_domain`", domainTableName)
 
 	where := "WHERE"
 	if projectId != 0 {

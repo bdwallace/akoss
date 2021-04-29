@@ -87,12 +87,19 @@
                         <!-- :filter-method="filterService"> -->
                 <el-table-column
                         prop="Services"
-                        label="加速服务"
+                        label="加速服务">
                         column-key="Services"
                         :filters="itemService">
                     <template scope="props">
                         <font v-for="item in props.row.Services" :key="item">{{item.Name}}, </font>
                     </template>
+                </el-table-column>
+
+                <el-table-column
+                  label="域名是否加速">
+                  <template scope="props">
+                    <span v-if="props.row.Quicken == 1">是</span>
+                  </template>
                 </el-table-column>
 
                 <el-table-column
