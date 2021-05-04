@@ -2,7 +2,6 @@ package deleteDomainRecoControllers
 
 import (
 	"controllers"
-	"fmt"
 	"models"
 )
 
@@ -56,9 +55,6 @@ func (c *DeleteDomainRecoController)GetDomainReco() {
 		return
 	}
 
-	fmt.Println("total: ",total)
-	fmt.Println("len: ",len(resDomainReco))
-	fmt.Println("page: ",page)
 	c.SetJson(0, map[string]interface{}{"total": total, "currentPage": page, "table_data": resDomainReco}, "")
 	return
 
