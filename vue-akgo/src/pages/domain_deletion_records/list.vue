@@ -33,36 +33,39 @@
         <el-table-column
           prop="Domain"
           label="域名"
-          column-key="Domain">
+          column-key="Domain"
+          width="300">
         </el-table-column>
 
         <el-table-column
           prop="Class"
           label="类型"
           column-key="Class"
-          :filters="itemClass">
+          :filters="itemClass"
+          width="100">
         </el-table-column>
 
         <el-table-column
           prop="CreatedAt"
           label="操作时间"
           column-key="CreatedAt"
-          :formatter="dateFormat">
+          :formatter="dateFormat"
+          width="160">
         </el-table-column>
 
         <el-table-column
           prop="UserName"
           label="用户"
-          column-key="UserName">
+          column-key="UserName"
+          width="100">
+        </el-table-column>
+
+        <el-table-column
+          prop="Comment"
+          label="备注"
+          column-key="Comment">
         </el-table-column>
       </el-table>
-
-      <el-table-column
-        prop="Comment"
-        label="备注"
-        column-key="Comment">
-      </el-table-column>
-
       <bottom-tool-bar>
         <div slot="page">
           <el-pagination
