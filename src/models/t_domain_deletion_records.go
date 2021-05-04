@@ -13,7 +13,7 @@ type DeleteDomainReco struct {
 	Id        		int    				`orm:"column(id);pk;auto"`
 	Domain     		string 				`orm:"column(domain);size(100);unique"`
 	Class     		string 				`orm:"column(class);size(100)"`
-	Comment 		string 				`orm:"column(comment);size(200)"`
+	Comment 		string 				`orm:"column(comment);type(text)"`
 	UserName		string 				`orm:"column(user_name);size(200)"`
 
 	CreatedAt 		time.Time 			`orm:"column(created_at);type(datetime);auto_now_add;"`

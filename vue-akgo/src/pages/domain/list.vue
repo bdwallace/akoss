@@ -3,16 +3,16 @@
 
     <div class="panel">
         <panel-title :title="$route.meta.title">
-            <!-- <el-radio-group style="float: left;margin-right: 101px;margin-top: 15px" v-model="level" @change="get_table_data()">
+            <!-- <el-radio-group style="float: left;margin-right: 100px;margin-top: 15px" v-model="level" @change="get_table_data()">
             <el-radio v-for="item in level_data" :key="item.Id" :label="item.Id">{{item.Name}}</el-radio>
             </el-radio-group> -->
 
-            <!-- <div style="float: left;margin-right: 11px;margin-top: 5px">
+            <!-- <div style="float: left;margin-right: 10px;margin-top: 5px">
                 <el-button plain size="small" @click="resetPlatformFilter">所有平台</el-button>
                 <el-button plain size="small" @click="resetClassFilter">所有类型</el-button>
             </div> -->
 
-            <div style="float: left;margin-right: 11px;margin-top: 5px">
+            <div style="float: left;margin-right: 10px;margin-top: 5px">
                 <el-button plain size="small">全部&nbsp;{{total}}&nbsp;个域名</el-button>
             </div>
 
