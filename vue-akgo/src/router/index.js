@@ -232,6 +232,17 @@ const routes = [{
             auth: true
         }
     }, {
+      path: '/deleteDomainList',
+      name: 'deleteDomainList',
+      components: {
+        default: require('pages/domain_deletion_records/list'),
+        menuView: require('components/leftSlide')
+      },
+      meta: {
+        title: "域名删除记录",
+        auth: true
+      }
+    }, {
         path: '/domain/add',
         name: 'domainAdd',
         components: {

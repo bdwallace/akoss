@@ -248,7 +248,7 @@ func (c *ConfController) CopyConfById() {
 // @router /conf/rsa [get]
 func (c *ConfController) GetRSA(){
 
-	rsa, err := rsa.GenRsaKey(1024)
+	rsa, err := rsa.GenRsaKey(2048)
 	if err != nil{
 		c.SetJson(1, err, "获取 RSA 失败")
 		return

@@ -14,3 +14,7 @@ exports.tagcmd = "/api/domain/tagcmd"
 exports.noquickenlist = "/api/domain/platformAndClass"
 //列出domain中所有的class
 exports.class = "/api/domain/class"
+// deleted domain Reco
+exports.domainReco = "/api/domainReco"
+
+exports.domainRecoClass = "/api/domainReco/class"

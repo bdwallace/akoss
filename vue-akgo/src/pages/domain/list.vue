@@ -3,16 +3,16 @@
 
     <div class="panel">
         <panel-title :title="$route.meta.title">
-            <!-- <el-radio-group style="float: left;margin-right: 100px;margin-top: 15px" v-model="level" @change="get_table_data()">
+            <!-- <el-radio-group style="float: left;margin-right: 101px;margin-top: 15px" v-model="level" @change="get_table_data()">
             <el-radio v-for="item in level_data" :key="item.Id" :label="item.Id">{{item.Name}}</el-radio>
             </el-radio-group> -->
 
-            <!-- <div style="float: left;margin-right: 10px;margin-top: 5px">
+            <!-- <div style="float: left;margin-right: 11px;margin-top: 5px">
                 <el-button plain size="small" @click="resetPlatformFilter">所有平台</el-button>
                 <el-button plain size="small" @click="resetClassFilter">所有类型</el-button>
             </div> -->
 
-            <div style="float: left;margin-right: 10px;margin-top: 5px">
+            <div style="float: left;margin-right: 11px;margin-top: 5px">
                 <el-button plain size="small">全部&nbsp;{{total}}&nbsp;个域名</el-button>
             </div>
 
@@ -154,8 +154,24 @@
                             <el-button type="info" size="small" icon="edit">修改</el-button>
                         </router-link>
 
-                        <el-button style="margin-left:0px" type="danger" size="small" icon="delete" @click="delete_data(props.row.Id)">删除
-                        </el-button>
+<!--                        <el-button style="margin-left:0px" type="danger" size="small" icon="delete" @click="delete_data(props.row.Id)">删除</el-button>-->
+
+
+
+                      <el-button style="margin-left:0px" type="danger" size="small" icon="delete"  @click="dialogFormVisible = true, delete_id = props.row.Id">删除</el-button>
+                      <el-dialog title="注意" :visible.sync="dialogFormVisible">
+                        <el-form :model="form">
+                          <el-form-item label="此操作将删除该域名,若要删除此域名请先删除域名所关联平台,删除域名需要填写备注" >
+<!--                            <el-input v-model="form.comment" autocomplete="on">请输入删除备注</el-input>-->
+                            <el-input type="textarea" :rows="2" placeholder="请填写备注"
+                                      v-model.trim="form.comment" style="width: 800px;"></el-input>
+                          </el-form-item>
+                        </el-form>
+                        <div slot="footer" class="dialog-footer">
+                          <el-button @click="dialogFormVisible = false">取 消</el-button>
+                          <el-button type="primary" @click="dialogFormVisible = delete_domain(delete_id)">确 定</el-button>
+                        </div>
+                      </el-dialog>
                     </template>
                 </el-table-column>
 
@@ -198,6 +214,12 @@
                 batch_select: [],
                 //批量选择数组
                 search_text: "",
+                dialogFormVisible: false,
+                delete_id: 0,
+                //comment
+                form:{
+                  comment: "",
+                },
                 //项目详情
                 // filter: {},
                 filter: {
@@ -410,6 +432,30 @@
             // },
 
 
+            // delete
+            delete_domain(id){
+              this.load_data = true
+              this.$http.delete(port_domain.id, {
+                params: {
+                  id: id,
+                  comment: this.form.comment,
+                  username: store.state.user_info.user.Username,
+                }
+              })
+                .then(({data: {msg}}) => {
+                  this.get_table_data()
+                  this.$message({
+                    message: msg,
+                    type: 'success'
+                  })
+                }).
+              catch(() => {
+                this.load_data = false
+              }).
+            catch(() => {
+              this.load_data = false
+            })
+            },
 
             //根据id删除数据
             delete_data(id){

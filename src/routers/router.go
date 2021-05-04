@@ -11,6 +11,7 @@ import (
 	cloudcontrollers "controllers/cloud"
 	confcontrollers "controllers/conf"
 	crontabcontroller "controllers/crontab"
+	deleteDomainRecoControllers "controllers/deleteDomainReco"
 	deploycontrollers "controllers/deploy"
 	domaincontroller "controllers/domain"
 	fastcontrollers "controllers/fast"
@@ -134,6 +135,9 @@ func init() {
 		),
 		beego.NSInclude(
 			&akauthcontroller.AkAuthController{},
+		),
+		beego.NSInclude(
+			&deleteDomainRecoControllers.DeleteDomainRecoController{},
 		),
 	)
 	beego.AddNamespace(akNs)

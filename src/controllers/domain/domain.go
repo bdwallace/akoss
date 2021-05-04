@@ -312,13 +312,42 @@ func (c *DomainController)DeleteDomainById(){
 		return
 	}
 
-	num, err := models.DeleteDomainById(id)
+	userName := c.GetString("username")
+
+	comment := c.GetString("comment")
+
+
+	if comment == ""{
+		c.SetJson(1,err,"删除域名失败, 请填写备注信息")
+		return
+	}
+
+	d, err := models.GetDomainById(id)
+	if err != nil{
+		c.SetJson(1,err,"域名删除失败，请联系管理员")
+		return
+	}
+
+	_, err = models.DeleteDomainById(id)
 	if err != nil {
 		c.SetJson(1,err,"删除 domian 失败,请先删除关联关系")
 		return
 	}
 
-	c.SetJson(0,num,"")
+	domainReco := new(models.DeleteDomainReco)
+	domainReco.Project = d.Project
+	domainReco.Domain = d.Domain
+	domainReco.Comment = comment
+	domainReco.UserName = userName
+	domainReco.Class = d.Class
+
+	_, err = models.AddDomainRecord(domainReco)
+	if err != nil{
+		c.SetJson(1,err,"添加域名删除记录失败")
+		return
+	}
+
+	c.SetJson(0,nil,"")
 	return
 
 }

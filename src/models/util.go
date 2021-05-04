@@ -140,6 +140,12 @@ const (
 	crontabLogId                       = "crontab_log_id"
 	crontabLogForCrontabForeignKeyName = "crontab_log_for_crontab_id"
 
+	// t_domain_delete_records
+	domainDeleteRecordsTableName 		= "t_delete_domain_reco"
+	domainDeleteRecordsFroProjectForeignKeyName = "delete_domian_reco_for_project_id"
+
+
+
 	//confTableName,confProjectForeignKeyName,projectId,projectTableName,primaryKey
 
 	// t_link t_link和t_project使用新方法自动添加外键
@@ -376,6 +382,9 @@ func CreateAkTables() {
 
 	// t_crontab_log
 	sqlObj.CrontabLogCreateForeignKeyCrontab()
+
+	// t_deleteDomain_reco
+	sqlObj.DeleteDomainRecordsCreateForeignKeyProject()
 
 }
 
