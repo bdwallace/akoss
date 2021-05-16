@@ -160,13 +160,15 @@
 
                       <el-button style="margin-left:0px" type="danger" size="small" icon="delete"  @click="dialogFormVisible = true, delete_id = props.row.Id">删除</el-button>
                       <el-dialog title="注意" :visible.sync="dialogFormVisible">
-                        <el-form :model="form">
-                          <el-form-item label="此操作将删除该域名,若要删除此域名请先删除域名所关联平台,删除域名需要填写备注" >
+                        <span>此操作将删除该域名,若要删除此域名请先删除域名所关联平台,删除域名需要填写备注</span>
+<!--                        <el-form :model="form">-->
+<!--                          <el-form-item label="此操作将删除该域名,若要删除此域名请先删除域名所关联平台,删除域名需要填写备注" >-->
+<!--                            <el-form-item label="此操作将删除该域名,若要删除此域名请先删除域名所关联平台,删除域名需要填写备注" >-->
 <!--                            <el-input v-model="form.comment" autocomplete="on">请输入删除备注</el-input>-->
-                            <el-input type="textarea" :rows="2" placeholder="请填写备注"
-                                      v-model.trim="form.comment" style="width: 800px;"></el-input>
-                          </el-form-item>
-                        </el-form>
+                            <el-input type="textarea" :rows="4" placeholder="请填写备注"
+                                      v-model="form.comment" style="width: 800px;"></el-input>
+<!--                          </el-form-item>-->
+<!--                        </el-form>-->
                         <div slot="footer" class="dialog-footer">
                           <el-button @click="dialogFormVisible = false">取 消</el-button>
                           <el-button type="primary" @click="dialogFormVisible = delete_domain(delete_id)">确 定</el-button>
