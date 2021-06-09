@@ -181,7 +181,7 @@ func GetDomainByDomain(domain *Domain) (d *Domain, err error) {
 }
 
 
-func SearchDomain(projectId, start, length int, class, platforms, services, searchText string)(total int, d []*Domain, err error){
+func SearchDomain(projectId, start, length int, class, platforms, services, quicken, searchText string)(total int, d []*Domain, err error){
 	base := fmt.Sprintf("SELECT `t_domain`.`id`, `t_domain`.`name`, `t_domain`.`domain`, `t_domain`.`class`, `t_domain`.`monitor`, `t_domain`.`quicken`,`t_domain`.`port`, `t_domain`.`crt`, `t_domain`.`key` FROM `%s` `t_domain`", domainTableName)
 
 	where := "WHERE"
@@ -203,6 +203,10 @@ func SearchDomain(projectId, start, length int, class, platforms, services, sear
 	if class != "NOT_FILTER" {
 		where = fmt.Sprintf("%s AND `t_domain`.`class` in (%s)", where, common.AddStringListSingle(class))
 	}
+	if quicken != "NOT_FILTER" {
+		where = fmt.Sprintf("%s AND `t_domain`.`quicken` in (%s)", where, common.AddStringListSingle(quicken))
+	}
+
 	if searchText != "" {
 		// where = fmt.Sprintf("%s AND (`t_domain`.`name` LIKE '%%%s%%' OR `t_domain`.`domain` LIKE '%%%s%%' OR `t_service`.`name` LIKE '%%%s%%' OR `t_platform`.`name` LIKE '%%%s%%')", where, searchText, searchText, searchText, searchText)
 		where = fmt.Sprintf("%s AND (`t_domain`.`name` LIKE '%%%s%%' OR `t_domain`.`domain` LIKE '%%%s%%')", where, searchText, searchText)
@@ -241,6 +245,14 @@ func GetDomainByProjectForClass(projectId int) (list *orm.ParamsList, err error)
 	_ ,err = o.QueryTable(domainTableName).Filter("project_id",projectId).GroupBy("class").OrderBy("class").ValuesFlat(list, "class")
 	return
 }
+
+func GetDomainByProjectForQuicken(projectId int) (d []*Domain, err error) {
+	o := orm.NewOrm()
+	//_ ,err = o.QueryTable(domainTableName).Filter("project_id",projectId).GroupBy("quicken").OrderBy("quicken").ValuesFlat(list, "quicken")
+	_ ,err = o.QueryTable(domainTableName).Filter("project_id",projectId).Filter("quicken",1).RelatedSel().All(&d)
+	return
+}
+
 
 func GetDomainByServiceId(serviceId int) (d []*Domain, err error) {
 

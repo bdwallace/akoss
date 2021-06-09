@@ -8,5 +8,4 @@
   "apiCrontabMonitor" : "/api/monitor",
   "apiPlatformDomains" : "/api/platform/domains",
   "apiGrafanaExec" : "/api/inspectgrafana/exec",
-  "testDeleteDomainReco" : "/api/domainReco"
 }

@@ -57,7 +57,7 @@
                         label="域名"
                         sortable
                         column-key="Domain"
-                        width="160">
+                        width="200">
                 </el-table-column>
 
                         <!-- :filter-method="filterClass" -->
@@ -87,7 +87,7 @@
                         <!-- :filter-method="filterService"> -->
                 <el-table-column
                         prop="Services"
-                        label="加速服务">
+                        label="加速服务"
                         column-key="Services"
                         :filters="itemService">
                     <template scope="props">
@@ -96,9 +96,13 @@
                 </el-table-column>
 
                 <el-table-column
-                  label="域名是否加速">
+                  prop="Quicken"
+                  label="域名是否加速"
+                  width="140"
+                  column-key="Quicken"
+                  :filters="itemQuicken">
                   <template scope="props">
-                    <span v-if="props.row.Quicken == 1">是</span>
+                        <font v-for="item in props.row.Quicken" :key="item" v-if="item == 1">是</font>
                   </template>
                 </el-table-column>
 
@@ -227,16 +231,19 @@
                 filter: {
                     Class: [],
                     Platforms: [],
-                    Services: []
+                    Services: [],
+                    Quicken: [],
                 },
 
                 itemClass: [],
                 itemPlatform: [],
                 itemService: [],
+                itemQuicken: [],
 
-                Class: "NOT_FILTER",
-                Platforms: "NOT_FILTER",
-                Services: "NOT_FILTER",
+              Class: "NOT_FILTER",
+              Platforms: "NOT_FILTER",
+              Services: "NOT_FILTER",
+              Quicken: "NOT_FILTER",
             }
         },
         components: {
@@ -249,6 +256,7 @@
             this.get_domain_class()
             this.get_platform_name()
             this.get_service_name()
+            this.get_domain_quicken()
         },
         methods: {
             submit_search(value) {
@@ -292,6 +300,7 @@
                 if (this.filter.Platforms.length == 0) {
                     this.Platforms = "NOT_FILTER"
                 } else {
+                    console.log(this.filter.Platforms)
                     this.Platforms = this.filter.Platforms.join()
                 }
 
@@ -300,6 +309,13 @@
                 } else {
                     this.Services = this.filter.Services.join()
                 }
+
+              if (this.filter.Quicken.length == 0) {
+                  this.Quicken = "NOT_FILTER"
+                } else {
+                  this.Quicken = this.filter.Quicken.join()
+                }
+
                 this.get_table_data()
             },
 
@@ -315,7 +331,8 @@
                                 search_text: this.search_text,
                                 class: this.Class,
                                 platforms: this.Platforms,
-                                services: this.Services
+                                services: this.Services,
+                                quicken: this.Quicken,
                             }
                         })
                 .then(({data: {data}}) => {
@@ -360,7 +377,6 @@
                     for(let i in data) {
                         this.itemPlatform[i] = {text: data[i], value: data[i]}
                     }
-                    // this.itemPlatform.push({text: "", value: ""})
                     this.load_data = false
                 })
                 .catch(() => {
@@ -377,9 +393,6 @@
                         })
                 .then(({data: {data}}) => {
                     for(let i in data) {
-                        // if(data[i] === "") {
-                        //     continue
-                        // }
                         this.itemClass.push({text: data[i], value: data[i]})
                     }
                     this.load_data = false
@@ -389,50 +402,10 @@
                 })
             },
 
-
-            // filter() {
-            //     let class_list = []
-            //     let platform_list = []
-            //     let service_list = []
-            //     for(var i in this.table_data) {
-            //         // if (domain_list.indexOf(this.table_data[i].Domain) == -1) {
-            //         //     domain_list.push(this.table_data[i].Domain)
-            //         // }
-
-            //         if (class_list.indexOf(this.table_data[i].Class) == -1) {
-            //             class_list.push(this.table_data[i].Class)
-            //         }
-
-            //         for(var j in this.table_data[i].Platforms) {
-            //             if (platform_list.indexOf(this.table_data[i].Platforms[j].Name) == -1) {
-            //                 platform_list.push(this.table_data[i].Platforms[j].Name)
-            //             }
-            //         }
-
-            //         for(var j in this.table_data[i].Services) {
-            //             if (service_list.indexOf(this.table_data[i].Services[j].Name) == -1) {
-            //                 service_list.push(this.table_data[i].Services[j].Name)
-            //             }
-            //         }
-            //     }
-
-            //     // for (var i in domain_list) {
-            //     //     this.itemDomain[i] = {text: domain_list[i], value: domain_list[i]}
-            //     // }
-
-            //     for (var i in class_list) {
-            //         this.itemClass[i] = {text: class_list[i], value: class_list[i]}
-            //     }
-
-            //     for (var i in platform_list) {
-            //         this.itemPlatform[i] = {text: platform_list[i], value: platform_list[i]}
-            //     }
-
-            //     for (var i in service_list) {
-            //         this.itemService[i] = {text: service_list[i], value: service_list[i]}
-            //     }
-            // },
-
+          get_domain_quicken() {
+            this.load_data = true
+            this.itemQuicken.push({text: "是",value: "1"})
+          },
 
             // delete
             delete_domain(id){

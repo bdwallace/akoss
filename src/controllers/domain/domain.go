@@ -123,11 +123,12 @@ func (c *DomainController)GetDomainList() {
 	class := c.GetString("class")
 	platforms := c.GetString("platforms")
 	services := c.GetString("services")
+	quicken := c.GetString("quicken")
 	searchText := c.GetString("search_text")
 
 	projectId, err := c.GetInt("project_id")
 	if err != nil{
-		fmt.Println("error: GetInt(\"project_id\")",err)
+		fmt.Println("error: Get project_id ",err)
 		c.SetJson(1,err,"获取 project_id 失败")
 		return
 	}
@@ -140,7 +141,7 @@ func (c *DomainController)GetDomainList() {
 		start = (page - 1) * length
 	}
 
-	count, resDomains, err := models.SearchDomain(projectId, start, length, class, platforms, services, searchText)
+	count, resDomains, err := models.SearchDomain(projectId, start, length, class, platforms, services,quicken, searchText)
 	if err != nil{
 		fmt.Println("error: SearchDomain()",err)
 		c.SetJson(1,err,"搜索 Domain匹配内容 失败")
