@@ -33,7 +33,7 @@
                         style="width: 300px;"></el-input>
             </el-form-item>
 
-            <div v-show="userId == 1" >
+<!--            <div v-show="userId == 1" >-->
               <el-form-item label="AwsKeyId:" prop="AwsKeyId" label-width="120px">
                 <el-input v-model="form.AwsKeyId" placeholder="请类型名称"
                           style="width: 300px;"></el-input>
@@ -54,14 +54,14 @@
                 </el-button>
                 <el-button @click="$router.back()">取消</el-button>
               </el-form-item>
-            </div>
+<!--            </div>-->
 
           </el-form>
         </el-col>
 
         <!-- <el-col :span="8">
           <el-form>
-          
+
             <el-form-item label="导入host数据，初始化项目主机关联:">
                 <el-upload
                     class="upload-demo"
@@ -86,7 +86,7 @@
   export default {
     data() {
       return {
-        userId: store.state.user_info.user.Id, 
+        userId: store.state.user_info.user.Id,
         form: {Name: null},
         route_id: this.$route.params.id,
         load_data: false,
