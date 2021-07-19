@@ -33,7 +33,7 @@
                         style="width: 300px;"></el-input>
             </el-form-item>
 
-<!--            <div v-show="userId == 1" >-->
+            <div v-show="userId == 1" >
               <el-form-item label="AwsKeyId:" prop="AwsKeyId" label-width="120px">
                 <el-input v-model="form.AwsKeyId" placeholder="请类型名称"
                           style="width: 300px;"></el-input>
@@ -54,7 +54,7 @@
                 </el-button>
                 <el-button @click="$router.back()">取消</el-button>
               </el-form-item>
-<!--            </div>-->
+            </div>
 
           </el-form>
         </el-col>

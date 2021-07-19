@@ -7,6 +7,9 @@
             <el-button @click.stop="on_refresh" size="small">
                 <i class="fa fa-refresh"></i>
             </el-button> -->
+<!--          <footer class="footer" v-once> 新建的项目，添加完awskey后要重启akgo容器 </footer>-->
+          <font color="red">  新建的项目，添加完awskey后要重启akoss容器  </font>
+
             <router-link :to="{name: 'projectAdd'}" tag="span">
                 <el-button type="primary" icon="plus" size="small">创建项目</el-button>
             </router-link>
@@ -82,7 +85,7 @@
     export default{
         data(){
             return {
-                ProjectId: store.state.user_info.user.ProjectId, 
+                ProjectId: store.state.user_info.user.ProjectId,
                 table_data: [],
                 load_data: false
             }
@@ -108,7 +111,7 @@
 
             dateFormat(row, column, cellValue, format='YY-MM-DD hh:mm:ss'){
                 var date = new Date(cellValue);
- 
+
                 var year = date.getFullYear(),
                     month = date.getMonth()+1,//月份是从0开始的
                     day = date.getDate(),
@@ -118,14 +121,14 @@
                 var preArr = Array.apply(null,Array(10)).map(function(elem, index) {
                     return '0'+index;
                 });//开个长度为10的数组 格式为 ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09"]
- 
+
                 var newTime = format.replace(/YY/g,year)
                     .replace(/MM/g,preArr[month]||month)
                     .replace(/DD/g,preArr[day]||day)
                     .replace(/hh/g,preArr[hour]||hour)
                     .replace(/mm/g,preArr[min]||min)
                     .replace(/ss/g,preArr[sec]||sec);
- 
+
                 return newTime
             },
 
@@ -168,7 +171,7 @@
                 })
             },
 
-            
+
         },
 
     }
