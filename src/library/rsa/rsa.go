@@ -1,13 +1,12 @@
 package rsa
 
 import (
+	"bytes"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/x509"
-	"encoding/base64"
 	"encoding/pem"
-	"io/ioutil"
-	"os"
+	"strings"
 )
 
 type RSA struct {
@@ -27,23 +26,14 @@ func GenRsaKey(bits int) (*RSA, error){
 		Type:  "RSA PRIVATE KEY",
 		Bytes: derStream,
 	}
-	file, err := os.Create("private.pem")
-	if err != nil {
-		return nil,err
-	}
-	err = pem.Encode(file, block)
+	priBuf := new(bytes.Buffer)
+	err = pem.Encode(priBuf, block)
 	if err != nil {
 		return nil, err
 	}
 
-	pri, err := ioutil.ReadFile("private.pem")
-	if err != nil{
-		return nil, err
-	}
-	rsaObj.PrivateKey = base64.StdEncoding.EncodeToString(pri)
-	if len(rsaObj.PrivateKey) >0 {
-		os.Remove("private.pem")
-	}
+	//rsaObj.PrivateKey = base64.StdEncoding.EncodeToString(priBuf.String())
+	rsaObj.PrivateKey = removeHeadAndEnd(priBuf.String())
 
 	// 生成公钥文件
 	publicKey := &privateKey.PublicKey
@@ -52,26 +42,27 @@ func GenRsaKey(bits int) (*RSA, error){
 		return nil, err
 	}
 	block = &pem.Block{
-		Type:  "PUBLIC KEY",
+		Type:  "RSA PUBLIC KEY",
 		Bytes: derPkix,
 	}
-	file, err = os.Create("public.pem")
-	if err != nil {
-		return nil,err
-	}
-	err = pem.Encode(file, block)
-	if err != nil {
-		return nil, err
-	}
-	pub, err := ioutil.ReadFile("public.pem")
-	if err != nil{
-		return nil, err
-	}
-	rsaObj.PublicKey = base64.StdEncoding.EncodeToString(pub)
 
-	if len(rsaObj.PublicKey) >0 {
-		os.Remove("public.pem")
+	pubBuf := new(bytes.Buffer)
+	err = pem.Encode(pubBuf, block)
+	if err != nil {
+		return nil, err
 	}
+
+	//rsaObj.PublicKey = base64.StdEncoding.EncodeToString(pubBuf.String())
+	rsaObj.PublicKey = removeHeadAndEnd(pubBuf.String())
 
 	return rsaObj,nil
+}
+
+func removeHeadAndEnd(secretKey string)string{
+
+	FirstWrap := strings.Index(secretKey,"\n")
+	LastWrap := strings.LastIndex(secretKey,"\n")
+	tmp1 := secretKey[FirstWrap:LastWrap]
+	LastWrap2 := strings.LastIndex(tmp1,"\n")
+	return secretKey[FirstWrap+1:LastWrap2]
 }

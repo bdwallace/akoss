@@ -18,7 +18,7 @@
             <table class="table">
               <tr>
                 <th style="text-align:right;width:300px;padding-right:10px">key值</th>
-                <th style="text-align:left;width:500px;padding-left:10px">value值</th>
+                <th style="text-align:left;width:600px;padding-left:10px">value值</th>
                 <th style="padding-left: 20px">删除</th>
               </tr>
 
@@ -28,7 +28,7 @@
                     <el-input type="textarea" autosize placeholder="输入内容" v-model="item.Key" style="direction: rtl;"></el-input>
                 </td>
 
-                <td style="text-align:left;width:500px;padding-left:10px">
+                <td style="text-align:left;width:600px;padding-left:10px">
                     <el-input type="textarea" autosize placeholder="输入内容" v-model="item.Value"></el-input>
                 </td>
 
@@ -66,14 +66,14 @@
               <table class="table">
                 <tr>
                   <th style="text-align:right;width:300px;padding-right:10px">key值</th>
-                  <th style="text-align:left;width:500px;padding-left:10px">value值</th>
+                  <th style="text-align:left;width:600px;padding-left:10px">value值</th>
                   <th style="padding-left: 20px">添加</th>
                 </tr>
                 <tr>
                   <td style="text-align:right;width:300px;padding-right:10px">
                     <el-input type="textarea" autosize placeholder="输入RSA public key" v-model="RsaPubName"></el-input>
                   </td>
-                  <td style="text-align:left;width:500px;padding-left:10px">
+                  <td style="text-align:left;width:600px;padding-left:10px">
                     <el-input type="textarea" autosize placeholder="点击获取RSA证书内容" v-model="RsaPublic"></el-input>
                   </td>
                   <td style="padding-left: 20px;">
@@ -84,7 +84,7 @@
                   <td style="text-align:right;width:300px;padding-right:10px">
                     <el-input type="textarea" autosize placeholder="输入RSA private key" v-model="RsaPriName"></el-input>
                   </td>
-                  <td style="text-align:left;width:500px;padding-left:10px">
+                  <td style="text-align:left;width:600px;padding-left:10px">
                     <el-input type="textarea" autosize placeholder="点击获取RSA证书内容" v-model="RsaPrivate"></el-input>
                   </td>
                   <td style="padding-left: 20px;">
