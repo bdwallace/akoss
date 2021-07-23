@@ -18,6 +18,7 @@ type Host struct {
 	UseIp			string				`orm:"column(use_ip)"`
 	InstanceId 		string 				`orm:"column(instance_id);size(200)"`	  //  ++
 	InstanceType 	string 				`orm:"column(instance_type);size(200)"`	  //  ++
+	IsDel			int					`orm:"column(is_del),default(0)"`
 	Region     		string 				`orm:"column(region);size(200)"`			// ++
 	StartTime  		string 				`orm:"column(start_time);size(100)"`		// ++
 	EndTime    		string 				`orm:"column(end_time);size(100)"`		// ++
@@ -94,7 +95,7 @@ func GetAllHost(projectId int) (h []*Host, err error) {
 
 	o := orm.NewOrm()
 
-	if _, err = o.QueryTable(hostTableName).Filter("project_id",projectId).RelatedSel().All(&h);err != nil{
+	if _, err = o.QueryTable(hostTableName).Filter("project_id",projectId).Filter("is_del",0) .RelatedSel().All(&h);err != nil{
 		return nil, err
 	}
 
@@ -106,7 +107,7 @@ func GetAllHost(projectId int) (h []*Host, err error) {
 func SearchHosts(projectId int, awsRegion string, searchText string)(h []*Host, err error){
 	base := fmt.Sprintf("SELECT `T0`.`id`, `T0`.`name`, `T0`.`private_ip`, `T0`.`public_ip`, `T0`.`use_ip`, `T0`.`region`, `T0`.`instance_id`,  `T0`.`instance_type`, `T0`.`start_time`, `T0`.`end_time` FROM `%s` `T0`", hostTableName)
 
-	where := "WHERE"
+	where := "WHERE is_del=0 AND "
 	if projectId != 0 {
 		where = fmt.Sprintf("%s `T0`.`project_id` = %d", where, projectId)
 	}
@@ -200,20 +201,20 @@ func UpdateHostByHost(m *Host) (err error) {
 	return
 }
 
-func DeleteHostById(id int)(bool, error){
+func DeleteHostById(id int)(err error){
 
 	o := orm.NewOrm()
-	v := Host{Id: id}
-	//ascertain id exists in the database
-	if err := o.Read(&v); err != nil {
-		return false,err
+
+	h := &Host{Id:id}
+	if err := o.Read(h); err != nil {
+		return err
+	}
+	h.IsDel = 1
+	if _, err = o.Update(h); err != nil {
+		return err
 	}
 
-	if _, err := o.Delete(&Host{Id: id}); err != nil {
-		return false, err
-	}
-
-	return true, nil
+	return
 }
 
 

@@ -233,14 +233,14 @@ func (c *HostController)DeleteHostById(){
 		c.SetJson(1,err,"获取 id 失败")
 		return
 	}
-
-	ok, err := models.DeleteHostById(id)
-	if err != nil && ok != true{
+	err = models.DeleteHostById(id)
+	if err != nil {
+		fmt.Println("error: ",err)
 		c.SetJson(1,err,"删除 host 失败")
 		return
 	}
 
-	c.SetJson(0,ok,"")
+	c.SetJson(0,nil,"")
 	return
 
 }
