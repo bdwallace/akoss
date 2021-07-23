@@ -63,7 +63,7 @@ func monitorContainerUpdate(host, dockerName string) {
 
 	deployCmd := fmt.Sprintf("docker -H tcp://%s:%s login -u %s -p %s %s ; docker -H tcp://%s:%s container update --name %s --restart=always -d ", host, dockerPort, repoUser, repoPasswd, repoImageAddress, host, dockerPort,dockerName)
 
-	if err := runDeployMonitor(host, "docker container update node_exporter", deployCmd); err != nil{
+	if err := runDeployMonitor(host, "docker container node_exporter", deployCmd); err != nil{
 		return
 	}
 }
@@ -106,18 +106,18 @@ func DeployCadvisor(host string, waitgroup * sync.WaitGroup) {
 	// 检查是否启动 cadvisor 容器
 	s, err := monitorCheckRes(host,"cadvisor")
 	if err != nil{
-		fmt.Println("error: cadvisor monitor check res ",err)
+		fmt.Printf("error: %s cadvisor monitor check res %s\n",host,err.Error())
 	}
 
 
 	if strings.Index(s.Result, "cadvisor") > 0 {
-		fmt.Println("exec check cadvisor is exist")
+		fmt.Printf("%s:: exec check cadvisor is exist\n",host)
 		return
 	} else {
 
 		// 运行启动 cadvisor 命令
-		fmt.Println("exec cadvisor is not exist")
-		fmt.Println("exec deploy cadvisor ... ")
+		//fmt.Println("exec cadvisor is not exist")
+		fmt.Printf("%s:: exec deploy cadvisor ... \n",host)
 
 		dockerPort := beego.AppConfig.String("dockerport")
 
@@ -141,16 +141,16 @@ func DeployCadvisor(host string, waitgroup * sync.WaitGroup) {
 
 		s2, err := monitorCheckRes(host,"cadvisor")
 		if err != nil{
-			fmt.Println("error: cadvisor monitor check again  res ",err)
+			fmt.Printf("error: %s cadvisor monitor check again  res %s\n",host,err.Error())
 		}
 
 		// 再次检查是否启动 cadvisor 容器
 		if strings.Index(s2.Result, "cadvisor") > 0 {
-			fmt.Println("exec check cadvisor is exist")
+			//fmt.Printf("%s:: exec check cadvisor is exist\n",host)
 			return
 		} else {
-			fmt.Println("exec cadvisor is not exist")
-			fmt.Println("exec deploy cadvisor failed!")
+			//fmt.Println("exec cadvisor is not exist")
+			fmt.Printf("%s:: exec deploy cadvisor failed!!!\n",host)
 			return
 		}
 	}
@@ -166,17 +166,17 @@ func DeployNodeExporter(host string, waitgroup * sync.WaitGroup) {
 
 	s, err := monitorCheckRes(host, "node_exporter")
 	if err != nil{
-		fmt.Println("error: node_exporter monitor check res ",err)
+		fmt.Printf("error: %s node_exporter monitor check res %s\n",host,err)
 	}
 
 	if strings.Index(s.Result, "node_exporter") > 0 {
-		fmt.Println("exec check node_exporter is exist")
+		fmt.Printf("%s:: exec check node_exporter is exist\n",host)
 		return
 	} else {
 
 		// 运行启动 cadvisor 命令
-		fmt.Println("exec node_exporter is not exist")
-		fmt.Println("exec deploy node_exporter ... ")
+		//fmt.Println("exec node_exporter is not exist")
+		fmt.Printf("%s:: exec deploy node_exporter ... \n",host)
 		//docker -H tcp://${remote} login -u docker -p r0JT67Ud6Ybt @REG_ADDRESS@ ; docker -H tcp://${remote} run --name node-exporter -d \
 		//dockerRun := fmt.Sprintf( "docker -H tcp://%s run -itd",host)
 		dockerPort := beego.AppConfig.String("dockerport")
@@ -207,16 +207,15 @@ func DeployNodeExporter(host string, waitgroup * sync.WaitGroup) {
 		}
 		s2, err := monitorCheckRes(host, "node_exporter")
 		if err != nil{
-			fmt.Println("error: node_exporter monitor check again res ",err)
+			fmt.Printf("error: %s:: node_exporter monitor check again res %s\n",host,err)
 		}
 
 		// 再次检查是否启动 cadvisor 容器
 		if strings.Index(s2.Result, "node_exporter") > 0 {
-			fmt.Println("exec check node_exporter is exist")
+			//fmt.Printf("%s:: exec check node_exporter is exist\n",host)
 			return
 		} else {
-			fmt.Println("exec node_exporter is not exist")
-			fmt.Println("exec deploy node_exporter failed!")
+			fmt.Printf("%s:: exec deploy node_exporter failed!!!\n",host)
 			return
 		}
 	}
