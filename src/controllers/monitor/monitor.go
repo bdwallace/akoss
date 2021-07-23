@@ -31,6 +31,7 @@ func (c *MonitorController)Monitor(){
 		return
 	}
 
+	allHosts:= make([]*models.Host,0)
 	for _, project := range projects {
 
 		hosts, err := models.GetAllHost(project.Id)
@@ -38,19 +39,21 @@ func (c *MonitorController)Monitor(){
 			c.SetJson(1, nil, "error: get all host by project id")
 			return
 		}
-
-		waitgroup := new(sync.WaitGroup)
-		for _, host := range hosts{
-			waitgroup.Add(2)
-
-			go DeployCadvisor(host.UseIp, waitgroup)
-			go DeployNodeExporter(host.UseIp, waitgroup)
-		}
-
-		waitgroup.Wait()
-		c.SetJson(0, nil , "")
-		return
+		allHosts = append(allHosts,hosts...)
 	}
+
+	waitGroup := new(sync.WaitGroup)
+	for _, host := range allHosts{
+		waitGroup.Add(2)
+
+		go DeployCadvisor(host.UseIp, waitGroup)
+		go DeployNodeExporter(host.UseIp, waitGroup)
+	}
+
+	waitGroup.Wait()
+	c.SetJson(0, nil , "")
+	return
+
 
 }
 
