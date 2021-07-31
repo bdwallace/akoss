@@ -395,21 +395,21 @@ func (c *ServiceController) AddServiceAllRelatedByService(){
 			return
 		}
 
-		// black list
-		if service.BlackList != ""{
-			if cmdErr := blacklist.H5BlackListCP(service); cmdErr != nil{
-				fmt.Println("error: H5BlackListCP ",err)
-				c.SetJson(1,nil,"更新 service h5黑名单 失败")
-				return
-			}
-
-		}
 	}else {
 		// add
 		_, err = models.AddServiceAndRelated(service)
 		if err != nil{
 			fmt.Println("error: AddServiceAndRelated ",err)
 			c.SetJson(1,nil,"添加 service 多对多关系 失败")
+			return
+		}
+	}
+
+	// black list
+	if service.BlackList != ""{
+		if cmdErr := blacklist.BlackListCP(service); cmdErr != nil{
+			fmt.Println("error: service BlackListCP ",err)
+			c.SetJson(1,nil,"更新 service 黑名单 失败")
 			return
 		}
 	}

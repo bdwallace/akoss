@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func H5BlackListCP(service *models.Service)(err error) {
+func BlackListCP(service *models.Service)(err error) {
 
 	for _, host := range service.Hosts{
 
