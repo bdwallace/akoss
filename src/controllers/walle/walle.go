@@ -79,10 +79,22 @@ func (c *WalleController) GetTagList() {
 // @router /walle/lineget [get]
 func (c *WalleController) LineGet() {
 
-	levelId, _ := c.GetInt("project_id")
+	//levelId, _ := c.GetInt("project_id")
+	//project, _ := models.GetProjectById(levelId)
 
-	project, _ := models.GetProjectById(levelId)
-	url := "http://" + project.Nacos + "/nacos/v1/cs/configs"
+
+	sId, err := c.GetInt("service_id")
+	if err != nil{
+		fmt.Println("error: get service id faild")
+		c.SetJson(0, err, "error: get service id faild")
+	}
+
+	if err := c.GetServiceNacos(sId); err != nil{
+		fmt.Println("error: get service nacos faild")
+		c.SetJson(0, err, "error: get service nacos faild")
+	}
+
+	url := "http://" + c.Service.UseNacos + "/nacos/v1/cs/configs"
 
 	ipList, err := components.LineGet(url)
 	if err != nil {
@@ -103,11 +115,22 @@ func (c *WalleController) LineGet() {
 // @router /walle/linechange [get]
 func (c *WalleController) LineChange() {
 
-	nacos := c.GetString("nacos")
+
 	hostPort := c.GetString("host_port")
 	line := c.GetString("line")
 
-	url := "http://" + nacos + "/nacos/v1/cs/configs"
+	sId, err := c.GetInt("service_id")
+	if err != nil{
+		fmt.Println("error: get service id faild")
+		c.SetJson(0, err, "error: get service id faild")
+	}
+
+	if err := c.GetServiceNacos(sId); err != nil{
+		fmt.Println("error: get service nacos faild")
+		c.SetJson(0, err, "error: get service nacos faild")
+	}
+
+	url := "http://" + c.Service.UseNacos + "/nacos/v1/cs/configs"
 	lineData, err := components.LineGet(url)
 	if err != nil {
 		c.SetJson(1, err.Error(), "获取nacos接口数据返回失败")
@@ -147,5 +170,25 @@ func (c *WalleController) LineChange() {
 	//beego.Info(fmt.Sprintf("%s %s %s", hostPort, line, resultPost))
 
 	c.SetJson(0, "", "")
+	return
+}
+
+
+
+
+func (c * WalleController) GetServiceNacos (serviceId int) (err error){
+
+	c.Service ,err = models.GetServiceById(serviceId)
+	if err != nil{
+		return
+	}
+
+	if c.Service.UseNacos == ""{
+		c.Service.UseNacos = c.Project.Nacos1
+		if err = models.UpdateServiceAndRelated(c.Service); err != nil{
+			c.SetJson(1, err.Error(), "update service.UseNacos failed!")
+			return
+		}
+	}
 	return
 }

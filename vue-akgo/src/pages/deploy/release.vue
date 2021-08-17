@@ -9,7 +9,7 @@
                 <el-tag v-if="date != ''"> 创建时间:&nbsp;&nbsp;{{ date }} </el-tag>
 
                 <div  v-if="!tag_post" style="display: inline">
-                    <el-input v-model="unity" placeholder="统一版本" 
+                    <el-input v-model="unity" placeholder="统一版本"
                         style="margin-left: 40px;width: 340px">
                     </el-input>
 
@@ -23,7 +23,7 @@
                 </div>
             </div>
 
-            <el-table 
+            <el-table
                     v-if="form != null"
                     :data="form.Tasks"
                     v-loading="load_data"
@@ -69,12 +69,12 @@
                         </el-tag>
 
                         <el-input v-if="tag_post" v-model="props.row.Tag" size="mini" disabled readonly style="width: 280px">
-              
+
                         </el-input>
-                        <el-select v-model="props.row.Tag" 
+                        <el-select v-model="props.row.Tag"
                                 v-else
                                 filterable
-                                size="mini" 
+                                size="mini"
                                 style="width: 280px"
                                 @change="check(props.$index)">
                             <el-option
@@ -125,7 +125,7 @@
                                 off-value="off"
                                 on-text="上线"
                                 off-text="下线"
-                                @change="linechange(props.$index, item.ip, item.line)">
+                                @change="linechange(props.$index, item.ip, item.line,item.service_id)">
                             </el-switch>
 
                             <div style="display: inline-block;margin-right: 10px" v-if="item.ip_show == item.ip">
@@ -163,13 +163,13 @@
                             </div>
 
                             <el-button v-if="props.row.Service.Class == 'java'" size="mini" type="primary" style="margin-right:-12px" @click="restart(props.row.Service, props.row.Service.Hosts[host_index])" :loading="on_submit_loading">重启
-                            </el-button>    
+                            </el-button>
 
                             <el-button v-else size="mini" type="primary" style="margin-right:-12px" @click="reload(props.row.Service, props.row.Service.Hosts[host_index])" :loading="on_submit_loading">重载
-                            </el-button>    
+                            </el-button>
 
                             <el-button size="mini" type="primary" style="margin-right:-12px" @click="stop(props.row.Service, props.row.Service.Hosts[host_index])" :loading="on_submit_loading">关闭
-                            </el-button>  
+                            </el-button>
                     </div>
                         <div style="clear: both;margin-bottom: 10px;"> <span></span> </div>
                     </template>
@@ -196,7 +196,7 @@
             <el-tabs type="border-card" v-model="count" @tab-click="check_tag">
                 <el-tab-pane label="新发布" :name="`0`">
                     <div style="clear: both;margin: 10px">
-                        <el-button v-if="!tag_post" type="success" size="small" 
+                        <el-button v-if="!tag_post" type="success" size="small"
                             @click="post_tag" :loading="on_submit_loading">确定tag版本
                         </el-button>
                         <div v-else style="display:inline">
@@ -221,13 +221,13 @@
                 </el-tab-pane>
             </el-tabs>
 
-            <el-dialog title="确认发布以下服务" 
+            <el-dialog title="确认发布以下服务"
                 :visible.sync="is_backDialog"
                 :modal="true"
                 :show-close="false"
                 :modal-append-to-body="false">
                 <!-- <div  v-for="(item, index) in dialogForm" :key="item" style="width: 200px;display: inline-block;">
-                    <el-tag :closable="true" type="primary" 
+                    <el-tag :closable="true" type="primary"
                         @close="dialogForm.splice(index, 1)"
                         style="align:online">
                         {{item.Name}}
@@ -255,7 +255,7 @@
                     </code>
                 </div>
             </div>
-            
+
             <!-- <terminal v-if="count != 0" :deployId="route_id"></terminal> -->
         </div>
     </div>
@@ -316,7 +316,7 @@
                 dialogForm: [],
 
                 health: [],
-                health_all: true, 
+                health_all: true,
 
                 stop: walle_stop.stop,
                 restart: walle_restart.restart,
@@ -390,7 +390,7 @@
                 // setTimeout( () => clearInterval(this.intervalid1), 5000)
                 clearInterval(this.intervalid2)
             },
-            
+
             get_record() {
                 this.$http.get(port_record.listcount, {
                     params: {
@@ -464,7 +464,7 @@
                             deploy = false
                             failure_service = failure_service + servcie_name + ", "
                         }
-    
+
                     }
                     if(this.form.Tasks.length == action_nub ){
                         // setTimeout( () => clearInterval(this.intervalid1), 5000)
@@ -488,7 +488,7 @@
                         return this.form.Tasks[i].Service.Name
                     }
                 }
-                return "task_id:" + task_id 
+                return "task_id:" + task_id
             },
 
             get_itemCount() {
@@ -500,7 +500,7 @@
                     }
                 })
                 .then(({data: {data}}) => {
-                    
+
                     this.itemCount = data
 
                     this.load_data = false
@@ -574,7 +574,7 @@
             // renderHeaderTag(h) {
             //     return (
             //         <div>
-            //             <el-button type="success" size="small" 
+            //             <el-button type="success" size="small"
             //             onClick={this.post_tag}>确定版本
             //             </el-button>
             //         </div>
@@ -613,7 +613,7 @@
             renderHeaderStatus(h) {
                 return (
                     <div>
-                        <el-button type="success" size="mini" 
+                        <el-button type="success" size="mini"
                         onClick={this.get_service_status_all}>检测
                         </el-button>
                     </div>
@@ -668,15 +668,17 @@
                 this.load_data = false
             },
 
-            linechange(index, host, line) {
+            linechange(index, host, line, service_id) {
                 this.on_submit_loading = true
                 this.load_data = true
                 let host_port = host + ":" + this.form.Tasks[index].Service.Port.split(",")[0].split(":")[0]
-                this.$http.get(port_walle.linechange, { 
+                this.$http.get(port_walle.linechange, {
                         params: {
                             nacos: this.form.Project.Nacos,
                             host_port: host_port,
-                            line: line
+                            line: line,
+                            service_id: service_id
+
                         }
                     })
                 .then(({data: {data}}) => {
@@ -701,7 +703,7 @@
                             type: 'warning'
                         })
                         this.on_submit_loading = false
-                        return 
+                        return
                     }
                 }
                 this.$http.post(port_deploy.tagcmd, this.form)
@@ -791,7 +793,7 @@
             //     for
 
             // },
-            
+
             //提交
             on_submit_form_rollback(deployform) {
                 this.load_data = true

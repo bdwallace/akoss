@@ -18,8 +18,13 @@
                         style="width: 300px;"></el-input>
             </el-form-item>
 
-            <el-form-item label="Nacos:" prop="Nacos" label-width="120px">
-              <el-input v-model="form.Nacos" placeholder="请类型名称"
+            <el-form-item label="Nacos-1:" prop="Nacos1" label-width="120px">
+              <el-input v-model="form.Nacos1" placeholder="请类型名称"
+                        style="width: 300px;"></el-input>
+            </el-form-item>
+
+            <el-form-item label="Nacos-2:" prop="Nacos2" label-width="120px">
+              <el-input v-model="form.Nacos2" placeholder="请类型名称"
                         style="width: 300px;"></el-input>
             </el-form-item>
 

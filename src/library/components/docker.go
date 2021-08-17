@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"library/common"
 	"models"
+	"strconv"
 	"strings"
 	"time"
 
@@ -184,8 +185,16 @@ func (c *BaseDocker)DockerServiceHealth(host *models.Host, port string, have443 
 执行 docker ps 查看容器和上下线状态
 */
 func (c *BaseDocker) DockerPs(lineData string) (res []map[string]string, err error) {
+
+	if c.BaseComponents.Service.UseNacos == ""{
+		c.BaseComponents.Service.UseNacos = c.BaseComponents.Project.Nacos1
+		if err := models.UpdateServiceAndRelated(c.BaseComponents.Service); err != nil{
+			return nil,err
+		}
+	}
+
 	if lineData == "" {
-		url := "http://" + c.BaseComponents.Project.Nacos + "/nacos/v1/cs/configs"
+		url := "http://" + c.BaseComponents.Service.UseNacos + "/nacos/v1/cs/configs"
 		lineData, err = LineGet(url)
 		if err != nil {
 			return
@@ -241,7 +250,7 @@ func (c *BaseDocker) DockerPs(lineData string) (res []map[string]string, err err
 		health, url := c.DockerServiceHealth(host,p,have443)
 
 
-		res = append(res, map[string]string{"host_id": common.IntToStr(host.Id), "ip": host.PrivateIp, "ip_pub": host.PublicIp, "ip_show": host.UseIp, "ps_status": PsStatus, "ps_created_at": PsCreatedAt, "ps_image": PsImage, "line": Line, "health":health, "url":url})
+		res = append(res, map[string]string{"host_id": common.IntToStr(host.Id), "ip": host.PrivateIp, "ip_pub": host.PublicIp, "ip_show": host.UseIp, "ps_status": PsStatus, "ps_created_at": PsCreatedAt, "ps_image": PsImage, "line": Line, "health":health, "url":url, "service_id": strconv.Itoa(c.BaseComponents.Service.Id)})
 	}
 
 	return res, err

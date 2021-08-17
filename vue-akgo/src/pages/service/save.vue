@@ -57,8 +57,43 @@
                             style="width: 400px;"></el-input>
                 </el-tooltip>
               </el-form-item>
-            </div>
 
+<!--                <el-form-item label="Nacos:" prop="Nacos" label-width="100px">-->
+<!--                  <el-form-item v-for="(item, nacosindex) in form.Nacos " :key="nacosindex" style="margin-top: 5px">-->
+<!--                    <el-button @click.stop="get_itemNacos" size="mini">-->
+<!--                      <i class="fa fa-refresh"></i>-->
+<!--                    </el-button>-->
+<!--                    <el-select v-model="form.Nacos[nacosindex]" placeholder="选择服务所关联的Nacos"-->
+<!--                               filterable-->
+<!--                               clearable-->
+<!--                               style="width: 375px;">-->
+<!--                      <el-option-->
+<!--                        v-for="item in itemNacos"-->
+<!--                        :key="item.value"-->
+<!--                        :label="`${item.name} / ${item.value}`"-->
+<!--                        :value="item">-->
+<!--                      </el-option>-->
+<!--                    </el-select>-->
+<!--                  </el-form-item>-->
+<!--                  </el-form-item>-->
+
+
+
+            <el-form-item label="Nacos:" prop="UseNacos" label-width="100px">
+<!--              <el-form-item v-for="(item, index) in form.UseNacos" :key="index" style="margin-top: 5px">-->
+                <el-select v-model="Nacos" placeholder="请选择"
+              clearable
+              style="width: 400px;">
+                <el-option
+                  v-for="item in itemNacos"
+                  :key="item.value"
+                  :label="`${item.value}`"
+                  :value="item.value">
+                </el-option>
+                </el-select>
+<!--              </el-form-item>-->
+            </el-form-item>
+            </div>
             <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px">
                   <el-form-item label="上传地址:" prop="ReleaseTo" label-width="100px">
                     <el-input v-model="form.ReleaseTo" style="width: 400px;" placeholder="download html 上传目录"></el-input>
@@ -283,7 +318,7 @@ allow all;"
 </template>
 <script type="text/javascript">
   import {panelTitle} from 'components'
-  import {port_platform, port_domain, port_conf, port_host, port_service} from 'common/port_uri'
+  import {port_platform, port_domain, port_conf, port_host, port_service,port_project} from 'common/port_uri'
   import store from 'store'
 
   export default {
@@ -305,6 +340,7 @@ allow all;"
           // Upload: "",
           Value: "",
           Hosts: [],
+          UseNacos: "",
           Confs: [],
           Project: {
             Id: store.state.user_info.user.ProjectId,
@@ -314,6 +350,8 @@ allow all;"
           // DomainId: "",
           // PlatformId: ""
         },
+        Nacos:"",
+        itemNacos: [],
         itemConf: [],
         itemClass: [
           "java",
@@ -354,12 +392,15 @@ allow all;"
       }
     },
     created() {
+
+      this.get_itemNacos()
       if (this.route_id) {
         this.get_form_data()
       }
         this.get_itemPlatform()
         this.get_itemConf()
         this.get_itemHost()
+        // this.get_itemNacos()
     },
     methods: {
       //下拉框获取已有域名
@@ -381,6 +422,31 @@ allow all;"
       //       this.load_data = false
       //     })
       // },
+
+      get_itemNacos(){
+        this.load_data = true
+        this.$http.get(port_project.nacos, {
+          params: {
+            id: this.form.Project.Id
+          }
+        })
+          .then(({data: {data}}) => {
+            this.itemNacos = data
+            this.load_data = false
+          })
+          .
+          catch(() => {
+            this.load_data = false
+          })
+      },
+
+
+      add_Nacos(){
+        this.load_data = true
+        this.form.Nacos.push({});
+        this.load_data = false
+      },
+
 
       get_itemDomain() {
         this.load_data = true
@@ -600,10 +666,9 @@ allow all;"
             if(this.form.Platforms[0]) {
               this.get_itemDomain()
             }
-            // for(var i in this.form.Confs) {
-            //     // this.item[i].json = JSON.parse(this.itemConf[i].Value);
-            //     this.$set(this.form.Confs[i], "json", JSON.parse(this.form.Confs[i].Value))
-            // }
+
+            this.Nacos = this.form.UseNacos
+
             this.valueJson = JSON.parse(this.form.Value)
           })
           .catch(() => {
@@ -633,7 +698,14 @@ allow all;"
               this.form.Domains.splice(i, 1)
             }
           }
-          this.$http.post(port_service.saverelated, this.form)
+
+        if (this.Nacos !== "") {
+            this.form.UseNacos = this.Nacos
+          }
+          else {
+            this.form.UseNacos = this.itemNacos[0].value
+          }
+          this.$http.post(port_service.saverelated, this.form,this.Nacos)
             .then(({data: {msg}}) => {
               this.$message({
                 message: msg,

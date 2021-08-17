@@ -252,7 +252,15 @@ func (c *HostCheckController) AwsStop() {
 		return
 	}
 
-	url := "http://" + host.Project.Nacos + "/nacos/v1/cs/configs"
+	if c.Service.UseNacos == ""{
+		c.Service.UseNacos = c.Project.Nacos1
+		if err := models.UpdateServiceAndRelated(c.Service); err != nil{
+			c.SetJson(1, err.Error(), "update service.UseNacos failed!")
+			return
+		}
+	}
+
+	url := "http://" + c.Service.UseNacos + "/nacos/v1/cs/configs"
 
 	err = components.LineChangeHost(url, &host, "off")
 	if err != nil {
@@ -314,8 +322,14 @@ func (c *HostCheckController) AwsStart() {
 	}
 
 	time.Sleep(time.Duration(10)*time.Second)
-
-	url := "http://" + host.Project.Nacos + "/nacos/v1/cs/configs"
+	if c.Service.UseNacos == ""{
+		c.Service.UseNacos = c.Project.Nacos1
+		if err := models.UpdateServiceAndRelated(c.Service); err != nil{
+			c.SetJson(1, err.Error(), "update service.UseNacos failed!")
+			return
+		}
+	}
+	url := "http://" + c.Service.UseNacos + "/nacos/v1/cs/configs"
 
 	err = components.LineChangeHost(url, &host, "on")
 	if err != nil {
@@ -349,7 +363,15 @@ func (c *HostCheckController) AwsCheckStop() {
 
 	myAws.Alias = project.Alias
 
-	url := "http://" + project.Nacos + "/nacos/v1/cs/configs"
+	if c.Service.UseNacos == ""{
+		c.Service.UseNacos = c.Project.Nacos1
+		if err := models.UpdateServiceAndRelated(c.Service); err != nil{
+			c.SetJson(1, err.Error(), "update service.UseNacos failed!")
+			return
+		}
+	}
+
+	url := "http://" + c.Service.UseNacos + "/nacos/v1/cs/configs"
 
 	hosts, err := models.GetHostStopCheck(project.Id)
 	if err != nil {
@@ -445,8 +467,16 @@ func (c *HostCheckController) AwsStopOnlineHost() {
 	hostId, _ := c.GetInt("hostId", 0)
 	host, _ := models.GetHostById(hostId)
 
-	level, _ := models.GetProjectById(host.Project.Id)
-	url := "http://" + level.Nacos + "/nacos/v1/cs/configs"
+
+	if c.Service.UseNacos == ""{
+		c.Service.UseNacos = c.Project.Nacos1
+		if err := models.UpdateServiceAndRelated(c.Service); err != nil{
+			c.SetJson(1, err.Error(), "update service.UseNacos failed!")
+			return
+		}
+	}
+
+	url := "http://" + c.Service.UseNacos + "/nacos/v1/cs/configs"
 
 	ipList, err := components.Line(url)
 	if err != nil {

@@ -21,6 +21,7 @@ type Service struct {
 	LastTag      	string              `orm:"column(last_tag);size(100);null"`           				// 上次服务tag
 	LogKeyword		string				`orm:"column(log_keyworld);size(100);null"`
 	BlackList		string 				`orm:"column(black_list);type(text);null"`
+	UseNacos      	string              `orm:"column(use_nacos);size(100);"`           				// 上次服务tag
 
 	CreatedAt              				time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
 	UpdatedAt              				time.Time `orm:"column(updated_at);type(datetime);auto_now;"`

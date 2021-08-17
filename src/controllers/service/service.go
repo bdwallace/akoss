@@ -76,6 +76,7 @@ func (c *ServiceController) AddService() {
 		return
 	}
 
+
 	if 0 != service.Id {
 		// update service
 		resId, err := models.UpdateServiceById(service)
@@ -372,8 +373,13 @@ func (c *ServiceController) AddServiceAllRelatedByService(){
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, service)
 	if err != nil {
 		c.SetJson(1, nil, "数据格式错误")
+		fmt.Println("222222")
 		return
 	}
+
+	//nacos := c.GetString("use_nacos")
+	//fmt.Println("Nacos: ",nacos)
+	fmt.Println("nacos: ",service.UseNacos )
 	// 2. 校验数据
 	if service.Hosts == nil{
 		c.SetJson(1, nil, "host 为 nil,  获取 service.Hosts 失败")

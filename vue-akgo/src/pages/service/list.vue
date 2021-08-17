@@ -67,7 +67,7 @@
                         label="版本更新时间"
                         width="170">
                 </el-table-column> -->
-                
+
                 <el-table-column
                         prop="Port"
                         label="端口"
@@ -115,11 +115,11 @@
                             </div>
 
                             <el-button size="mini" type="primary" style="margin-right:-12px" @click="restart(props.row, props.row.Hosts[index])" :loading="on_submit_loading">重启
-                            </el-button>    
+                            </el-button>
 
                             <el-button size="mini" type="primary" style="margin-right:-12px" @click="stop(props.row, props.row.Hosts[index])" :loading="on_submit_loading">关闭
-                            </el-button>  
- 
+                            </el-button>
+
                         </div>
                         <div style="clear: both;margin-bottom: 10px;"> <span></span> </div>
                     </template>
@@ -138,7 +138,7 @@
                                 off-value="off"
                                 on-text="上线"
                                 off-text="下线"
-                                @change="linechange(props.row, item.ip, item.line)">
+                                @change="linechange(props.row, item.ip, item.line, item.service_id)">
                             </el-switch>
                         </div>
                     </template>
@@ -217,7 +217,7 @@
     export default{
         data(){
             return {
-                ProjectId: store.state.user_info.user.ProjectId, 
+                ProjectId: store.state.user_info.user.ProjectId,
                 table_data: [],
                 form: [],
                 //当前页码
@@ -260,7 +260,7 @@
                 this.search_text = ""
                 this.get_table_data()
             },
-            
+
             // toggleSelection(rows) {
             //     if (rows) {
             //         rows.forEach(row => {
@@ -270,11 +270,11 @@
             //         this.$refs.multipleTable.clearSelection();
             //     }
             // },
-            
+
             handleSelectionChange(val) {
                 this.form = val;
-            }, 
-            
+            },
+
             //获取数据
             get_table_data(){
                 this.load_data = true
@@ -292,7 +292,7 @@
                     this.load_data = false
                 })
             },
-            
+
             get_service_status_all() {
                 this.load_data = true
                 for(var i in this.table_data) {
@@ -318,15 +318,16 @@
                 this.load_data = false
             },
 
-            linechange(service, host, line) {
+            linechange(service, host, line, service_id) {
                 this.on_submit_loading = true
                 this.load_data = true
                 let host_port = host + ":" + service.Port.split(",")[0].split(":")[0]
-                this.$http.get(port_walle.linechange, { 
+                this.$http.get(port_walle.linechange, {
                         params: {
                             nacos: service.Project.Nacos,
                             host_port: host_port,
-                            line: line
+                            line: line,
+                            service_id: service_id
                         }
                     })
                 .then(({data: {data}}) => {
@@ -397,7 +398,7 @@
                     this.$http.post(port_walle.restart, walle_form)
                     .then(({data: {data}}) => {
                         this.on_submit_loading = false
-                        this.load_data = false                                
+                        this.load_data = false
                         this.$message({
                             message: "发送重启成功",
                             type: 'success'
@@ -429,7 +430,7 @@
                     this.$http.post(port_walle.stop, walle_form)
                     .then(({data: {data}}) => {
                         this.on_submit_loading = false
-                        this.load_data = false                                
+                        this.load_data = false
                         this.$message({
                            message: "发送关闭成功",
                             type: 'success'
@@ -443,7 +444,7 @@
                     this.load_data = false
                 })
             },
-           
+
             //根据id删除数据
             delete_data(id){
                 this.$confirm('此操作将删除该数据, 是否继续?', '提示', {
@@ -474,7 +475,7 @@
                     this.load_data = false
                 })
             },
-            
+
             //复制项目
             copy_data(id){
                 this.$confirm('是否复制项目?', '提示', {

@@ -187,3 +187,32 @@ func (c *ProjectController)DeleteProjectById(){
 	return
 }
 
+
+
+
+// @Title 获取 nacos by projectId
+// @Description get the nacos by projectId
+// @Param   id    query     int  	true        "project id"
+// @Success 0 {object} string
+// @Failure 1 获取 nacos by projectId 失败
+// @Failure 2 User not found
+// @router /project/nacos/ [get]
+func (c *ProjectController)GetNacosByProjectId(){
+
+	id, err := c.GetInt("id")
+	if err != nil{
+		c.SetJson(1,nil,"project id is empty")
+		return
+	}
+
+	nacos, err := models.GetNacosByProjectId(id)
+	if err != nil{
+		fmt.Println("error: GetNacosByProjectId ",err)
+		c.SetJson(1,err,"获取 nacos by project id 失败")
+		return
+	}
+
+	c.SetJson(0,nacos,"")
+	return
+}
+

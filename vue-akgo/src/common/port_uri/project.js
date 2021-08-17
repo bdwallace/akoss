@@ -8,5 +8,5 @@ exports.save = "/api/project"
 exports.detection = "/api/get/walle/detection"
 //复制项目
 exports.copy = "/api/get/conf/copy"
-
-
+//get nacos
+exports.nacos = "/api/project/nacos"

@@ -15,7 +15,8 @@ type Project struct {
 	Id        		int           	`orm:"column(id);pk;auto"`
 	Name      		string        	`orm:"column(name);size(100);unique"`           // 项目名称，创建后不可修改
 	Alias     		string        	`orm:"column(alias);size(100);unique"`                 // 项目别名
-	Nacos     		string 			`orm:"column(nacos);size(100)"`
+	Nacos1     		string 			`orm:"column(nacos_1);size(100)"`
+	Nacos2     		string 			`orm:"column(nacos_2);size(100);null"`
 	AwsKeyId  		string 			`orm:"column(aws_key_id);size(100);null"`
 	AwsKeySecret  	string 			`orm:"column(aws_key_secret);size(100);null"`
 	AwsRegion	  	string 			`orm:"column(aws_region);size(100);null"`
@@ -26,6 +27,10 @@ type Project struct {
 }
 
 
+type Nacos struct {
+	Name	string			`json:"name"`
+	Value 	string			`json:"value"`
+}
 
 
 func init() {
@@ -456,3 +461,28 @@ func DeleteProjectById(id int)(bool, error){
 }
 
 
+
+
+func GetNacosByProjectId(id int)(nacos []*Nacos, err error){
+
+	nacos = make([]*Nacos,0)
+
+	o := orm.NewOrm()
+	p := &Project{Id: id}
+	if err = o.Read(p); err != nil {
+		return nil, err
+	}
+
+	n1 := new(Nacos)
+	n1.Name = "nacos-1"
+	n1.Value = p.Nacos1
+	nacos = append(nacos, n1)
+	if len(p.Nacos2) > 6 {
+		n2 := new(Nacos)
+		n2.Name = "nacos-2"
+		n2.Value = p.Nacos2
+		nacos = append(nacos, n2)
+	}
+
+	return
+}
