@@ -55,7 +55,7 @@ func init(){
 
 func (s *Service) TableUnique() [][]string {
 	return [][]string{
-		[]string{"Name", "Project"},
+		[]string{"Project"},
 	}
 }
 
