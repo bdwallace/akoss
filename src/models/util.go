@@ -168,6 +168,17 @@ const (
 
 	//inspect
 	inspectGrafanaTableName = "t_inspect_grafana"
+
+	// HostConf
+	hostConfTableName				= "t_host_conf"
+	hostConfId						= "host_id"
+	hostConfProjectForeignKeyName 	= "host_conf_project_id"
+	hostConfPlatformForeignKeyName 	= "host_conf_platform_id"
+	hostConfServiceForeignKeyName 	= "host_conf_service_id"
+	hostConfHostForeignKeyName 		= "host_conf_host_id"
+
+
+
 )
 
 func GetDBConnInfo() *SqlClass {
@@ -385,6 +396,13 @@ func CreateAkTables() {
 
 	// t_deleteDomain_reco
 	sqlObj.DeleteDomainRecordsCreateForeignKeyProject()
+
+	// t_host_conf
+	sqlObj.HostConfCreateForeignKeyProject()
+	sqlObj.HostConfCreateForeignKeyPlatform()
+	sqlObj.HostConfCreateForeignKeyService()
+	sqlObj.HostConfCreateForeignKeyHost()
+
 
 }
 

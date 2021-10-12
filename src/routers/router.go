@@ -10,6 +10,7 @@ import (
 	backupcontrollers "controllers/backup"
 	cloudcontrollers "controllers/cloud"
 	confcontrollers "controllers/conf"
+	"controllers/confManagement"
 	crontabcontroller "controllers/crontab"
 	deleteDomainRecoControllers "controllers/deleteDomainReco"
 	deploycontrollers "controllers/deploy"
@@ -138,6 +139,9 @@ func init() {
 		),
 		beego.NSInclude(
 			&deleteDomainRecoControllers.DeleteDomainRecoController{},
+		),
+		beego.NSInclude(
+			&confManagement.HostConfNGController{},
 		),
 	)
 	beego.AddNamespace(akNs)
