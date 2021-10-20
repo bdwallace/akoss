@@ -221,6 +221,28 @@ const routes = [{
             auth: true
         }
     }, {
+        path: '/confManage/nginxConfs',
+        name: 'confManageNginxConfs',
+        components: {
+            default: require('pages/conf_manage/list'),
+            menuView: require('components/leftSlide')
+        },
+        meta: {
+            title: "nginx配置",
+            auth: true
+        }
+    }, {
+         path: '/confManage/nginx',
+         name: 'saveNginxConf',
+         components: {
+             default: require('pages/conf_manage/save'),
+             menuView: require('components/leftSlide')
+         },
+         meta: {
+             title: "修改nginx配置",
+             auth: true
+         }
+    }, {
         path: '/domain/list',
         name: 'domainList',
         components: {

@@ -129,11 +129,9 @@
                             }
                         })
                 .then(({data: {data}}) => {
-                  console.log("----------data-------", data)
                     this.table_data = data
                     // this.download_path = data.backPath
                     this.load_data = false
-                  console.log("----------table_data-------", this.table_data)
                 })
                 .catch(() => {
                     this.$forceUpdate()

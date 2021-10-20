@@ -403,7 +403,6 @@
                     var deploy = true
                     var failure_service = ""
                     this.showText = [];
-                    console.log("--get_record--")
                     for (var i = 0; i < data.length; i++) {
                         // console.log("-----", data[i])
                         //var text=data[i].command+"<br>"+data[i].memo
@@ -622,7 +621,6 @@
 
             get_service_status_all() {
                 this.load_data = true
-                console.log("--get_service------")
                 this.health_all = true
                 for(var i in this.form.Tasks) {
                     this.get_service_status(i)

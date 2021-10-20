@@ -148,7 +148,6 @@
             },
             //获取数据
             get_table_data(){
-                console.log(this.currentPage)
                 this.load_data = true
                 this.$http.get(port_task.list, {
                             params: {

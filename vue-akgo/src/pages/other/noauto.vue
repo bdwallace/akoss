@@ -123,12 +123,12 @@
             this.get_week_data()
             this.get_month_data()
         },
-        methods: {  
+        methods: {
             get_day_data(){
                 this.load_data = true
                 this.$http.get(port_other.noauto, {
                             params: {
-                                taskType:"day",               
+                                taskType:"day",
                             }
                         })
                         .then(({data: {data}}) => {
@@ -145,7 +145,7 @@
                 this.load_data = true
                 this.$http.get(port_other.noauto, {
                             params: {
-                                taskType:"week",               
+                                taskType:"week",
                             }
                         })
                         .then(({data: {data}}) => {
@@ -162,13 +162,12 @@
                 this.load_data = true
                 this.$http.get(port_other.noauto, {
                             params: {
-                                taskType:"month",               
+                                taskType:"month",
                             }
                         })
                         .then(({data: {data}}) => {
                 this.month_data=data
                 this.msg3= "本月共有"+data.length+"个项目未自动预发布"
-                console.log(this.month_data)
                 this.load_data = false
             })
             .

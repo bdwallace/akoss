@@ -300,7 +300,6 @@
                 if (this.filter.Platforms.length == 0) {
                     this.Platforms = "NOT_FILTER"
                 } else {
-                    console.log(this.filter.Platforms)
                     this.Platforms = this.filter.Platforms.join()
                 }
 

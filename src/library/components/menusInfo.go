@@ -109,6 +109,8 @@ func MenuIcon(m *MenusAuth) (icon string){
 		icon = IconFast
 	case "/user":
 		icon = IconUser
+	case "/confManage":
+		icon = IconResource
 	default:
 		icon = ""
 	}

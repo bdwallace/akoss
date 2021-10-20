@@ -43,7 +43,6 @@
                         class: this.clas
                     }
                 }).then(({data: {data}}) => {
-                    console.log("------data---", data)
                     this.showText = [];
                     var action = 0
                     var action_nub = 0

@@ -50,7 +50,7 @@
                     label="执行时间"
                     prop="Result">
                 </el-table-column>
-                
+
                 <!-- <el-table-column
                     label="状态"
                     prop="Status"
@@ -91,7 +91,7 @@
     import {panelTitle, bottomToolBar, search} from 'components'
     import {port_crontab} from 'common/port_uri'
     import store from 'store'
-    
+
     export default{
         data(){
             return {
@@ -147,7 +147,6 @@
                     this.table_data = data.table_data
                     this.currentPage = data.currentPage
                     this.total = data.total
-                    console.log(data)
                     this.load_data = false
                 })
                 .catch(() => {
@@ -207,7 +206,7 @@
                     this.load_data = false
                 })
             },
- 
+
             //复制项目
             copy_data(id){
                 this.$confirm('是否复制项目?', '提示', {

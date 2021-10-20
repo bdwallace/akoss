@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"library/common"
+	"models/response"
 	"strings"
 	"time"
 
@@ -265,4 +266,30 @@ func SetHostStopTime(m []*Host) (err error) {
 
 	err = o.Commit()
 	return
+}
+
+
+
+func SearchServiceAndHost(hostUseIP, class string) (confRelaltion[]*response.ConfRelation,err error){
+
+	sql := "select s.id, s.name, sh.t_host_id, h.use_ip from t_service as s INNER JOIN t_service_t_hosts as sh on sh.t_service_id = s.id INNER JOIN t_host as h on h.id = sh.t_host_id"
+	if hostUseIP != "" && class != ""{
+		sql = fmt.Sprintf("%s where s.class = '%s' and h.use_ip = '%s';\n",sql,class,hostUseIP)
+	}
+
+	if hostUseIP != "" && class == ""{
+		sql = fmt.Sprintf("%s where h.use_ip='%s';",sql,hostUseIP)
+	}
+
+	if class != "" && hostUseIP == ""{
+		sql = fmt.Sprintf("%s where s.class='%s';",sql,class)
+	}
+
+	o := orm.NewOrm()
+	if _, err := o.Raw(sql).QueryRows(&confRelaltion); err != nil{
+		return nil, err
+	}
+	return confRelaltion,nil
+
+
 }

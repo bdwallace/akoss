@@ -21,27 +21,27 @@
                     border
                     :show-header="false"
                     style="width: 100%;margin-left:100px;">
-                    
+
                 <el-table-column
                     label="链接名"
                     prop="Name"
                     width="140">
                 </el-table-column>
-                
+
                 <el-table-column
                     label="链接地址"
                     prop="Link"
                     width="600">
                     <template scope="props">
                         <a target="_blank" :href="props.row.Link">{{props.row.Link}}</a>
-     
+
                         <!-- <router-link :to="{name: 'linkUpdate', params: {id: props.row.Id}}" load_data=false tag="span">
                             <el-button size="mini" type="text" style="margin-right: 1px">修改</el-button>
                         </router-link> -->
                         <el-button type="text" size="mini" @click="on_dialog_save(props.row.Id)">修改</el-button>
 
                         <el-button size="mini" type="text" @click="delete_data(props.row.Id)">删除</el-button>
-    
+
                     </template>
                 </el-table-column>
 
@@ -62,7 +62,7 @@
                     prop="Name"
                     width="140">
                 </el-table-column>
-                
+
                 <el-table-column
                     label="链接地址"
                     prop="Link"
@@ -74,7 +74,7 @@
                         </el-button>
 
                         <el-button size="mini" type="text" @click="delete_data(props.row.Id)">删除</el-button>
-    
+
                     </template>
                 </el-table-column>
 
@@ -99,10 +99,10 @@
                         <div  v-if="props.row[props.column.label]" >
                         <p v-for="item in props.row[props.column.label]" :key="item">
                             <a target="_blank" :href="item.Link">{{item.Link}}</a>
-                            
+
                             <el-button type="text" size="mini" @click="on_dialog_save(item.Id)">修改
                             </el-button>
-     
+
                             <el-button size="mini" type="text" @click="delete_data(item.Id)">删除</el-button>
                         </p>
                         </div>
@@ -110,7 +110,7 @@
                 </el-table-column>
             </el-table>  -->
         </div>
-        <el-dialog :title="title" 
+        <el-dialog :title="title"
             :visible.sync="is_saveDialog"
             :modal="true"
             :show-close="false"
@@ -144,8 +144,8 @@
                 </el-form-item>
 
                 <!-- <el-form-item v-if="form.Projects[0].Id" label="选择平台:" prop="Project" label-width="120px">
-                    <el-select 
-                        v-model="form.Platforms[0]" 
+                    <el-select
+                        v-model="form.Platforms[0]"
                         clearable
                         value-key="Id"
                         placeholder="请选择"
@@ -157,9 +157,9 @@
                         :value="item">
                         </el-option>
                     </el-select>
-                    <el-select 
+                    <el-select
                         v-if="form.Platforms[0].Id"
-                        v-model="form.Class" 
+                        v-model="form.Class"
                         clearable
                         placeholder="请选择">
                         <el-option
@@ -191,7 +191,7 @@
     // import {savedialog} from "pages/link"
     import {port_link, port_project, port_platform} from 'common/port_uri'
     import store from 'store'
-    
+
     export default{
         data(){
             return {
@@ -201,33 +201,33 @@
                     name: "共同",
                     data: []
                 },
-                
+
                 // cols: [],
                 table_platform_index: [],
                 table_platform_data: [],
                 itemClass: [
-                    "h5", 
+                    "h5",
                     "merchant",
-                    "download", 
-                    "download-share", 
-                    "agent", 
-                    "share-agent", 
-                    "customer", 
-                    "chat-backend", 
+                    "download",
+                    "download-share",
+                    "agent",
+                    "share-agent",
+                    "customer",
+                    "chat-backend",
                 ],
                 // cols: [
                 //     {label:"h5", prop: "h5"},
                 //     {label:"merchant", prop: "merchant"},
-                //     {label:"download", prop: "download"}, 
-                //     {label:"download-share", prop: "download-share"}, 
-                //     {label:"agent", prop: "agent"}, 
-                //     {label:"share-agent", prop: "share-agent"}, 
-                //     {label:"customer", prop: "customer"}, 
-                //     {label:"chat-backend", prop: "chat-backend"}, 
+                //     {label:"download", prop: "download"},
+                //     {label:"download-share", prop: "download-share"},
+                //     {label:"agent", prop: "agent"},
+                //     {label:"share-agent", prop: "share-agent"},
+                //     {label:"customer", prop: "customer"},
+                //     {label:"chat-backend", prop: "chat-backend"},
                 // ],
                 is_saveDialog: false,
                 title: "",
-                
+
                 //当前页码
                 currentPage: 1,
                 //数据总条目
@@ -270,7 +270,6 @@
         },
         methods: {
             test(p) {
-                console.log(p)
             },
 
             init_data() {
@@ -280,7 +279,7 @@
                     name: "共同",
                     data: []
                 }
-                
+
                 // cols: [],
                 this.table_platform_index = []
                 this.table_platform_data = []
@@ -292,8 +291,7 @@
                 this.init_data()
                 this.$http.get(port_link.list)
                             .then(({data: {data}}) => {
-                    // this.table_data = data 
-                    console.log("----data---", data)
+                    // this.table_data = data
                     this.table_data = [[]]
                     for (var i in data) {
                         // console.log("---i---", data[i])
@@ -436,11 +434,10 @@
                     this.$forceUpdate();
                 })
             },
-        
+
             // 下拉框获得选择的环境所有平台
             get_itemPlatform(){
                 // this.load_data = true
-                console.log("---c---", this.form.Projects[0])
                 if(this.form.Projects[0] && this.form.Projects[0].Id == null) {
                     this.form.Platforms[0] = {Id: null}
                     this.load_data = false
@@ -468,7 +465,6 @@
             },
 
             change_itemPlatform() {
-                console.log("---change---")
                 if (this.form.Class == "") {
                     this.form.Class = this.itemClass[0]
                 }

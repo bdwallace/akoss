@@ -410,7 +410,6 @@
               reader.readAsText(file.raw,'gb2312');
 
           }
-          console.log(file, fileList);
         },
 
         handleGetFileKey(data) {

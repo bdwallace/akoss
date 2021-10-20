@@ -306,7 +306,6 @@
         }
         this.on_submit_loading = true
         this.form.Value = JSON.stringify(this.jsons)
-        console.log(this.jsons)
         this.form.Services = []
         for(let i in this.keyService) {
           this.form.Services.push({Id: this.keyService[i]})

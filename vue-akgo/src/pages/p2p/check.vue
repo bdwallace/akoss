@@ -173,7 +173,6 @@
                             }
                         })
                         .then(({data: {msg}}) => {
-                           console.log(msg)
                            this.$message({
                            message: msg,
                            type: 'success'
@@ -196,7 +195,6 @@
                         })
                         .then(({data: {data}}) => {
                 this.table_data=data
-                console.log(this.table_data)
                 this.load_data = false
             })
             .

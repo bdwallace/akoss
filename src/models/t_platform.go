@@ -133,6 +133,15 @@ func GetPlatformByProjectForName(projectId int) (list *orm.ParamsList, err error
 	return
 }
 
+func GetPlatformByName(platformName string)(platform *Platform, err error){
+
+	err = o.QueryTable(platformTableName).Filter("name", platformName).RelatedSel().One(platform)
+	if err != nil {
+		return
+	}
+	return
+}
+
 
 func GetPlatformAndDomainRelated(platform *Platform) ( *Platform,  error) {
 

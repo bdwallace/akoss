@@ -94,7 +94,7 @@
                     end: '24:00',
                     minTime: start_time
                   }">
-                </el-time-select> 
+                </el-time-select>
             </el-form-item>
 
             <el-form-item>
@@ -155,7 +155,6 @@
         })
           .then(({data: {data}}) => {
             this.table_data = data
-            console.log("---------", this.table_data)
             this.load_data = false
           })
           .catch(() => {
@@ -165,11 +164,10 @@
 
       handleSelectionChange(val) {
           this.form = val;
-      }, 
-    
+      },
+
       //提交
       on_submit_form() {
-            console.log("------1---")
         this.on_submit_loading = true
         for(var i in this.form) {
           this.form[i].StartTime = this.start_time
