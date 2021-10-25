@@ -148,7 +148,6 @@
         ResConf:[],
         on_submit_loading: false,
         itemClass: [
-          "java",
           "h5",
           "merchant",
           "download",
