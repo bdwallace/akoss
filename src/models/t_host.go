@@ -270,7 +270,7 @@ func SetHostStopTime(m []*Host) (err error) {
 
 
 
-func SearchServiceAndHost(hostUseIP, class string) (confRelaltion[]*response.ConfRelation,err error){
+func SearchServiceAndHost(hostUseIP, class string, projectId int) (confRelaltion[]*response.ConfRelation,err error){
 
 	sql := "select s.id, s.name, sh.t_host_id, h.use_ip from t_service as s INNER JOIN t_service_t_hosts as sh on sh.t_service_id = s.id INNER JOIN t_host as h on h.id = sh.t_host_id"
 	if hostUseIP != "" && class != ""{
@@ -278,11 +278,11 @@ func SearchServiceAndHost(hostUseIP, class string) (confRelaltion[]*response.Con
 	}
 
 	if hostUseIP != "" && class == ""{
-		sql = fmt.Sprintf("%s where h.use_ip='%s';",sql,hostUseIP)
+		sql = fmt.Sprintf("%s where h.use_ip='%s' and s.project_id = %d;",sql,hostUseIP,projectId)
 	}
 
 	if class != "" && hostUseIP == ""{
-		sql = fmt.Sprintf("%s where s.class='%s';",sql,class)
+		sql = fmt.Sprintf("%s where s.class='%s' and s.project_id = %d;",sql,class,projectId)
 	}
 
 	o := orm.NewOrm()

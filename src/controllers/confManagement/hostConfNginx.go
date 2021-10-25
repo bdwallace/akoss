@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"library/confManagement"
+	"library/p2p/common"
 	"models"
+	"os"
 )
 
 type HostConfNGController struct {
@@ -28,6 +30,12 @@ func (c *HostConfNGController) SearchSericeHost(){
 	class := c.GetString("service_class")
 	host := c.GetString("host")
 
+	if class == "" && host == ""{
+		fmt.Println("error:  the service_class and host are empty! ")
+		c.SetJson(1,nil,"请选择主机或服务类型")
+		return
+	}
+
 	p, err := models.GetProjectById(projectId)
 	if err != nil{
 		fmt.Println("error:  GetProjectById",err)
@@ -35,13 +43,20 @@ func (c *HostConfNGController) SearchSericeHost(){
 		return
 	}
 
-	confRelation, err := models.SearchServiceAndHost(host,class)
+	confRelation, err := models.SearchServiceAndHost(host,class,projectId)
 	if err != nil{
 		fmt.Println("error:  SearchServiceAndHost",err)
 		c.SetJson(1,err,"获取 host info 失败")
 		return
 	}
 
+	if common.FileExist(confManagement.LOCALBASECONFDIR){
+		if err = os.RemoveAll(confManagement.LOCALBASECONFDIR);err != nil {
+			fmt.Printf("error:  remove dir %s is failed \n",confManagement.LOCALBASECONFDIR)
+			c.SetJson(1,err,"获取配置失败，请联系管理员")
+			return
+		}
+	}
 
 	for _, conf := range confRelation{
 		service, err := models.GetServiceById(conf.ServiceId)
