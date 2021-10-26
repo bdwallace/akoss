@@ -53,11 +53,11 @@ func init(){
 }
 
 
-func (s *Service) TableUnique() [][]string {
+/*func (s *Service) TableUnique() [][]string {
 	return [][]string{
 		[]string{"Project"},
 	}
-}
+}*/
 
 /*
 	创建 service 中 project_id
