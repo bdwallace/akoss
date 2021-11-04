@@ -22,6 +22,9 @@ import state from './states'
 import createPersistedState from "vuex-persistedstate"
 
 Vue.use(Vuex)
+import JsonViewer from "vue-json-viewer"
+Vue.use(JsonViewer)
+
 
 export default new Vuex.Store({
     state,

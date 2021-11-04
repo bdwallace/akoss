@@ -1,0 +1,2 @@
+
+exports.list = "/api/domainExport"

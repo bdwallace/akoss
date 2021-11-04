@@ -144,6 +144,10 @@ const (
 	domainDeleteRecordsTableName 		= "t_delete_domain_reco"
 	domainDeleteRecordsFroProjectForeignKeyName = "delete_domian_reco_for_project_id"
 
+	// t_domain_backup
+	DomainBackupTableName = "t_domain_backup"
+
+
 
 
 	//confTableName,confProjectForeignKeyName,projectId,projectTableName,primaryKey

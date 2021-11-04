@@ -232,6 +232,28 @@ const routes = [{
             auth: true
         }
     }, {
+        path: '/domainExport',
+        name: 'domainExImport',
+        components: {
+            default: require('pages/domain_backup/list'),
+            menuView: require('components/leftSlide')
+        },
+        meta: {
+            title: "域名导出",
+            auth: true
+        }
+    }, {
+        path: '/domainExport/info',
+        name: 'domainExImportInfo',
+        components: {
+            default: require('pages/domain_backup/info'),
+            menuView: require('components/leftSlide')
+        },
+        meta: {
+            title: "域名详情",
+            auth: true
+        }
+    }, {
          path: '/confManage/nginx',
          name: 'saveNginxConf',
          components: {

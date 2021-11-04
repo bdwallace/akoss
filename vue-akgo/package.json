@@ -9,7 +9,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "axios": "^0.16.1",
+    "axios": "^0.24.0",
     "babel-polyfill": "^6.23.0",
     "echarts": "^3.5.0",
     "element-ui": "^1.2.9",
@@ -19,11 +19,12 @@
     "nprogress": "^0.2.0",
     "vue": "2.2.6",
     "vue-clipboard2": "^0.3.1",
+    "vue-json-viewer": "^2.2.20",
     "vue-router": "^2.8.1",
     "vue-wechat-title": "^2.0.7",
     "vuex": "^2.2.1",
     "vuex-persistedstate": "^4.0.0-beta.3",
-    "xlsx": "^0.16.9"
+    "xlsx": "^0.17.3"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",
