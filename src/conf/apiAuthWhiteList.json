@@ -1,0 +1,12 @@
+{
+  "apiProjectList" : "/api/project/list",
+  "apiLogin" : "/login",
+  "apiChangePwd" : "/changePasswd",
+  "apiAuthToAkoss" : "/api/akAuth",
+  "apiDomainMonitor" : "/api/domain/monitor",
+  "apiCrontabAwsHostSync" : "/api/awsHost/awsRsyncUpdate",
+  "apiCrontabMonitor" : "/api/monitor",
+  "apiPlatformDomains" : "/api/platform/domains",
+  "apiGrafanaExec" : "/api/inspectgrafana/exec",
+  "apiDockerPs" : "/api/walle/dockerps"
+}
