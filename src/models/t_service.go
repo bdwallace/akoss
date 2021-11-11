@@ -12,6 +12,7 @@ import (
 type Service struct {
 	Id        		int                 `orm:"column(id);pk;auto"`
 	Name      		string              `orm:"column(name);size(100);null"`           				// 服务名称
+	Alias      		string              `orm:"column(alias);size(100);null"`           				// 服务名称
 	Port	  		string 				`orm:"column(port);size(100);null"`
 	ImagePath 		string 				`orm:"cloumn(image_path);size(100);null"`
 	Value 	  		string 				`orm:"column(value);type(text)"`                      // 配置项， 以 k -> v 形式储存json

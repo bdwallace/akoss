@@ -13,6 +13,10 @@
                 <el-input v-model="form.Name" placeholder="请输入项目名称" style="width: 400px">
                           </el-input>
               </el-form-item>
+              <el-form-item label="别名:" prop="Alias" label-width="100px">
+                <el-input v-model="form.Alias" placeholder="请输入项目别名" style="width: 400px">
+                </el-input>
+              </el-form-item>
 
               <el-form-item label="仓库地址:" prop="ImagePath" label-width="100px">
                 <el-input v-model="form.ImagePath" style="width: 400px;"></el-input>
@@ -329,6 +333,7 @@ allow all;"
           Id: 0,
           // UserId: store.state.user_info.user.Id,
           Name: "",
+          Alias: "",
           Class: "java",
           ImagePath: null,
           Port: "",
@@ -663,6 +668,10 @@ allow all;"
         })
           .then(({data: {data}}) => {
             this.form = data
+            if (this.form.Alias === "") {
+              this.form.Alias = this.form.Name
+            }
+
             if(this.form.Platforms[0]) {
               this.get_itemDomain()
             }

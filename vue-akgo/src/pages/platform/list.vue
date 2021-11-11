@@ -80,8 +80,8 @@
               </el-table-column>
 
               <el-table-column
-                prop="Name"
-                label="名称"
+                prop="Alias"
+                label="别名"
                 sortable
                 width="150">
               </el-table-column>
@@ -360,6 +360,7 @@
         })
           .then(({data: {data}}) => {
             this.table_data = data
+            console.log("data: ",this.table_data)
             this.initItemClass()
             this.load_data = false
           })
@@ -375,6 +376,9 @@
         for(let i in this.table_data) {
           this.checkTable.push(null)
           for(let j in this.table_data[i].Services) {
+            if (this.table_data[i].Services[j].Alias === "") {
+              this.table_data[i].Services[j].Alias = this.table_data[i].Services[j].Name
+            }
             if (this.itemClass.indexOf(this.table_data[i].Services[j].Class) == -1) {
               this.itemClass.push(this.table_data[i].Services[j].Class)
             }
