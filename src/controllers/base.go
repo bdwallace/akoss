@@ -15,13 +15,11 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
-
 const (
 	ACTIONUPLOAD   = "upload"
 	ACTIONDOWNLOAD = "download"
 	ACTIONBUILD    = "build"
 )
-
 
 //基类
 type BaseController struct {
@@ -30,21 +28,20 @@ type BaseController struct {
 	User    *models.User
 	Service *models.Service
 	Project *models.Project
-
 }
 
 var apiWhiteList map[string]string
 
-func init(){
+func init() {
 	apiWhiteList = make(map[string]string)
 
 	apiWhiteListPath := beego.AppConfig.String("apiWhiteListPath")
 	confData, err := ioutil.ReadFile(apiWhiteListPath)
-	if err != nil{
+	if err != nil {
 		panic("读取配置文件失败 apiWhiteList ")
 	}
 
-	if err := json.Unmarshal(confData,&apiWhiteList); err != nil{
+	if err := json.Unmarshal(confData, &apiWhiteList); err != nil {
 		panic("解析配置文件失败 apiWhiteList ")
 	}
 }
@@ -83,60 +80,57 @@ func (c *BaseController) Prepare() {
 	c.BaseAkossAuth()
 }
 
-func (c *BaseController) BaseAkossAuth(){
+func (c *BaseController) BaseAkossAuth() {
 
-	inputURL :=  c.Controller.Ctx.Input.URL()
-	if CancelAuth(inputURL){
+	inputURL := c.Controller.Ctx.Input.URL()
+	if CancelAuth(inputURL) {
 		return
 	}
 	reqAuth := c.InitAuthRequestParam()
 	respAuth, err := c.AkossAuth(reqAuth)
-	if err != nil{
-		c.SetJson(1,nil,"鉴权已过期，请重新登录" )
+	if err != nil {
+		c.SetJson(1, nil, "鉴权已过期，请重新登录")
 		return
 	}
 
 	if !respAuth.AuthPassed {
 		fmt.Println("=========================")
-		fmt.Println("reqAuth.Uri: ",reqAuth.RequestUri)
-		fmt.Println("respAuth.AuthPassed: ",respAuth.AuthPassed)
-		fmt.Println("respAuth.Msg: ",respAuth.Msg)
+		fmt.Println("reqAuth.Uri: ", reqAuth.RequestUri)
+		fmt.Println("respAuth.AuthPassed: ", respAuth.AuthPassed)
+		fmt.Println("respAuth.Msg: ", respAuth.Msg)
 		fmt.Println("=========================")
 
-		if respAuth.Msg == "Couldn't handle this token:"{
-			c.SetJson(1,nil,"登录状态已过期，请重新登录")
-		}else {
-			c.SetJson(1,nil,respAuth.Msg)
+		if respAuth.Msg == "Couldn't handle this token:" {
+			c.SetJson(1, nil, "登录状态已过期，请重新登录")
+		} else {
+			c.SetJson(1, nil, respAuth.Msg)
 		}
 	}
 }
 
-
-
-func CancelAuth(inputUrl string)bool{
+func CancelAuth(inputUrl string) bool {
 
 	for _, v := range apiWhiteList {
-		if v == inputUrl{
+		if v == inputUrl {
 			return true
 		}
 	}
 	return false
 }
 
-
-func (c *BaseController) AkossAuth(reqAuth *components.AuthRequest)(components.AuthRespones, error){
+func (c *BaseController) AkossAuth(reqAuth *components.AuthRequest) (components.AuthRespones, error) {
 
 	var authUrl string
 
 	if beego.BConfig.RunMode == "dev" {
 		authUrl = beego.AppConfig.String("AuthUrl")
-	}else{
+	} else {
 		authUrl = os.Getenv("auth_url")
 	}
 
 	respAuth, err := reqAuth.HttpAuth(authUrl)
 
-	return respAuth,err
+	return respAuth, err
 }
 
 func (c *BaseController) SetJson(code int, data interface{}, Msg string) {
@@ -156,17 +150,20 @@ func (c *BaseController) SetAkAuthJson(code int, users []components.AkossUser, e
 		status = true
 	}
 
-	c.Data["json"] = map[string]interface{}{"status": status, "FailedUsers": users,"ErrMsg":errMsg}
+	c.Data["json"] = map[string]interface{}{"status": status, "FailedUsers": users, "ErrMsg": errMsg}
 	c.ServeJSON()
 }
 
-
 func (c *BaseController) ErrExit(errType string, Msg string) {
 	switch errType {
-	case "add": Msg = "数据新增失败:" + Msg
-	case "del": Msg = "数据删除失败:" + Msg
-	case "up": Msg = "数据更新失败:" + Msg
-	default: Msg = "操作失败" + Msg
+	case "add":
+		Msg = "数据新增失败:" + Msg
+	case "del":
+		Msg = "数据删除失败:" + Msg
+	case "up":
+		Msg = "数据更新失败:" + Msg
+	default:
+		Msg = "操作失败" + Msg
 	}
 	c.Data["json"] = map[string]interface{}{"code": 1, "msg": Msg, "data": nil}
 	c.ServeJSON()
@@ -174,13 +171,13 @@ func (c *BaseController) ErrExit(errType string, Msg string) {
 
 /*
 	获取http鉴权所需参数
- */
-func (c *BaseController) InitAuthRequestParam()(authReq *components.AuthRequest){
+*/
+func (c *BaseController) InitAuthRequestParam() (authReq *components.AuthRequest) {
 
 	authReq = &components.AuthRequest{
 		UserName:   c.User.Username,
 		UserPwd:    c.User.PasswordHash,
-		XToken:		c.User.XToken,
+		XToken:     c.User.XToken,
 		RequestUri: c.Controller.Ctx.Input.URL(),
 		Method:     c.Controller.Ctx.Input.Method(),
 	}
@@ -188,7 +185,7 @@ func (c *BaseController) InitAuthRequestParam()(authReq *components.AuthRequest)
 	if authReq.UserName == "" {
 		fmt.Println("authReq.UserName is empty")
 	}
-/*	if authReq.UserPwd == "" {
+	/*	if authReq.UserPwd == "" {
 		fmt.Println("authReq.UserPwd is empty")
 	}*/
 	if authReq.RequestUri == "" {

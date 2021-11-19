@@ -16,9 +16,9 @@ import (
 type Queue struct {
 	credential *credentials.StsTokenCredential
 	httpClient *http.Client
-	isRunning bool
-	config *sdk.Config
-	signer auth.Signer
+	isRunning  bool
+	config     *sdk.Config
+	signer     auth.Signer
 }
 
 func NewClientWithStsToken(regionId, stsAccessKeyId, stsAccessKeySecret, stsToken string) (queue *Queue, err error) {
@@ -26,7 +26,6 @@ func NewClientWithStsToken(regionId, stsAccessKeyId, stsAccessKeySecret, stsToke
 	err = queue.InitWithStsToken(regionId, stsAccessKeyId, stsAccessKeySecret, stsToken)
 	return
 }
-
 
 func (queue *Queue) InitWithStsToken(regionId, stsAccessKeyId, stsAccessKeySecret, stsToken string) (err error) {
 	credential := &credentials.StsTokenCredential{
@@ -47,7 +46,6 @@ func (queue *Queue) InitClientConfig() (config *sdk.Config) {
 	}
 }
 
-
 func (queue *Queue) InitWithOptions(config *sdk.Config, credential auth.Credential) (err error) {
 	queue.isRunning = true
 	queue.config = config
@@ -67,7 +65,6 @@ func (queue *Queue) InitWithOptions(config *sdk.Config, credential auth.Credenti
 	return
 }
 
-
 func (queue *Queue) DoActionWithSigner(request requests.AcsRequest, response responses.AcsResponse) (err error) {
 
 	// add clientVersion
@@ -82,7 +79,6 @@ func (queue *Queue) DoActionWithSigner(request requests.AcsRequest, response res
 		return
 	}
 	// signature
-
 
 	httpRequest, err := buildHttpRequest(request, queue.signer)
 	if err != nil {
@@ -130,7 +126,6 @@ func (queue *Queue) DoActionWithSigner(request requests.AcsRequest, response res
 	}
 	return
 }
-
 
 func isServerError(httpResponse *http.Response) bool {
 	return httpResponse.StatusCode >= http.StatusInternalServerError

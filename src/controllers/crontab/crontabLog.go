@@ -5,7 +5,6 @@ import (
 	"models"
 )
 
-
 type CrontabLogController struct {
 	controllers.BaseController
 }
@@ -31,4 +30,3 @@ func (c *CrontabLogController) GetAllCrontabLog() {
 	// c.SetJson(0, data, "查询成功！")
 	return
 }
-

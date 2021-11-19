@@ -78,4 +78,3 @@ func (el *esLogger) Flush() {
 func init() {
 	logs.Register(logs.AdapterEs, NewES)
 }
-

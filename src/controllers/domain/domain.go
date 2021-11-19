@@ -14,14 +14,13 @@ type DomainController struct {
 	controllers.BaseController
 }
 
-
 // @Title 添加 domain
 // @Description add the domain
 // @Success 0 {id} int64
 // @Failure 1 添加 domain 失败
 // @Failure 2 User not found
 // @router /domain [post]
-func (c *DomainController)AddDomain(){
+func (c *DomainController) AddDomain() {
 
 	//beego.Info(string(c.Ctx.Input.RequestBody))
 	// var domain *models.Domain
@@ -33,39 +32,41 @@ func (c *DomainController)AddDomain(){
 	}
 
 	allDomain := domain.Domain
-	domainSplit := strings.Split(allDomain,"\n")
+	domainSplit := strings.Split(allDomain, "\n")
 
 	// update     UpdateDomainRelated
-	if 0 != domain.Id  {
+	if 0 != domain.Id {
 		if len(domainSplit) > 1 {
-			c.SetJson(1,nil,"不允许同时修改多个域名")
+			c.SetJson(1, nil, "不允许同时修改多个域名")
 			return
 		}
-		domain.Domain = strings.Trim(domain.Domain," ")
-		domain.Domain = strings.Trim(domain.Domain,",")
+		domain.Domain = strings.Trim(domain.Domain, " ")
+		domain.Domain = strings.Trim(domain.Domain, ",")
+		domain.Conf = c.conf(domain.Domain)
+		domain.Conf80 = c.conf80(domain.Domain)
 		err := models.UpdateDomainAndRelated(domain)
-		if err != nil{
-			fmt.Println("error: ",err)
+		if err != nil {
+			fmt.Println("error: ", err)
 			resErr := fmt.Sprintf("%s", err)
-			c.SetJson(1,nil,resErr)
+			c.SetJson(1, nil, resErr)
 			return
 		}
 	}
 
 	// add
 	if 0 == domain.Id && len(domainSplit) > 0 {
-		domains := make([]*models.Domain,0)
+		domains := make([]*models.Domain, 0)
 		for i := 0; i < len(domainSplit); i++ {
 			if domainSplit[i] == "" {
 				continue
 			}
 			tempDomain := new(models.Domain)
 			*tempDomain = *domain
-			tempDomain.Domain = strings.Trim(domainSplit[i]," ")
-			tempDomain.Domain = strings.Trim(tempDomain.Domain,",")
+			tempDomain.Domain = strings.Trim(domainSplit[i], " ")
+			tempDomain.Domain = strings.Trim(tempDomain.Domain, ",")
 			tempDomain.Conf = c.conf(tempDomain.Domain)
 			tempDomain.Conf80 = c.conf80(tempDomain.Domain)
-			domains = append(domains,tempDomain)
+			domains = append(domains, tempDomain)
 		}
 
 		// 已存在 domain
@@ -75,7 +76,7 @@ func (c *DomainController)AddDomain(){
 			resDomian, err := models.GetDomainByDomain(d)
 
 			// 域名已经存在
-			if err == nil && resDomian.Id > 0{
+			if err == nil && resDomian.Id > 0 {
 				existsDomains = existsDomains + resDomian.Domain + "  "
 			}
 		}
@@ -83,23 +84,23 @@ func (c *DomainController)AddDomain(){
 		// 域名存在, 返回已存在域名
 		if len(existsDomains) > 0 {
 			errMsg := existsDomains + "域名存在, 添加 domain 失败"
-			c.SetJson(1,nil,errMsg)
+			c.SetJson(1, nil, errMsg)
 			return
 		}
 
 		_, err := models.AddDomain(domains)
-		if err != nil{
-			fmt.Println("error:  ",err)
-			c.SetJson(1,nil,"新建 domain 失败")
+		if err != nil {
+			fmt.Println("error:  ", err)
+			c.SetJson(1, nil, "新建 domain 失败")
 			return
 		}
-		for _, d := range domains{
+		for _, d := range domains {
 			resDomian, err := models.GetDomainByDomain(d)
 			d.Id = resDomian.Id
 			err = models.AddDomainAndRelated(d)
-			if err != nil{
-				fmt.Println("error:  ",err)
-				c.SetJson(1,nil,"添加 domain 多对多关系 失败")
+			if err != nil {
+				fmt.Println("error:  ", err)
+				c.SetJson(1, nil, "添加 domain 多对多关系 失败")
 				return
 			}
 		}
@@ -110,15 +111,13 @@ func (c *DomainController)AddDomain(){
 	return
 }
 
-
-
 // @Title 获取所有 domain
 // @Description get all the domain
 // @Success 0 {object} models.Domain
 // @Failure 1 获取所有 domain 失败
 // @Failure 2 User not found
 // @router /domain/list/ [get]
-func (c *DomainController)GetDomainList() {
+func (c *DomainController) GetDomainList() {
 
 	class := c.GetString("class")
 	platforms := c.GetString("platforms")
@@ -127,9 +126,9 @@ func (c *DomainController)GetDomainList() {
 	searchText := c.GetString("search_text")
 
 	projectId, err := c.GetInt("project_id")
-	if err != nil{
-		fmt.Println("error: Get project_id ",err)
-		c.SetJson(1,err,"获取 project_id 失败")
+	if err != nil {
+		fmt.Println("error: Get project_id ", err)
+		c.SetJson(1, err, "获取 project_id 失败")
 		return
 	}
 
@@ -141,14 +140,14 @@ func (c *DomainController)GetDomainList() {
 		start = (page - 1) * length
 	}
 
-	count, resDomains, err := models.SearchDomain(projectId, start, length, class, platforms, services,quicken, searchText)
-	if err != nil{
-		fmt.Println("error: SearchDomain()",err)
-		c.SetJson(1,err,"搜索 Domain匹配内容 失败")
+	count, resDomains, err := models.SearchDomain(projectId, start, length, class, platforms, services, quicken, searchText)
+	if err != nil {
+		fmt.Println("error: SearchDomain()", err)
+		c.SetJson(1, err, "搜索 Domain匹配内容 失败")
 		return
 	}
 
-	for _, s := range resDomains{
+	for _, s := range resDomains {
 		_, err := models.GetDomainRelated(s)
 		if err != nil {
 			c.SetJson(1, err, "获取 conf services by id失败")
@@ -160,48 +159,44 @@ func (c *DomainController)GetDomainList() {
 	return
 }
 
-
-
 // @Title 获取所有 domain
 // @Description get all the domain
 // @Success 0 {object} models.Domain
 // @Failure 1 获取所有 domain 失败
 // @Failure 2 User not found
 // @router /domain/platformAndClass [get]
-func (c *DomainController)GetDomainByPlatformAndClass() {
+func (c *DomainController) GetDomainByPlatformAndClass() {
 
 	platformId, err := c.GetInt("platform_id")
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "获取 platformId 失败")
 		return
 	}
 	class := c.GetString("class")
 
 	platform, err := models.GetPlatformById(platformId)
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "获取 platform 失败")
 		return
 	}
 
 	resPlatform, err := models.GetPlatformAndDomainRelated(platform)
-	if err != nil{
-		fmt.Println("error: GetAllDomain()",err)
-		c.SetJson(1,err,"获取所有 Domain 失败")
+	if err != nil {
+		fmt.Println("error: GetAllDomain()", err)
+		c.SetJson(1, err, "获取所有 Domain 失败")
 		return
 	}
 
-	resDomains := make([]*models.Domain,0)
-	for _, domain := range resPlatform.Domains{
+	resDomains := make([]*models.Domain, 0)
+	for _, domain := range resPlatform.Domains {
 		if domain.Class == class {
-			resDomains = append(resDomains,domain)
+			resDomains = append(resDomains, domain)
 		}
 	}
 
-	c.SetJson(0,resDomains,"")
+	c.SetJson(0, resDomains, "")
 	return
 }
-
-
 
 // @Title 获取 domain by id
 // @Description get the domain by id
@@ -210,17 +205,17 @@ func (c *DomainController)GetDomainByPlatformAndClass() {
 // @Failure 1 获取 domain by id 失败
 // @Failure 2 User not found
 // @router /domain/id/ [get]
-func (c *DomainController)GetDomainById() {
+func (c *DomainController) GetDomainById() {
 
 	id, err := c.GetInt("id")
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "获取 id 失败")
 		return
 	}
 
 	resDomain, err := models.GetDomainById(id)
-	if err != nil{
-		c.SetJson(1, err,"获取 domain by id失败")
+	if err != nil {
+		c.SetJson(1, err, "获取 domain by id失败")
 		return
 	}
 
@@ -230,10 +225,9 @@ func (c *DomainController)GetDomainById() {
 		return
 	}
 
-	c.SetJson(0,resDomain,"")
+	c.SetJson(0, resDomain, "")
 	return
 }
-
 
 // @Title 获取 domain by projects id
 // @Description get the domain by projects id
@@ -242,21 +236,21 @@ func (c *DomainController)GetDomainById() {
 // @Failure 1 获取 domain by projects id 失败
 // @Failure 2 User not found
 // @router /domain/projectId/ [get]
-func (c *DomainController)GetDomainByProjectsId() {
+func (c *DomainController) GetDomainByProjectsId() {
 
-	projectId, err :=  c.GetInt("project_id")
-	if err != nil{
+	projectId, err := c.GetInt("project_id")
+	if err != nil {
 		c.SetJson(1, err, "获取project_id 失败")
 		return
 	}
 
 	resDomain, err := models.GetDomainByProjectId(projectId)
-	if err != nil{
-		c.SetJson(1, err,"获取 domain by project id失败")
+	if err != nil {
+		c.SetJson(1, err, "获取 domain by project id失败")
 		return
 	}
 
-	for _, s := range resDomain{
+	for _, s := range resDomain {
 		_, err := models.GetDomainRelated(s)
 		if err != nil {
 			c.SetJson(1, err, "获取 service host conf by id失败")
@@ -264,10 +258,9 @@ func (c *DomainController)GetDomainByProjectsId() {
 		}
 	}
 
-	c.SetJson(0,resDomain,"")
+	c.SetJson(0, resDomain, "")
 	return
 }
-
 
 // @Title 获取 domain by projects id
 // @Description get the domain by projects id
@@ -276,26 +269,23 @@ func (c *DomainController)GetDomainByProjectsId() {
 // @Failure 1 获取 domain by projects id 失败
 // @Failure 2 User not found
 // @router /domain/serviceId/ [get]
-func (c *DomainController)GetDomainByServiceId() {
+func (c *DomainController) GetDomainByServiceId() {
 
-	serviceId, err :=  c.GetInt("service_id")
-	if err != nil{
+	serviceId, err := c.GetInt("service_id")
+	if err != nil {
 		c.SetJson(1, err, "获取 service_id 失败")
 		return
 	}
 
 	resDomain, err := models.GetDomainByServiceId(serviceId)
-	if err != nil{
-		c.SetJson(1, err,"获取 domain by service id失败")
+	if err != nil {
+		c.SetJson(1, err, "获取 domain by service id失败")
 		return
 	}
 
-	c.SetJson(0,resDomain,"")
+	c.SetJson(0, resDomain, "")
 	return
 }
-
-
-
 
 // @Title 删除 domain by id
 // @Description delete the domain by id
@@ -304,12 +294,11 @@ func (c *DomainController)GetDomainByServiceId() {
 // @Failure 1 删除 domain host by id 失败
 // @Failure 2 User not found
 // @router /domain/id/ [delete]
-func (c *DomainController)DeleteDomainById(){
-
+func (c *DomainController) DeleteDomainById() {
 
 	id, err := c.GetInt("id")
-	if err != nil{
-		c.SetJson(1,err,"获取 id 失败")
+	if err != nil {
+		c.SetJson(1, err, "获取 id 失败")
 		return
 	}
 
@@ -317,21 +306,20 @@ func (c *DomainController)DeleteDomainById(){
 
 	comment := c.GetString("comment")
 
-
-	if comment == ""{
-		c.SetJson(1,err,"删除域名失败, 请填写备注信息")
+	if comment == "" {
+		c.SetJson(1, err, "删除域名失败, 请填写备注信息")
 		return
 	}
 
 	d, err := models.GetDomainById(id)
-	if err != nil{
-		c.SetJson(1,err,"域名删除失败，请联系管理员")
+	if err != nil {
+		c.SetJson(1, err, "域名删除失败，请联系管理员")
 		return
 	}
 
 	_, err = models.DeleteDomainById(id)
 	if err != nil {
-		c.SetJson(1,err,"删除 domian 失败,请先删除关联关系")
+		c.SetJson(1, err, "删除 domian 失败,请先删除关联关系")
 		return
 	}
 
@@ -343,17 +331,15 @@ func (c *DomainController)DeleteDomainById(){
 	domainReco.Class = d.Class
 
 	_, err = models.AddDomainRecord(domainReco)
-	if err != nil{
-		c.SetJson(1,err,"添加域名删除记录失败")
+	if err != nil {
+		c.SetJson(1, err, "添加域名删除记录失败")
 		return
 	}
 
-	c.SetJson(0,nil,"")
+	c.SetJson(0, nil, "")
 	return
 
 }
-
-
 
 // @Title 删除 domain by id
 // @Description delete the domain by id
@@ -362,7 +348,7 @@ func (c *DomainController)DeleteDomainById(){
 // @Failure 1 删除 domain host by id 失败
 // @Failure 2 User not found
 // @router /domain/monitor/ [get]
-func (c *DomainController)GetAllMonitor(){
+func (c *DomainController) GetAllMonitor() {
 
 	type Domain struct {
 		Class  string
@@ -392,9 +378,6 @@ func (c *DomainController)GetAllMonitor(){
 	return
 }
 
-
-
-
 // @Title  domain by project_id
 // @Description doamin by project_id for class
 // @Param   project_id      query     int   		true         "project id"
@@ -402,24 +385,23 @@ func (c *DomainController)GetAllMonitor(){
 // @Failure 1 查询每套环境里域名的所有class
 // @Failure 2 User not found
 // @router /domain/class/ [get]
-func (c *DomainController)GetDomainByProjectForClass(){
+func (c *DomainController) GetDomainByProjectForClass() {
 
-	projectId, err :=  c.GetInt("project_id")
-	if err != nil{
+	projectId, err := c.GetInt("project_id")
+	if err != nil {
 		c.SetJson(1, err, "获取project_id 失败")
 		return
 	}
 
 	data, err := models.GetDomainByProjectForClass(projectId)
-	if err != nil{
-		c.SetJson(1, err,"获取 domain by project id失败")
+	if err != nil {
+		c.SetJson(1, err, "获取 domain by project id失败")
 		return
 	}
 
 	c.SetJson(0, data, "")
 	return
 }
-
 
 ///////   util
 func (c *DomainController) conf(domain string) (nginxconf string) {
@@ -455,8 +437,6 @@ server {
 	return
 }
 
-
-
 // @Title check domain health
 // @Description check domain health
 // @Param   domain      query     string 	  true       "domain"
@@ -464,16 +444,16 @@ server {
 // @Failure 1
 // @Failure 2 User not found
 // @router /domain/health/ [get]
-func (c *DomainController)DomainHealthCheck() {
+func (c *DomainController) DomainHealthCheck() {
 
 	domainId, err := c.GetInt("id")
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "获取 domain_id 失败")
 		return
 	}
 
 	domain, err := models.GetDomainById(domainId)
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "根据 domain id 获取 domain 失败")
 		return
 	}
@@ -482,11 +462,11 @@ func (c *DomainController)DomainHealthCheck() {
 	health := ""
 	if domain.Class == "mqtt" {
 		health, err = components.GetMqttHealth(domain)
-	}else {
+	} else {
 		url = fmt.Sprintf("https://%s/", domain.Domain)
 		response, err := common.HttpGet(url, nil)
 		if err != nil {
-			c.SetJson(1, -1,"获取 domain health 失败")
+			c.SetJson(1, -1, "获取 domain health 失败")
 			return
 		}
 		health = common.IntToStr(response.StatusCode)
@@ -495,5 +475,3 @@ func (c *DomainController)DomainHealthCheck() {
 	c.SetJson(0, health, "")
 	return
 }
-
-

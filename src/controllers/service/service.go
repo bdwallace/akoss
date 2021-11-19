@@ -71,28 +71,27 @@ func (c *ServiceController) AddService() {
 	var id int64
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, service)
 	if err != nil {
-		fmt.Println("error: AddService json.Unmarshal  ",err)
+		fmt.Println("error: AddService json.Unmarshal  ", err)
 		c.SetJson(1, nil, "数据格式错误")
 		return
 	}
-
 
 	if 0 != service.Id {
 		// update service
 		resId, err := models.UpdateServiceById(service)
 		if err != nil {
-			fmt.Println("error: UpdateServiceById ",err)
+			fmt.Println("error: UpdateServiceById ", err)
 			c.SetJson(1, err, "更新 service 失败")
 			return
 		}
 
 		c.SetJson(0, resId, "")
 		return
-	}else {
+	} else {
 		// add service
 		id, err = models.AddService(service)
 		if err != nil {
-			fmt.Println("error: AddService   ",err)
+			fmt.Println("error: AddService   ", err)
 			c.SetJson(1, err, "添加 service 失败")
 			return
 		}
@@ -112,23 +111,20 @@ func (c *ServiceController) AddService() {
 func (c *ServiceController) GetAllServices() {
 
 	projectId, err := c.GetInt("project_id")
-	if err != nil{
-		c.SetJson(1,err,"获取 project_id 失败")
+	if err != nil {
+		c.SetJson(1, err, "获取 project_id 失败")
 		return
 	}
 
 	resServices, err := models.GetAllServices(projectId)
-	if err != nil{
-		c.SetJson(1,err,"获取所有 Services 失败")
+	if err != nil {
+		c.SetJson(1, err, "获取所有 Services 失败")
 		return
 	}
 
 	c.SetJson(0, resServices, "")
 	return
 }
-
-
-
 
 // @Title 拷贝 service by id
 // @Description copy the service conf by id
@@ -161,7 +157,7 @@ func (c *ServiceController) CopyServiceById() {
 	resService.Name = fmt.Sprintf("%s - copy", resService.Name)
 	_, err = models.AddServiceAndRelated(resService)
 	if err != nil {
-		fmt.Println("error: AddServiceAndRelated  ",err)
+		fmt.Println("error: AddServiceAndRelated  ", err)
 		c.SetJson(1, err, "添加 service 失败")
 		return
 	}
@@ -170,8 +166,6 @@ func (c *ServiceController) CopyServiceById() {
 	return
 
 }
-
-
 
 ///////	多对多操作   service  <----->  conf
 
@@ -182,8 +176,7 @@ func (c *ServiceController) CopyServiceById() {
 // @Failure 1 删除 service by service id 失败
 // @Failure 2 User not found
 // @router /service/id/ [get]
-func (c *ServiceController) GetServiceRelatedById(){
-
+func (c *ServiceController) GetServiceRelatedById() {
 
 	id, err := c.GetInt("id")
 	if err != nil {
@@ -207,8 +200,6 @@ func (c *ServiceController) GetServiceRelatedById(){
 	return
 }
 
-
-
 // @Title 获取 service by project id
 // @Description 根据 project id 查询所有 service 信息
 // @Param   project_id      query     int  		true         "project id"
@@ -216,30 +207,30 @@ func (c *ServiceController) GetServiceRelatedById(){
 // @Failure 1 获取 service by project id 失败
 // @Failure 2 User not found
 // @router /service/backend/ [get]
-func (c *ServiceController) GetServiceAllRelatedByProjectId(){
+func (c *ServiceController) GetServiceAllRelatedByProjectId() {
 
 	searchText := c.GetString("search_text")
 	projectId, err := c.GetInt("project_id")
-	if err != nil{
-		fmt.Println("error: GetProjectId  ",err)
-		c.SetJson(1,err,"获取 project_id 失败")
+	if err != nil {
+		fmt.Println("error: GetProjectId  ", err)
+		c.SetJson(1, err, "获取 project_id 失败")
 		return
 	}
 
-	resServices:= make([]*models.Service,0)
+	resServices := make([]*models.Service, 0)
 
-	if searchText == ""{
+	if searchText == "" {
 		resServices, err = models.GetServiceByProjectIdAndClass(projectId)
 		if err != nil {
 			c.SetJson(1, err, "获取 services by project id and class 失败")
 			return
 		}
 
-	}else {
-		resServices, err = models.SearchBackendServices(searchText,projectId)
-		if err != nil{
-			fmt.Println("error: SearchService",err)
-			c.SetJson(1,err,"搜索 Services 匹配内容 失败")
+	} else {
+		resServices, err = models.SearchBackendServices(searchText, projectId)
+		if err != nil {
+			fmt.Println("error: SearchService", err)
+			c.SetJson(1, err, "搜索 Services 匹配内容 失败")
 			return
 		}
 	}
@@ -256,8 +247,6 @@ func (c *ServiceController) GetServiceAllRelatedByProjectId(){
 	return
 }
 
-
-
 // @Title 获取 service by project id
 // @Description 根据 project id 查询所有 service 信息
 // @Param   project_id      query     int  		true         "project id"
@@ -265,14 +254,14 @@ func (c *ServiceController) GetServiceAllRelatedByProjectId(){
 // @Failure 1 获取 service by project id 失败
 // @Failure 2 User not found
 // @router /service/platformId/ [get]
-func (c *ServiceController) GetServiceAllRelatedByPlatformId(){
+func (c *ServiceController) GetServiceAllRelatedByPlatformId() {
 
 	//searchText := c.GetString("search_text")
 
 	platformId, err := c.GetInt("platform_id")
-	if err != nil{
-		fmt.Println("error: GetplatformId  ",err)
-		c.SetJson(1,err,"获取 platform_id 失败")
+	if err != nil {
+		fmt.Println("error: GetplatformId  ", err)
+		c.SetJson(1, err, "获取 platform_id 失败")
 		return
 	}
 
@@ -282,7 +271,7 @@ func (c *ServiceController) GetServiceAllRelatedByPlatformId(){
 		return
 	}
 
-	resServices := make([]*models.Service,0)
+	resServices := make([]*models.Service, 0)
 	tmpPlatform := new(models.Platform)
 
 	tmpPlatform, err = models.GetServiceByClassAndPlatform(platform)
@@ -297,16 +286,16 @@ func (c *ServiceController) GetServiceAllRelatedByPlatformId(){
 		return
 	}
 
-	for _, service := range tmpPlatform.Services{
+	for _, service := range tmpPlatform.Services {
 		tmpService, err := models.GetServiceAllRelated(service)
 		if err != nil {
 			c.SetJson(1, err, "获取 services related 失败")
 			return
 		}
-		resServices = append(resServices,tmpService)
+		resServices = append(resServices, tmpService)
 	}
 
-/*
+	/*
 		添加平台 以及平台所关联的前端服务搜索
 		resServices, err = models.SearchFrontendServices(searchText,projectId,platformId)
 		if err != nil{
@@ -314,16 +303,11 @@ func (c *ServiceController) GetServiceAllRelatedByPlatformId(){
 			c.SetJson(1,err,"搜索 Services 匹配内容 失败")
 			return
 		}
-*/
+	*/
 
 	c.SetJson(0, resServices, "")
 	return
 }
-
-
-
-
-
 
 // @Title  service by project_id
 // @Description service by project_id for name
@@ -332,24 +316,23 @@ func (c *ServiceController) GetServiceAllRelatedByPlatformId(){
 // @Failure 1 查询每套环境里service的name
 // @Failure 2 User not found
 // @router /service/name [get]
-func (c *ServiceController)GetServiceByProjectForName(){
+func (c *ServiceController) GetServiceByProjectForName() {
 
-	projectId, err :=  c.GetInt("project_id")
-	if err != nil{
+	projectId, err := c.GetInt("project_id")
+	if err != nil {
 		c.SetJson(1, err, "获取project_id 失败")
 		return
 	}
 
 	data, err := models.GetServiceByProjectNotJavaForName(projectId)
-	if err != nil{
-		c.SetJson(1, err,"获取 domain by project id失败")
+	if err != nil {
+		c.SetJson(1, err, "获取 domain by project id失败")
 		return
 	}
 
 	c.SetJson(0, data, "")
 	return
 }
-
 
 // @Title 添加 service 以及多对多关联表数据
 // @Description 添加 service 以及多对多关联表数据
@@ -364,7 +347,7 @@ func (c *ServiceController)GetServiceByProjectForName(){
 // @Failure 1 添加 service 以及多对多关联表数据 失败
 // @Failure 2 User not found
 // @router /service/related/ [post]
-func (c *ServiceController) AddServiceAllRelatedByService(){
+func (c *ServiceController) AddServiceAllRelatedByService() {
 
 	// 1. 获取数据
 	//beego.Info(string(c.Ctx.Input.RequestBody))
@@ -377,11 +360,11 @@ func (c *ServiceController) AddServiceAllRelatedByService(){
 	}
 
 	// 2. 校验数据
-	if service.Hosts == nil{
+	if service.Hosts == nil {
 		c.SetJson(1, nil, "host 为 nil,  获取 service.Hosts 失败")
 		return
 	}
-	if service.Confs == nil{
+	if service.Confs == nil {
 		c.SetJson(1, nil, "conf 为 nil,  获取 service.Confs 失败")
 		return
 	}
@@ -390,27 +373,35 @@ func (c *ServiceController) AddServiceAllRelatedByService(){
 	if 0 != service.Id {
 		// update
 		err := models.UpdateServiceAndRelated(service)
-		if err != nil{
-			fmt.Println("error: UpdateServiceAndRelated  ",err)
-			c.SetJson(1,nil,"更新 service 多对多关系 失败")
+		if err != nil {
+			fmt.Println("error: UpdateServiceAndRelated  ", err)
+			c.SetJson(1, nil, "更新 service 多对多关系 失败")
 			return
 		}
 
-	}else {
+	} else {
 		// add
 		_, err = models.AddServiceAndRelated(service)
-		if err != nil{
-			fmt.Println("error: AddServiceAndRelated ",err)
-			c.SetJson(1,nil,"添加 service 多对多关系 失败")
+		if err != nil {
+			fmt.Println("error: AddServiceAndRelated ", err)
+			c.SetJson(1, nil, "添加 service 多对多关系 失败")
 			return
 		}
 	}
 
-	// black list
-	if service.BlackList != ""{
-		if cmdErr := blacklist.BlackListCP(service); cmdErr != nil{
-			fmt.Println("error: service BlackListCP ",err)
-			c.SetJson(1,nil,"更新 service 黑名单 失败")
+	blackList := false
+	denyUserAgent := false
+	if service.BlackList != "" {
+		blackList = true
+	}
+	if service.DenyUserAgent != "" {
+		denyUserAgent = true
+	}
+
+	if blackList || denyUserAgent {
+		if cmdErr := blacklist.BlackListAndDenyUserAgentCP(service, blackList, denyUserAgent); cmdErr != nil {
+			fmt.Println("error: service BlackListAndDenyUserAgentCP ", cmdErr)
+			c.SetJson(1, nil, "更新 service 黑名单 || UA 失败")
 			return
 		}
 	}
@@ -419,9 +410,6 @@ func (c *ServiceController) AddServiceAllRelatedByService(){
 	c.SetJson(0, service, "")
 	return
 }
-
-
-
 
 // @Title 删除 service by id
 // @Description delete the service conf by id
@@ -438,33 +426,31 @@ func (c *ServiceController) DeleteServiceAndAllRelatedByServiceId() {
 		return
 	}
 
-
 	service, err := models.GetServiceById(serviceId)
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "根据 serviceId 获取 service 失败")
 		return
 	}
 
 	service, err = models.GetServiceAllRelated(service)
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "根据 service 获取 service related 失败")
 		return
 	}
 
 	err = models.DeleteServiceAndAllRelatedByService(service)
-	if err != nil  {
+	if err != nil {
 		c.SetJson(1, err, "删除 service 以及关联关系 失败")
 		return
 	}
 
 	service.IsDel = 1
 	_, err = models.UpdateServiceById(service)
-	if err != nil  {
+	if err != nil {
 		c.SetJson(1, err, "删除 service 失败")
 		return
 	}
 
-	c.SetJson(0,nil , "")
+	c.SetJson(0, nil, "")
 	return
 }
-

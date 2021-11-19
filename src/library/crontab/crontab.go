@@ -6,7 +6,6 @@ import (
 	"models"
 )
 
-
 func Crontab() (err error) {
 	// CrontabList, err := models.GetCrontabByAuto(1)
 	CrontabList, err := models.GetCrontabAll()

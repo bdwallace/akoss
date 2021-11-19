@@ -1,4 +1,5 @@
 package tianyi
+
 import (
 	"fmt"
 	"io/ioutil"
@@ -32,16 +33,15 @@ func Balance(requstUri, cookie string) (*float64, error) {
 
 	strBody := string(body)
 
-	fmt.Println("strBody: ",strBody)
+	fmt.Println("strBody: ", strBody)
 	var balanceStr string
-	if index := strings.Index(strBody, "cashPoints");index > 0{
+	if index := strings.Index(strBody, "cashPoints"); index > 0 {
 		str1 := strBody[index+13:]
-		index2 := strings.Index(str1,"\",")
+		index2 := strings.Index(str1, "\",")
 		balanceStr = str1[:index2]
 	}
 
 	balanceFloat := common.StrToFloat(balanceStr)
 
-	return &balanceFloat,err
+	return &balanceFloat, err
 }
-

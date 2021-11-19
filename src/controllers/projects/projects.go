@@ -12,22 +12,18 @@ type ProjectController struct {
 	controllers.BaseController
 }
 
-
-func (c *ProjectController)URLMapping(){
-/*
-	c.Mapping("list",c.GetAllProject)
-	c.Mapping("GetProjectById",c.GetProjectById)
-	c.Mapping("GetProjectByAlias",c.GetProjectByAlias)
-	c.Mapping("AddProject",c.AddProject)
-	c.Mapping("UpdateProject",c.UpdateProject)
-	c.Mapping("DeleteProjectById",c.DeleteProjectById)
-*/
+func (c *ProjectController) URLMapping() {
+	/*
+		c.Mapping("list",c.GetAllProject)
+		c.Mapping("GetProjectById",c.GetProjectById)
+		c.Mapping("GetProjectByAlias",c.GetProjectByAlias)
+		c.Mapping("AddProject",c.AddProject)
+		c.Mapping("UpdateProject",c.UpdateProject)
+		c.Mapping("DeleteProjectById",c.DeleteProjectById)
+	*/
 }
 
-
 /////  project
-
-
 
 // @Title 添加project
 // @Description add the project
@@ -37,8 +33,7 @@ func (c *ProjectController)URLMapping(){
 // @Failure 1 添加 project 失败
 // @Failure 2 User not found
 // @router /project/ [post]
-func (c *ProjectController)AddProject(){
-
+func (c *ProjectController) AddProject() {
 
 	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var project models.Project
@@ -49,23 +44,23 @@ func (c *ProjectController)AddProject(){
 		return
 	}
 
-	if 0 != project.Id{
+	if 0 != project.Id {
 		// update project
 		resId, err := models.UpdateProject(&project)
-		if err != nil{
-			fmt.Println("error: AddProject  ",err)
-			c.SetJson(1,err,"更新 project 失败")
+		if err != nil {
+			fmt.Println("error: AddProject  ", err)
+			c.SetJson(1, err, "更新 project 失败")
 			return
 		}
-		c.SetJson(0,resId,"")
+		c.SetJson(0, resId, "")
 		return
-	}else {
+	} else {
 
 		// add	project
 		resId, err = models.AddProject(&project)
-		if err != nil{
-			fmt.Println("error: AddProject  ",err)
-			c.SetJson(1,err,"添加 project 失败")
+		if err != nil {
+			fmt.Println("error: AddProject  ", err)
+			c.SetJson(1, err, "添加 project 失败")
 			return
 		}
 	}
@@ -74,19 +69,16 @@ func (c *ProjectController)AddProject(){
 		创建project点击next 发送请求,
 		初始化projectConf到mysql并将数据返回前端
 	*/
-	if err := models.InitConfKey(int(resId));err != nil{
-		fmt.Println("error: InitConfKey ",err)
-		c.SetJson(1,err,"创建 project 模板key失败")
+	if err := models.InitConfKey(int(resId)); err != nil {
+		fmt.Println("error: InitConfKey ", err)
+		c.SetJson(1, err, "创建 project 模板key失败")
 		return
 	}
 
-	c.SetJson(0,resId,"")
+	c.SetJson(0, resId, "")
 	return
 
 }
-
-
-
 
 // @Title 获取所有project
 // @Description get all the project
@@ -94,11 +86,11 @@ func (c *ProjectController)AddProject(){
 // @Failure 1 获取所有 project 失败
 // @Failure 2 User not found
 // @router /project/list/ [get]
-func (c *ProjectController)GetAllProject(){
+func (c *ProjectController) GetAllProject() {
 
 	proRes, err := models.GetAllProject()
-	if err != nil{
-		fmt.Println("error: GetAllProject ",err)
+	if err != nil {
+		fmt.Println("error: GetAllProject ", err)
 		c.SetJson(1, nil, "获取所有 project 失败")
 		return
 	}
@@ -108,7 +100,6 @@ func (c *ProjectController)GetAllProject(){
 
 }
 
-
 // @Title 获取project by id
 // @Description get the project by id
 // @Param   id    query     int  	true        "project id"
@@ -116,24 +107,22 @@ func (c *ProjectController)GetAllProject(){
 // @Failure 1 获取 project by id 失败
 // @Failure 2 User not found
 // @router /project/id/ [get]
-func (c *ProjectController)GetProjectById(){
+func (c *ProjectController) GetProjectById() {
 
 	id := c.Input().Get("id")
-	intId,_ := strconv.Atoi(id)
+	intId, _ := strconv.Atoi(id)
 
 	proRes, err := models.GetProjectById(intId)
-	if err != nil{
-		fmt.Println("error: GetProjectById ",err)
+	if err != nil {
+		fmt.Println("error: GetProjectById ", err)
 		c.SetJson(1, err, "获取 project by id 失败")
 		return
 	}
-
 
 	c.SetJson(0, proRes, "")
 	return
 
 }
-
 
 // @Title 获取project
 // @Description get the project by alias
@@ -142,28 +131,24 @@ func (c *ProjectController)GetProjectById(){
 // @Failure 1 获取 project by alias 失败
 // @Failure 2 User not found
 // @router /project/alias/ [get]
-func (c *ProjectController)GetProjectByAlias(){
+func (c *ProjectController) GetProjectByAlias() {
 
 	alias := c.GetString("alias")
-	if alias == ""{
-		c.SetJson(1,nil,"project alias is empty")
+	if alias == "" {
+		c.SetJson(1, nil, "project alias is empty")
 		return
 	}
 
 	proRes, err := models.GetProjectByAlias(alias)
-	if err != nil{
-		fmt.Println("error: GetProjectByAlias ",err)
-		c.SetJson(1,err,"获取 project by alias 失败")
+	if err != nil {
+		fmt.Println("error: GetProjectByAlias ", err)
+		c.SetJson(1, err, "获取 project by alias 失败")
 		return
 	}
 
-
-	c.SetJson(0,proRes,"")
+	c.SetJson(0, proRes, "")
 	return
 }
-
-
-
 
 // @Title 删除project
 // @Description delete the project
@@ -172,23 +157,20 @@ func (c *ProjectController)GetProjectByAlias(){
 // @Failure 1 删除 project 失败
 // @Failure 2 User not found
 // @router /project/id/ [delete]
-func (c *ProjectController)DeleteProjectById(){
+func (c *ProjectController) DeleteProjectById() {
 
 	id := c.Input().Get("id")
 	intId, _ := strconv.Atoi(id)
 	ok, err := models.DeleteProjectById(intId)
-	if err != nil && ok != true{
-		fmt.Println("error: delete project  ",err)
-		c.SetJson(1,err,"删除 project 失败")
+	if err != nil && ok != true {
+		fmt.Println("error: delete project  ", err)
+		c.SetJson(1, err, "删除 project 失败")
 		return
 	}
 
-	c.SetJson(0,ok,"")
+	c.SetJson(0, ok, "")
 	return
 }
-
-
-
 
 // @Title 获取 nacos by projectId
 // @Description get the nacos by projectId
@@ -197,22 +179,21 @@ func (c *ProjectController)DeleteProjectById(){
 // @Failure 1 获取 nacos by projectId 失败
 // @Failure 2 User not found
 // @router /project/nacos/ [get]
-func (c *ProjectController)GetNacosByProjectId(){
+func (c *ProjectController) GetNacosByProjectId() {
 
 	id, err := c.GetInt("id")
-	if err != nil{
-		c.SetJson(1,nil,"project id is empty")
+	if err != nil {
+		c.SetJson(1, nil, "project id is empty")
 		return
 	}
 
 	nacos, err := models.GetNacosByProjectId(id)
-	if err != nil{
-		fmt.Println("error: GetNacosByProjectId ",err)
-		c.SetJson(1,err,"获取 nacos by project id 失败")
+	if err != nil {
+		fmt.Println("error: GetNacosByProjectId ", err)
+		c.SetJson(1, err, "获取 nacos by project id 失败")
 		return
 	}
 
-	c.SetJson(0,nacos,"")
+	c.SetJson(0, nacos, "")
 	return
 }
-

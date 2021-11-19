@@ -22,11 +22,11 @@ type User struct {
 	Role                   int16     `orm:"column(role)"`
 	Status                 int16     `orm:"column(status)"`
 	Realname               string    `orm:"column(realname);size(32)"`
-	ProjectId			   int		 `orm:"column(project_id)"`
-	ProjectName			   string    `orm:"column(project_name)"`
-	IsDel 				   int 		 `orm:"column(is_del);default(0)"`
-	XToken				   string    `orm:"column(x_token);size(512);null"`
-	UserMenus			   string    `orm:"column(menus);size(4096);null"`
+	ProjectId              int       `orm:"column(project_id)"`
+	ProjectName            string    `orm:"column(project_name)"`
+	IsDel                  int       `orm:"column(is_del);default(0)"`
+	XToken                 string    `orm:"column(x_token);size(512);null"`
+	UserMenus              string    `orm:"column(menus);size(4096);null"`
 	CreatedAt              time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
 	UpdatedAt              time.Time `orm:"column(updated_at);type(datetime);auto_now;"`
 }
@@ -63,7 +63,7 @@ func GetUserById(id int) (v *User, err error) {
 func GetUserByName(name string) (v *User, err error) {
 	o := orm.NewOrm()
 	v = &User{Username: name}
-	if err = o.Read(v,"username"); err == nil {
+	if err = o.Read(v, "username"); err == nil {
 		return v, nil
 	}
 	return nil, err

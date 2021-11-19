@@ -12,21 +12,21 @@ import (
 )
 
 type Record struct {
-	Id        	int    		`orm:"column(id);auto"`
-	Status    	int16  		`orm:"column(status)"`
-	Action    	int16  		`orm:"column(action);null"`
-	Command   	string 		`orm:"column(command);type(text);null"`
-	Duration  	int    		`orm:"column(duration);null"`
-	Memo      	string 		`orm:"column(memo);type(text);null"`
-	Host        string    	`orm:"column(host);null"`
-	Count 		int 		`orm:"column(Count);null"`
+	Id       int    `orm:"column(id);auto"`
+	Status   int16  `orm:"column(status)"`
+	Action   int16  `orm:"column(action);null"`
+	Command  string `orm:"column(command);type(text);null"`
+	Duration int    `orm:"column(duration);null"`
+	Memo     string `orm:"column(memo);type(text);null"`
+	Host     string `orm:"column(host);null"`
+	Count    int    `orm:"column(Count);null"`
 
-	CreatedAt              time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
-	UpdatedAt              time.Time `orm:"column(updated_at);type(datetime);auto_now;"`
+	CreatedAt time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
+	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);auto_now;"`
 
-	User         	*User				`orm:"rel(fk)"`
-	Task         	*Task				`orm:"rel(fk)"`
-	Deploy			*Deploy				`orm:"rel(fk)"`
+	User   *User   `orm:"rel(fk)"`
+	Task   *Task   `orm:"rel(fk)"`
+	Deploy *Deploy `orm:"rel(fk)"`
 }
 
 // func (t *Record) TableName() string {
@@ -34,20 +34,19 @@ type Record struct {
 // }
 
 func init() {
-	orm.RegisterModelWithPrefix("t_",new(Record))
+	orm.RegisterModelWithPrefix("t_", new(Record))
 }
-
 
 /*
 	添加 user id 外键约束
 */
-func (c *SqlClass)RecordCreateForeignKeyUser() {
+func (c *SqlClass) RecordCreateForeignKeyUser() {
 
 	// 拼接两张表外键约束sql
-	addForeignSqlStr := fmt.Sprintf( "alter table %s ADD CONSTRAINT %s foreign key (%s) references %s(%s);",recordTableName,recordUserForeignKeyName,userId,userTableName,primaryKey)
+	addForeignSqlStr := fmt.Sprintf("alter table %s ADD CONSTRAINT %s foreign key (%s) references %s(%s);", recordTableName, recordUserForeignKeyName, userId, userTableName, primaryKey)
 
 	err := c.CreateForeignKey(addForeignSqlStr)
-	if err != nil{
+	if err != nil {
 		if strings.Index(err.Error(), errDuplicate) != -1 {
 			beego.Info("key is duplicate")
 		} else {
@@ -57,18 +56,17 @@ func (c *SqlClass)RecordCreateForeignKeyUser() {
 		beego.Info("key is create")
 	}
 }
-
 
 /*
 	添加 task id 外键约束
 */
-func (c *SqlClass)RecordCreateForeignKeyTask() {
+func (c *SqlClass) RecordCreateForeignKeyTask() {
 
 	// 拼接两张表外键约束sql
-	addForeignSqlStr := fmt.Sprintf( "alter table %s ADD CONSTRAINT %s foreign key (%s) references %s(%s);",recordTableName,recordTaskForeignKeyName,taskId,taskTableName,primaryKey)
+	addForeignSqlStr := fmt.Sprintf("alter table %s ADD CONSTRAINT %s foreign key (%s) references %s(%s);", recordTableName, recordTaskForeignKeyName, taskId, taskTableName, primaryKey)
 
 	err := c.CreateForeignKey(addForeignSqlStr)
-	if err != nil{
+	if err != nil {
 		if strings.Index(err.Error(), errDuplicate) != -1 {
 			beego.Info("key is duplicate")
 		} else {
@@ -78,18 +76,17 @@ func (c *SqlClass)RecordCreateForeignKeyTask() {
 		beego.Info("key is create")
 	}
 }
-
 
 /*
 	创建 project 外键约束
 */
-func (c * SqlClass)RecordCreateForeignKeyDeploy() {
+func (c *SqlClass) RecordCreateForeignKeyDeploy() {
 
 	// 拼接两张表外键约束sql
-	addForeignSqlStr := fmt.Sprintf( "alter table %s ADD CONSTRAINT %s foreign key (%s) references %s(%s);",recordTableName,recordDeployForeignKeyName,deployId,deployTableName,primaryKey)
+	addForeignSqlStr := fmt.Sprintf("alter table %s ADD CONSTRAINT %s foreign key (%s) references %s(%s);", recordTableName, recordDeployForeignKeyName, deployId, deployTableName, primaryKey)
 
 	err := c.CreateForeignKey(addForeignSqlStr)
-	if err != nil{
+	if err != nil {
 		if strings.Index(err.Error(), errDuplicate) != -1 {
 			beego.Info("key is duplicate")
 		} else {
@@ -99,8 +96,6 @@ func (c * SqlClass)RecordCreateForeignKeyDeploy() {
 		beego.Info("key is create")
 	}
 }
-
-
 
 // AddRecord insert a new Record into database and returns
 // last inserted Id on success.
@@ -253,8 +248,6 @@ func GetRecordCount(deployId int) (list *orm.ParamsList, err error) {
 	return
 }
 
-
-
 // DeleteRecord deletes Record by Id and returns error if
 // the record to be deleted doesn't exist
 func GetRecordListCount(deployId int, count int) (list []*Record, err error) {
@@ -263,4 +256,3 @@ func GetRecordListCount(deployId int, count int) (list []*Record, err error) {
 
 	return
 }
-

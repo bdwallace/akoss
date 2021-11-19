@@ -14,9 +14,7 @@ type ConfController struct {
 	controllers.BaseController
 }
 
-
 /////  project_conf
-
 
 // @Title 添加 project conf
 // @Description add the project conf
@@ -27,7 +25,7 @@ type ConfController struct {
 // @Failure 1 添加 project conf 失败
 // @Failure 2 User not found
 // @router /conf/ [post]
-func (c *ConfController)AddConf() {
+func (c *ConfController) AddConf() {
 
 	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var conf *models.Conf
@@ -37,11 +35,11 @@ func (c *ConfController)AddConf() {
 		return
 	}
 
-	if 0 != conf.Id{
+	if 0 != conf.Id {
 		// update conf
 		_, err := models.UpdateConf(conf)
 		if err != nil {
-			c.SetJson(1, err,"更新 project conf by id失败")
+			c.SetJson(1, err, "更新 project conf by id失败")
 			return
 		}
 
@@ -66,11 +64,9 @@ func (c *ConfController)AddConf() {
 		return
 	}
 
-
 	c.SetJson(0, conf, "")
 	return
 }
-
 
 // @Title 获取所有 project conf
 // @Description get all the project conf
@@ -78,35 +74,34 @@ func (c *ConfController)AddConf() {
 // @Failure 1 获取所有 project conf 失败
 // @Failure 2 User not found
 // @router /conf/list [get]
-func (c *ConfController)GetAllConfs() {
-
+func (c *ConfController) GetAllConfs() {
 
 	searchText := c.GetString("search_text")
 	projectId, err := c.GetInt("project_id")
-	if err != nil{
-		fmt.Println("error: GetInt(\"project_id\")",err)
-		c.SetJson(1,err,"获取 project_id 失败")
+	if err != nil {
+		fmt.Println("error: GetInt(\"project_id\")", err)
+		c.SetJson(1, err, "获取 project_id 失败")
 		return
 	}
 
 	resConfs := make([]*models.Conf, 0)
-	if searchText == ""{
+	if searchText == "" {
 		resConfs, err = models.GetAllConfs(projectId)
-		if err != nil{
-			fmt.Println("error: GetAllConf()",err)
-			c.SetJson(1,err,"获取所有 Host 失败")
+		if err != nil {
+			fmt.Println("error: GetAllConf()", err)
+			c.SetJson(1, err, "获取所有 Host 失败")
 			return
 		}
-	}else {
-		resConfs, err = models.SearchConfs(searchText,projectId)
-		if err != nil{
-			fmt.Println("error: SearchConfs()",err)
-			c.SetJson(1,err,"搜索 host匹配内容 失败")
+	} else {
+		resConfs, err = models.SearchConfs(searchText, projectId)
+		if err != nil {
+			fmt.Println("error: SearchConfs()", err)
+			c.SetJson(1, err, "搜索 host匹配内容 失败")
 			return
 		}
 	}
 
-	for _, s := range resConfs{
+	for _, s := range resConfs {
 		_, err := models.GetConfRelated(s)
 		if err != nil {
 			c.SetJson(1, err, "获取 conf services by id失败")
@@ -117,7 +112,6 @@ func (c *ConfController)GetAllConfs() {
 	return
 }
 
-
 // @Title 获取 project conf by id
 // @Description get the project conf by id
 // @Param   id     	 query     int   	true        "project conf id"
@@ -125,27 +119,25 @@ func (c *ConfController)GetAllConfs() {
 // @Failure 1 获取 project conf by id失败
 // @Failure 2 User not found
 // @router /conf/id [get]
-func (c *ConfController)GetConfById(){
+func (c *ConfController) GetConfById() {
 
-	id :=c.Input().Get("id")
+	id := c.Input().Get("id")
 	idInt, err := strconv.Atoi(id)
-	resProConf,err := models.GetConfById(idInt)
-	if err != nil{
+	resProConf, err := models.GetConfById(idInt)
+	if err != nil {
 		c.SetJson(1, err, "获取 project conf by id失败")
 		return
 	}
 
 	_, err = models.GetConfRelated(resProConf)
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "获取 conf 关联的 services 失败")
 		return
 	}
 
-	c.SetJson(0,resProConf,"")
+	c.SetJson(0, resProConf, "")
 	return
 }
-
-
 
 // @Title 获取 project conf by project id
 // @Description get the project conf by project id
@@ -154,18 +146,18 @@ func (c *ConfController)GetConfById(){
 // @Failure 1 获取 project conf by project id失败
 // @Failure 2 User not found
 // @router /conf/projectId [get]
-func (c *ConfController)GetConfByProjectId() {
+func (c *ConfController) GetConfByProjectId() {
 
-	id :=c.Input().Get("project_id")
+	id := c.Input().Get("project_id")
 	idInt, err := strconv.Atoi(id)
 
 	resProConf, err := models.GetConfByProjectId(idInt)
-	if err != nil{
-		c.SetJson(1, err,"获取 project conf by project id失败")
+	if err != nil {
+		c.SetJson(1, err, "获取 project conf by project id失败")
 		return
 	}
 
-	for _, s := range resProConf{
+	for _, s := range resProConf {
 		_, err := models.GetConfRelated(s)
 		if err != nil {
 			c.SetJson(1, err, "获取 conf services by id失败")
@@ -173,11 +165,9 @@ func (c *ConfController)GetConfByProjectId() {
 		}
 	}
 
-
-	c.SetJson(0,resProConf,"")
+	c.SetJson(0, resProConf, "")
 	return
 }
-
 
 // @Title 删除 project conf by project id
 // @Param   id     	 		query     int   		true         "project conf id"
@@ -186,23 +176,21 @@ func (c *ConfController)GetConfByProjectId() {
 // @Failure 1 删除 project conf by id失败
 // @Failure 2 User not found
 // @router /conf/id/ [delete]
-func (c *ConfController)DeleteConfById(){
+func (c *ConfController) DeleteConfById() {
 
-	id, err :=c.GetInt("id")
-	if err != nil{
-		c.SetJson(1, err,"获取 conf id 失败")
+	id, err := c.GetInt("id")
+	if err != nil {
+		c.SetJson(1, err, "获取 conf id 失败")
 	}
 	is, err := models.DeleteConfById(id)
-	if err != nil && is == false{
-		c.SetJson(1, err,"删除 project conf by id失败")
+	if err != nil && is == false {
+		c.SetJson(1, err, "删除 project conf by id失败")
 		return
 	}
 
-	c.SetJson(0, is,"")
+	c.SetJson(0, is, "")
 	return
 }
-
-
 
 // @Title 拷贝 conf by id
 // @Description copy the conf conf by id
@@ -230,7 +218,7 @@ func (c *ConfController) CopyConfById() {
 	resConf.Name = fmt.Sprintf("%s - copy", resConf.Name)
 	_, err = models.AddConf(resConf)
 	if err != nil {
-		fmt.Println("error:  ",err)
+		fmt.Println("error:  ", err)
 		c.SetJson(1, err, "添加 conf 失败")
 		return
 	}
@@ -239,23 +227,21 @@ func (c *ConfController) CopyConfById() {
 	return
 }
 
-
 // @Title get rsa
 // @Description get rsa
 // @Success 0 {ok} bool
 // @Failure 1 拷贝 get rsa 失败
 // @Failure 2 User not found
 // @router /conf/rsa [get]
-func (c *ConfController) GetRSA(){
+func (c *ConfController) GetRSA() {
 
 	rsa, err := rsa.GenRsaKey(2048)
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "获取 RSA 失败")
 		return
 	}
 
-	c.SetJson(0,rsa,"")
+	c.SetJson(0, rsa, "")
 	return
-
 
 }

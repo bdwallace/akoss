@@ -36,9 +36,9 @@ type BaseAws struct {
 	CidrIp      string
 	Description string
 	//Level       int
-	Project       int
-	Alias       string
-	Region      string
+	Project int
+	Alias   string
+	Region  string
 
 	Session        *session.Session
 	SourceInstance *Instance
@@ -175,7 +175,7 @@ func InitCredentials() {
 	// system, err := models.GetSystemById(1)
 	projects, err := models.GetProjectAll()
 	var credentials string
-	for _, project := range projects{
+	for _, project := range projects {
 		// if( err == nil && system.AwsKeyId != "" && system.AwsKeySecret != "" ) {
 		credentials = fmt.Sprintf("%s[%s]\naws_access_key_id=%s\naws_secret_access_key=%s\n\n", credentials, project.Alias, project.AwsKeyId, project.AwsKeySecret)
 		// }
@@ -586,7 +586,7 @@ func (c *BaseAws) GetAllSecurityGourpSave2Obj() {
 
 	allSecurityGroups, err := c.GetAllSgroup()
 	if err != nil {
-		fmt.Println("error: GetAllSecurityGourpSave2Obj,  ",err)
+		fmt.Println("error: GetAllSecurityGourpSave2Obj,  ", err)
 		return
 	}
 
@@ -615,7 +615,7 @@ func (c *BaseAws) GetVPCAndAnalytical() error {
 	//  获取所有vpc信息
 	vpcInfo, err := c.GetVPCInfo()
 	if err != nil {
-		fmt.Println("error:  GetVPCAndAnalytical  ",err)
+		fmt.Println("error:  GetVPCAndAnalytical  ", err)
 		return err
 	}
 
@@ -686,7 +686,7 @@ func (c *BaseAws) GetVPCInfo() (*ec2.DescribeVpcsOutput, error) {
 	result, err := c.SourceInstance.Ec2.DescribeVpcs(input)
 
 	if err != nil {
-		fmt.Println("error: Ec2.DescribeVpcs  ",err)
+		fmt.Println("error: Ec2.DescribeVpcs  ", err)
 		return nil, err
 	}
 	return result, err
@@ -744,7 +744,7 @@ func (c *BaseAws) GetEC2AndAnalytical() error {
 	// get ec2 info
 	ec2Info, err := c.GetEC2sInfo()
 	if err != nil {
-		fmt.Println("error:  GetEC2AndAnalytical  c.GetEC2sInfo  ",err)
+		fmt.Println("error:  GetEC2AndAnalytical  c.GetEC2sInfo  ", err)
 		return err
 	}
 
@@ -773,28 +773,27 @@ func (c *BaseAws) EC2AnalyticalData(ec2Info *ec2.DescribeInstancesOutput) {
 
 		tempReser.OwnerID = *v.OwnerId
 
-
 		c.SourceInfo.EC2Info.EC2Reservations = append(c.SourceInfo.EC2Info.EC2Reservations, tempReser)
 		for j, d := range v.Instances {
 
 			tempInstance := new(EC2InstanceInfo)
 
-			if d.InstanceId != nil{
+			if d.InstanceId != nil {
 				tempInstance.InstanceID = *d.InstanceId
 			}
-			if d.PrivateIpAddress != nil{
+			if d.PrivateIpAddress != nil {
 				tempInstance.PrivateIP = *d.PrivateIpAddress
 			}
-			if d.PublicIpAddress != nil{
+			if d.PublicIpAddress != nil {
 				tempInstance.PublicIP = *d.PublicIpAddress
 			}
-			if d.InstanceType != nil{
+			if d.InstanceType != nil {
 				tempInstance.InstanceType = *d.InstanceType
 			}
-			if d.SubnetId != nil{
+			if d.SubnetId != nil {
 				tempInstance.SubnetID = *d.SubnetId
 			}
-			if d.State.Name != nil{
+			if d.State.Name != nil {
 				tempInstance.Status = *(*d.State).Name
 			}
 
@@ -803,7 +802,6 @@ func (c *BaseAws) EC2AnalyticalData(ec2Info *ec2.DescribeInstancesOutput) {
 					tempInstance.InstanceName = *name.Value
 				}
 			}
-
 
 			c.SourceInfo.EC2Info.EC2Reservations[i].Instances = append(c.SourceInfo.EC2Info.EC2Reservations[i].Instances, tempInstance)
 
@@ -850,7 +848,7 @@ func (c *BaseAws) GetSubnetAndAnalytical() error {
 
 	res, err := c.GetSubnetInfo()
 	if err != nil {
-		fmt.Println("error: GetSubnetAndAnalytical  ",err)
+		fmt.Println("error: GetSubnetAndAnalytical  ", err)
 		return err
 	}
 
@@ -909,7 +907,7 @@ func (c *BaseAws) GetSubnetInfo() (*ec2.DescribeSubnetsOutput, error) {
 	intput := &ec2.DescribeSubnetsInput{}
 	result, err := c.SourceInstance.Ec2.DescribeSubnets(intput)
 	if err != nil {
-		fmt.Println("error: Ec2.DescribeSubnets  ",err)
+		fmt.Println("error: Ec2.DescribeSubnets  ", err)
 		return nil, err
 	}
 
@@ -958,7 +956,7 @@ func (c *BaseAws) GetRDSAndAnalytical() error {
 
 	res, err := c.GetRDSInfo()
 	if err != nil {
-		fmt.Println("error:GetRDSAndAnalytical   ",err)
+		fmt.Println("error:GetRDSAndAnalytical   ", err)
 		return err
 	}
 
@@ -968,7 +966,6 @@ func (c *BaseAws) GetRDSAndAnalytical() error {
 
 	// analytical data
 	c.RDSAnalyticalData(res)
-
 
 	return nil
 }
@@ -1072,7 +1069,7 @@ func (c *BaseAws) GetElastiCacheAndAnalytical() error {
 	desCacheCluster, err := c.GetElastiCacheInfo()
 
 	if err != nil {
-		fmt.Println("error: GetElastiCacheInfo  ",err)
+		fmt.Println("error: GetElastiCacheInfo  ", err)
 		return err
 	}
 
@@ -1181,7 +1178,7 @@ func (c *BaseAws) GetElastiCacheInfo() (*elasticache.DescribeCacheClustersOutput
 
 	if desCacheCluster == nil {
 		err = fmt.Errorf("err:  result is nil")
-		fmt.Println("error: GetElastCacheInfo   ",err)
+		fmt.Println("error: GetElastCacheInfo   ", err)
 		return nil, err
 	}
 
@@ -1200,7 +1197,7 @@ func (c *BaseAws) GetESAndAnalytical() error {
 
 	domainRes, domainStatus, err := c.GetESInfo()
 	if err != nil {
-		fmt.Println("error: GetEsInfo  ",err)
+		fmt.Println("error: GetEsInfo  ", err)
 		return err
 	}
 
@@ -1283,7 +1280,7 @@ func (c *BaseAws) GetESInfo() (*elasticsearchservice.DescribeElasticsearchDomain
 	input := &elasticsearchservice.ListDomainNamesInput{}
 	domainNamesRes, err := c.SourceInstance.ES.ListDomainNames(input)
 	if err != nil {
-		fmt.Println("error: ES.ListDomainNames  ",err)
+		fmt.Println("error: ES.ListDomainNames  ", err)
 		return nil, nil, err
 	}
 
@@ -1307,7 +1304,7 @@ func (c *BaseAws) GetESInfo() (*elasticsearchservice.DescribeElasticsearchDomain
 
 	desDomansOutPut, err := c.SourceInstance.ES.DescribeElasticsearchDomains(&desDomainInput)
 	if err != nil {
-		fmt.Println("error: ES.DescribeElasticsearchDomains  ",err)
+		fmt.Println("error: ES.DescribeElasticsearchDomains  ", err)
 		return nil, nil, err
 	}
 
@@ -1321,7 +1318,7 @@ func (c *BaseAws) GetESInfo() (*elasticsearchservice.DescribeElasticsearchDomain
 	domainStatusInput := &elasticsearchservice.DescribeReservedElasticsearchInstancesInput{}
 	desdomainStatusRes, err := c.SourceInstance.ES.DescribeReservedElasticsearchInstances(domainStatusInput)
 	if err != nil {
-		fmt.Println("error: ES.DescribeReservedElasticsearchInstances  ",err)
+		fmt.Println("error: ES.DescribeReservedElasticsearchInstances  ", err)
 		return nil, nil, err
 	}
 
@@ -1339,7 +1336,7 @@ func (c *BaseAws) GetKafkaAndAnalytical() error {
 	listCluster, err := c.GetKafkaInfo()
 	//_, err := baseAws.GetKafkaInfo()
 	if err != nil {
-		fmt.Println("error:  GetKafkaInfo  ",err)
+		fmt.Println("error:  GetKafkaInfo  ", err)
 		return err
 	}
 
@@ -1421,7 +1418,7 @@ func (c *BaseAws) GetKafkaInfo() (*kafka.ListClustersOutput, error) {
 	listClustersInput := &kafka.ListClustersInput{}
 	listClustersRes, lErr := c.SourceInstance.Kafka.ListClusters(listClustersInput)
 	if lErr != nil {
-		fmt.Println("error: Kafka.ListClusters ",lErr)
+		fmt.Println("error: Kafka.ListClusters ", lErr)
 		return nil, lErr
 	}
 
@@ -1430,7 +1427,6 @@ func (c *BaseAws) GetKafkaInfo() (*kafka.ListClustersOutput, error) {
 		fmt.Println(err)
 		return nil, err
 	}
-
 
 	return listClustersRes, nil
 }
@@ -1453,7 +1449,7 @@ func (c *BaseAws) GetELBInfo() (*elb.DescribeLoadBalancersOutput, error) {
 	fmt.Println("describeLoadBalancers")
 	desELBRes, err := c.SourceInstance.ELB.DescribeLoadBalancers(nil)
 	if err != nil {
-		fmt.Println("error: ELB.DescribeLoadBalancers  ",err)
+		fmt.Println("error: ELB.DescribeLoadBalancers  ", err)
 		return nil, err
 	}
 
@@ -1469,14 +1465,12 @@ func (c *BaseAws) GetELBInfo() (*elb.DescribeLoadBalancersOutput, error) {
 	return desELBRes, nil
 }
 
-
 func (c *BaseAws) GetAllRegion() (awsregion []string, err error) {
 	// return []string{"us-west-1", "ap-east-1", "us-east-2", "us-east-1", "us-west-2", "ap-southeast-1"}, nil
-	
+
 	awsregion = strings.Split(beego.AppConfig.String("awsregion"), ",")
 	return
 }
-
 
 /*
 	获取所有 单个EC2 instance 的状态
@@ -1494,15 +1488,12 @@ func (c *BaseAws) GetEC2Status(instanceId string) (*ec2.DescribeInstancesOutput,
 	}
 	result, err := c.SourceInstance.Ec2.DescribeInstances(input)
 	if err != nil {
-		fmt.Println("error: Ec2.DescribeInstances  ",err)
+		fmt.Println("error: Ec2.DescribeInstances  ", err)
 		return nil, err
 	}
 
 	return result, nil
 }
-
-
-
 
 /*
 	停止 单个EC2 instance
@@ -1562,9 +1553,8 @@ func (c *BaseAws) StartEC2Status(instanceId string) (*ec2.StartInstancesOutput, 
 	return result, err
 }
 
-
 func (c *BaseAws) UploadS3(path, s3Path string) (err error) {
-	
+
 	service := s3.New(c.Session)
 
 	fp, err := os.Open(path)

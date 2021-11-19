@@ -11,7 +11,6 @@ type RecordController struct {
 	controllers.BaseController
 }
 
-
 // @Title 获取 service by project id
 // @Description 根据 project id 查询所有 service 信息
 // @Param   project_id      query     int  		true         "project id"
@@ -27,15 +26,13 @@ func (c *RecordController) RecordList() {
 	// 	o := orm.NewOrm()
 	// 	o.Raw("SELECT * FROM `record` where deploy_id=? and created_at> ? ORDER BY `id` ASC ", deployId, timeNow).Values(&records)
 	// } else {
-		o := orm.NewOrm()
-		o.Raw("SELECT * FROM `t_record` where deploy_id=? ORDER BY `id` ASC ", deployId).Values(&records)
+	o := orm.NewOrm()
+	o.Raw("SELECT * FROM `t_record` where deploy_id=? ORDER BY `id` ASC ", deployId).Values(&records)
 	// }
 	c.SetJson(0, records, "")
 	return
 
 }
-
-
 
 // @Title 获取 record count by deploy id
 // @Description 根据 project id 查询所有 service 信息
@@ -54,8 +51,6 @@ func (c *RecordController) RecordCount() {
 
 }
 
-
-
 // @Title 获取 record count by deploy id
 // @Description 根据 project id 查询所有 service 信息
 // @Param   id      query     int  		true         "deploy id"
@@ -72,4 +67,3 @@ func (c *RecordController) RecordListCount() {
 	return
 
 }
-

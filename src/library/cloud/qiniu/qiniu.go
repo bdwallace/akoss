@@ -33,16 +33,14 @@ func Balance(requstUri, cookie string) (*float64, error) {
 
 	strBody := string(body)
 	var balanceStr string
-	if index := strings.Index(strBody, "cash_balance");index > 0{
+	if index := strings.Index(strBody, "cash_balance"); index > 0 {
 		str1 := strBody[index+19:]
-		index2 := strings.Index(str1,"\",")
+		index2 := strings.Index(str1, "\",")
 		balanceStr = str1[:index2]
 	}
 
 	balanceFloat := common.StrToFloat(strings.Replace(balanceStr, ",", "", -1))
 
-	return &balanceFloat,err
+	return &balanceFloat, err
 
 }
-
-

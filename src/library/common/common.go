@@ -374,7 +374,7 @@ func DesECBEncrypt(text string, keys string) (string, error) {
 	//NewCipher创建一个新的加密块
 	block, err := des.NewCipher(key)
 	if err != nil {
-		fmt.Println("error: DesECBEncrypt NewCipher ",err)
+		fmt.Println("error: DesECBEncrypt NewCipher ", err)
 		return "", err
 	}
 

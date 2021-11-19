@@ -17,7 +17,6 @@ import (
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
 )
 
-
 func (client *Queue) BatchReceiveMessage(request *BatchReceiveMessageRequest) (response *BatchReceiveMessageResponse, err error) {
 	response = CreateBatchReceiveMessageResponse()
 	err = client.DoActionWithSigner(request, response)
@@ -26,23 +25,23 @@ func (client *Queue) BatchReceiveMessage(request *BatchReceiveMessageRequest) (r
 
 type BatchReceiveMessageRequest struct {
 	*requests.RoaRequest
-	QueueName			string 			 `position:"Path" name:"QueueName"`
-	NumOfMessages		requests.Integer `position:"Query" name:"numOfMessages"`
-	WaitSeconds			requests.Integer `position:"Query" name:"waitseconds"`
+	QueueName     string           `position:"Path" name:"QueueName"`
+	NumOfMessages requests.Integer `position:"Query" name:"numOfMessages"`
+	WaitSeconds   requests.Integer `position:"Query" name:"waitseconds"`
 }
 
 type BatchReceiveMessageResponse struct {
 	*responses.BaseResponse
-	RequestId       	string          `json:"RequestId" xml:"RequestId"`
-	Code            	string          `json:"Code" xml:"Code"`
-	Message         	[]Message 		`json:"Message" xml:"Message"`
+	RequestId string    `json:"RequestId" xml:"RequestId"`
+	Code      string    `json:"Code" xml:"Code"`
+	Message   []Message `json:"Message" xml:"Message"`
 }
 
 func CreateBatchReceiveMessageRequest() (request *BatchReceiveMessageRequest) {
 	request = &BatchReceiveMessageRequest{
 		RoaRequest: &requests.RoaRequest{},
 	}
-	request.InitWithApiInfo("MNS", "2015-06-06","BatchReceiveMessage","/queues/[QueueName]/messages", "", "")
+	request.InitWithApiInfo("MNS", "2015-06-06", "BatchReceiveMessage", "/queues/[QueueName]/messages", "", "")
 	request.Method = "GET"
 	request.Headers["x-mns-version"] = "2015-06-06"
 	request.AcceptFormat = "XML"

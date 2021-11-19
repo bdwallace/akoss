@@ -12,7 +12,7 @@ import (
 // @Failure 1 获取 失败
 // @Failure 2 User not found
 // @router /walle/dockerps [get]
-func (c *WalleController) DockerPs(){
+func (c *WalleController) DockerPs() {
 
 	serviceId, _ := c.GetInt("service_id")
 	lineData := c.GetString("line_data", "")
@@ -50,5 +50,3 @@ func (c *WalleController) DockerPs(){
 	c.SetJson(0, res, "")
 	return
 }
-
-

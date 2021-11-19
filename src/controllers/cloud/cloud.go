@@ -219,7 +219,7 @@ func (c *CloudController) SyncCloud() {
 		cloud.Balance = data
 		cloud.UpdatedAt = time.Now()
 	} else if cloud.Class == "七牛云" {
-		data, err := qiniu.Balance(cloud.AccessKeyId,cloud.AccessSecret)
+		data, err := qiniu.Balance(cloud.AccessKeyId, cloud.AccessSecret)
 		if err != nil {
 			c.SetJson(1, nil, "请求七牛云失败: "+err.Error())
 			return
@@ -235,7 +235,7 @@ func (c *CloudController) SyncCloud() {
 		cloud.Balance = *data
 		cloud.UpdatedAt = time.Now()
 	} else {
-		c.SetJson(1, nil, "云平台类型错误: " + err.Error())
+		c.SetJson(1, nil, "云平台类型错误: "+err.Error())
 		return
 	}
 

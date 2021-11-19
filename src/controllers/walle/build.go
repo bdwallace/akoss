@@ -13,8 +13,7 @@ import (
 // @Failure 1 download file 失败
 // @Failure 2 User not found
 // @router /walle/build [post]
-func (c *WalleController)Build() {
-
+func (c *WalleController) Build() {
 
 	//beego.Info(string(c.Ctx.Input.RequestBody))
 	// var domain *models.Domain
@@ -33,7 +32,6 @@ func (c *WalleController)Build() {
 	d := new(components.BaseDocker)
 	d.SetBaseComponents(b)
 
-
 	tag, err := d.Build(operationRecord)
 	if err != nil {
 		c.SetJson(1, nil, err.Error())
@@ -51,4 +49,3 @@ func (c *WalleController)Build() {
 	}
 
 }
-

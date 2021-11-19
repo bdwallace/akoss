@@ -10,10 +10,11 @@ import (
 )
 
 type RSA struct {
-	PublicKey 	string
-	PrivateKey 	string
+	PublicKey  string
+	PrivateKey string
 }
-func GenRsaKey(bits int) (*RSA, error){
+
+func GenRsaKey(bits int) (*RSA, error) {
 
 	rsaObj := new(RSA)
 	// 生成私钥文件
@@ -55,14 +56,14 @@ func GenRsaKey(bits int) (*RSA, error){
 	//rsaObj.PublicKey = base64.StdEncoding.EncodeToString(pubBuf.String())
 	rsaObj.PublicKey = removeHeadAndEnd(pubBuf.String())
 
-	return rsaObj,nil
+	return rsaObj, nil
 }
 
-func removeHeadAndEnd(secretKey string)string{
+func removeHeadAndEnd(secretKey string) string {
 
-	FirstWrap := strings.Index(secretKey,"\n")
-	LastWrap := strings.LastIndex(secretKey,"\n")
+	FirstWrap := strings.Index(secretKey, "\n")
+	LastWrap := strings.LastIndex(secretKey, "\n")
 	tmp1 := secretKey[FirstWrap:LastWrap]
-	LastWrap2 := strings.LastIndex(tmp1,"\n")
-	return secretKey[FirstWrap+1:LastWrap2]
+	LastWrap2 := strings.LastIndex(tmp1, "\n")
+	return secretKey[FirstWrap+1 : LastWrap2]
 }

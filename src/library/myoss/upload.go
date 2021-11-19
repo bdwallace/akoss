@@ -30,4 +30,3 @@ func Upload(remote string, local string) (err error) {
 	}
 	return
 }
-

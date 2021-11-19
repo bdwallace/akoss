@@ -1,4 +1,3 @@
-
 package endpoints
 
 import (
@@ -7,7 +6,7 @@ import (
 	"sync"
 )
 
-const endpointsJson =`{
+const endpointsJson = `{
 	"products": [
 		{
 			"code": "emr",
@@ -4112,6 +4111,7 @@ const endpointsJson =`{
 		}
 	]
 }`
+
 var initOnce sync.Once
 var data interface{}
 

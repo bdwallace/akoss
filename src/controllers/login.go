@@ -13,6 +13,7 @@ import (
 type LoginController struct {
 	BaseController
 }
+
 /*
 func (c *LoginController) Post() {
 	//哈希校验成功后 更新 auth_key
@@ -56,7 +57,7 @@ func (c *LoginController) Post() {
 	}
 }
 
- */
+*/
 func (c *LoginController) Post() {
 	//哈希校验成功后 更新 auth_key
 	//beego.Info(string(c.Ctx.Input.RequestBody))
@@ -78,8 +79,8 @@ func (c *LoginController) Post() {
 	var user models.User
 	o := orm.NewOrm()
 	err = o.Raw("SELECT * FROM `user` WHERE username= ?", userName).QueryRow(&user)
-	if err != nil{
-		c.SetJson(1,nil,"登录失败，没有该用户，请联系管理员")
+	if err != nil {
+		c.SetJson(1, nil, "登录失败，没有该用户，请联系管理员")
 		return
 	}
 	reqAuth := &components.AuthRequest{
@@ -90,22 +91,22 @@ func (c *LoginController) Post() {
 		Method:     c.Controller.Ctx.Input.Method(),
 	}
 	respAuth, err := c.AkossAuth(reqAuth)
-	if err != nil{
-		c.SetJson(1,nil,respAuth.Msg)
+	if err != nil {
+		c.SetJson(1, nil, respAuth.Msg)
 		return
 	}
 
 	if !respAuth.AuthPassed {
 		fmt.Println("*************************")
-		fmt.Println("reqAuth.Uri: ",reqAuth.RequestUri)
-		fmt.Println("respAuth.AuthPassed: ",respAuth.AuthPassed)
-		fmt.Println("respAuth.Msg: ",respAuth.Msg)
+		fmt.Println("reqAuth.Uri: ", reqAuth.RequestUri)
+		fmt.Println("respAuth.AuthPassed: ", respAuth.AuthPassed)
+		fmt.Println("respAuth.Msg: ", respAuth.Msg)
 		fmt.Println("*************************")
 
-		if respAuth.Msg == "Couldn't handle this token:"{
-			c.SetJson(1,nil,"登录状态已过期，请重新登录")
-		}else {
-			c.SetJson(1,nil,respAuth.Msg)
+		if respAuth.Msg == "Couldn't handle this token:" {
+			c.SetJson(1, nil, "登录状态已过期，请重新登录")
+		} else {
+			c.SetJson(1, nil, respAuth.Msg)
 		}
 		return
 	}
@@ -116,26 +117,26 @@ func (c *LoginController) Post() {
 	user.ProjectName = ProjectName
 	user.XToken = respAuth.XToken
 	menusBase := respAuth.Menus
-	components.FindDeployList(&menusBase,user)
+	components.FindDeployList(&menusBase, user)
 	rootMenu := components.FindRootMenu(menusBase)
-	menusTree := components.FindChild(&menusBase,&rootMenu)
-	if menusTree == nil{
-		c.SetJson(1,nil,"菜单权限校验失败,请联系管理员")
+	menusTree := components.FindChild(&menusBase, &rootMenu)
+	if menusTree == nil {
+		c.SetJson(1, nil, "菜单权限校验失败,请联系管理员")
 		return
 	}
 	menusJson, err := json.Marshal(menusTree.Child)
-	if err != nil{
-		c.SetJson(1,nil,"登录状态已过期，请重新登录")
+	if err != nil {
+		c.SetJson(1, nil, "登录状态已过期，请重新登录")
 		return
 	}
 	user.UserMenus = string(menusJson)
-	if err := models.UpdateUserById(&user); err != nil{
-		fmt.Println("error: models.UpdateUserById failed  ",err)
+	if err := models.UpdateUserById(&user); err != nil {
+		fmt.Println("error: models.UpdateUserById failed  ", err)
 		c.SetJson(1, nil, "用户权限获取失败")
 	}
 	user.PasswordHash = ""
 	if c.User.XToken != "" {
-		c.Ctx.SetCookie("x-token",c.User.XToken)
+		c.Ctx.SetCookie("x-token", c.User.XToken)
 	}
 	resUserInfo := map[string]interface{}{"user": user, "login": true}
 	userInfoJson, err := json.Marshal(resUserInfo)

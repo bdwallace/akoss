@@ -37,20 +37,19 @@ func (c *UserController) Get() {
 
 }
 
-
 func (c *UserController) Delete() {
 
 	userId, _ := c.GetInt("id")
 
 	user, err := models.GetUserById(userId)
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "获取 user 失败")
 		return
 	}
 	user.IsDel = 1
 	if err = models.UpdateUserById(user); err != nil {
-	// if err := models.DeleteUser(userId); err != nil{
-		c.SetJson(1,err,"删除用户失败")
+		// if err := models.DeleteUser(userId); err != nil{
+		c.SetJson(1, err, "删除用户失败")
 		return
 	}
 
@@ -68,7 +67,7 @@ func (c *UserController) Put() {
 	userId, _ := c.GetInt("id")
 
 	user, err := models.GetUserById(userId)
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "获取 user 失败")
 		return
 	}
@@ -80,11 +79,10 @@ func (c *UserController) Put() {
 	}
 	userAuth := common.Md5String(user.Username + common.GetString(time.Now().Unix()))
 
-
 	user.AuthKey = userAuth
 	user.PasswordHash = string(hashedPassword)
 	if err = models.UpdateUserById(user); err != nil {
-		c.SetJson(1,err,"重置用户失败")
+		c.SetJson(1, err, "重置用户失败")
 		return
 	}
 

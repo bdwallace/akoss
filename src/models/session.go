@@ -119,6 +119,7 @@ func GetAllSession(query map[string]string, fields []string, sortby []string, or
 	}
 	return nil, err
 }
+
 /*
 // UpdateSession updates Session by Id and returns error if
 // the record to be updated doesn't exist

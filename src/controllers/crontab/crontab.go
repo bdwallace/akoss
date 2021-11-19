@@ -12,7 +12,6 @@ type CrontabController struct {
 	controllers.BaseController
 }
 
-
 // @Title get crontab by id
 // @Description get crontab by id
 // @Param   id      query     int 		true       "crontab id"
@@ -28,7 +27,6 @@ func (c *CrontabController) GetCrontab() {
 	return
 }
 
-
 // @Title get all crontab
 // @Description get all crontab
 // @Success 0 {object} models.Crontab
@@ -41,7 +39,6 @@ func (c *CrontabController) GetAllCrontab() {
 	c.SetJson(0, data, "修改成功")
 	return
 }
-
 
 // @Title add crontab by new crontab
 // @Description add crontab by new crontab
@@ -72,7 +69,6 @@ func (c *CrontabController) AddCrontab() {
 	return
 }
 
-
 // @Title copy crontab by crontab id
 // @Description copy crontab by crontab id
 // @Param   id      query     int 		true       "crontab id"
@@ -100,7 +96,6 @@ func (c *CrontabController) CopyCrontab() {
 
 }
 
-
 // @Title delete crontab by crontab id
 // @Description delete crontab by crontab id
 // @Param   id      query     int 		true       "crontab id"
@@ -121,7 +116,6 @@ func (c *CrontabController) DeleteCrontab() {
 	return
 }
 
-
 // @Title exec crontab by crontab id
 // @Description exec crontab by crontab id
 // @Param   id      query     int 		true       "crontab id"
@@ -141,7 +135,6 @@ func (c *CrontabController) ExecCrontab() {
 	c.SetJson(0, nil, "")
 	return
 }
-
 
 // @Title reload crontab
 // @Description reload crontab

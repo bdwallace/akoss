@@ -22,9 +22,5 @@ func LineGet(url string) (lineStr string, err error) {
 	// ipList = strings.Split(ipListStr, ",")
 	// beego.Info(fmt.Sprintf("level:%s %v", levelId, ipList))
 
-	return	
+	return
 }
-
-
-
-

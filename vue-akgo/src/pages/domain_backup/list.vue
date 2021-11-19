@@ -6,17 +6,25 @@
     </div>
 
     <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px">
-      <el-form-item label="export access key id / access key secret:" label-width="300px" >
-        <el-input v-model="Form.ExportAccessKeyId" placeholder="export access key id" style="width: 400px;"></el-input>
-        <el-input v-model="Form.ExportAccessKeySecret" placeholder="export access key secret" style="width: 400px;"></el-input>
-        <el-button type="info" size="medium" @click="domain_export()">导出</el-button>
+      <el-form-item label="源 access key:" label-width="200px" >
+        <el-input v-model="Form.ExportAccessKeyId" placeholder="source access key id" style="width: 400px;"></el-input>
+        <el-input v-model="Form.ExportAccessKeySecret" placeholder="source access key secret" style="width: 400px;"></el-input>
       </el-form-item>
 
-      <el-form-item label="import access key id / access key secret:" label-width="300px">
-        <el-input v-model="Form.ImportAccessKeyId" placeholder="import access key id" style="width: 400px;"></el-input>
-        <el-input v-model="Form.ImportAccessKeySecret" placeholder="import access key secret" style="width: 400px;"></el-input>
-        <el-button type="warning" size="medium" @click="domain_import()">导入</el-button>
+      <el-form-item label="目标 access key:" label-width="200px">
+        <el-input v-model="Form.ImportAccessKeyId" placeholder="destination access key id" style="width: 400px;"></el-input>
+        <el-input v-model="Form.ImportAccessKeySecret" placeholder="destination access key secret" style="width: 400px;"></el-input>
       </el-form-item>
+
+      <el-form-item label="域名搜索:" label-width="200px">
+        <el-input v-model="Form.SearchDomain" placeholder="domain name" style="width: 400px;"></el-input>
+        <el-button type="info" size="medium" @click="domain_search()"> 查询 </el-button>
+      </el-form-item>
+
+      <el-button type="info" size="medium" @click="domain_backup_all()">全量备份</el-button>
+<!--      <el-button type="info" size="medium" @click="domain_backup_incr()">增量备份</el-button>-->
+      <el-button type="warning" size="medium" @click="domain_import()">导入</el-button>
+
 
       <div class="panel-body-line" style="clear: both;">
         <el-table
@@ -57,6 +65,13 @@
           <el-table-column
             prop="DnsServer"
             label="DnsServer"
+            align="center"
+            width="600">
+          </el-table-column>
+
+          <el-table-column
+            prop="DomainSource"
+            label="来源"
             align="center"
             width="600">
           </el-table-column>
@@ -106,6 +121,7 @@
 
           ImportAccessKeyId: "",
           ImportAccessKeySecret: "",
+          SearchDomain: "",
         },
         selection: [],
         load_data: true,
@@ -116,18 +132,20 @@
         Total: 0,
         Domains: [],
 
+        BackupRes: "",
+
       }
     },
     created() {
     },
     methods: {
-      domain_export(){
+      domain_search(){
         this.load_data = true
-        this.$http.get("/api/domainExport", {
+        this.$http.get("/api/searchAliDomain", {
           params: {
-            // project_id: this.form.Project.Id
             export_key_id: this.Form.ExportAccessKeyId,
             export_key_secret: this.Form.ExportAccessKeySecret,
+            domain_name: this.Form.SearchDomain,
             page_size: this.PageSize,
             page_number: this.PageNum,
           }
@@ -138,6 +156,69 @@
             this.Total = data.item_total
             this.PageNum = data.page_num
             this.load_data = false
+          })
+          .catch(() => {
+            this.load_data = false
+          })
+      },
+
+      domain_backup_all(){
+
+        this.$confirm('此操作将创建新表备份并清空原有数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        .then(() => {
+          this.load_data = true
+          this.$http.get("/api/domainBackupAll", {
+            params: {
+              // project_id: this.form.Project.Id
+              export_key_id: this.Form.ExportAccessKeyId,
+              export_key_secret: this.Form.ExportAccessKeySecret,
+            }
+          })
+            .then(({data: {data}}) => {
+              this.load_data = true
+              this.BackupRes = data
+              this.load_data = false
+              console.log("backup all return ")
+              this.$message({
+                message: "备份成功",
+                type: 'success'
+              })
+            })
+
+            .catch(() => {
+              this.load_data = false
+            })
+        })
+      },
+
+      domain_backup_incr(){
+        this.load_data = true
+        if (this.selection.length == 0){
+          this.$message({
+            message:"请选择增量备份的域名",
+            type: 'warning',
+          })
+          this.load_data = false
+          return
+        }
+        this.$http.post("/api/domainBackupIncr", this.selection,{
+          params: {
+            export_key_id: this.Form.ExportAccessKeyId,
+            export_key_secret: this.Form.ExportAccessKeySecret,
+          }
+        })
+          .then(({data: {data}}) => {
+           /* this.load_data = true
+            this.BackupRes = data
+            this.load_data = false*/
+            this.$message({
+              message: data,
+              type: 'success'
+            })
           })
           .catch(() => {
             this.load_data = false
@@ -164,8 +245,8 @@
         }
         this.$http.post("/api/domainImport",this.selection,{
           params: {
-            import_key_id: this.Form.ImportAccessKeyId,
-            import_key_secret: this.Form.ImportAccessKeySecret,
+            dest_key_id: this.Form.ImportAccessKeyId,
+            dest_key_secret: this.Form.ImportAccessKeySecret,
           }
         })
       .then(({data: {data}}) => {
@@ -173,8 +254,6 @@
             message: data,
             type: 'success'
           })
-          // SetTimeout
-
         })
       },
 
@@ -193,7 +272,7 @@
       //页码选择
       handleCurrentChange(val) {
         this.PageNum = val
-        this.domain_export()
+        this.domain_search()
       },
 
       handleSelectionChange(val) {

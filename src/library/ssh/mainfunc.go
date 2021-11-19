@@ -12,13 +12,12 @@ import (
 	"time"
 )
 
-
 /**
 * 执行本地宿主机命令,但不使用通道去跑（新增）
  */
 func CmdLocal(cmd string, to int) (sshexec.ExecResult, error) {
 	timeout := time.After(time.Duration(to) * time.Second)
-	fmt.Println("cmd exec timeout: ", cmd, "   ",timeout)
+	fmt.Println("cmd exec timeout: ", cmd, "   ", timeout)
 	execResult := LocalExec(cmd)
 	errorText := ""
 	if execResult.Error != nil {
@@ -31,7 +30,6 @@ func CmdLocal(cmd string, to int) (sshexec.ExecResult, error) {
 	}
 
 }
-
 
 func CommandLocal(cmd string, to int) (sshexec.ExecResult, error) {
 	timeout := time.After(time.Duration(to) * time.Second)

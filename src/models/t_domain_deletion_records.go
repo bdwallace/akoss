@@ -10,33 +10,32 @@ import (
 )
 
 type DeleteDomainReco struct {
-	Id        		int    				`orm:"column(id);pk;auto"`
-	Domain     		string 				`orm:"column(domain);size(100);unique"`
-	Class     		string 				`orm:"column(class);size(100)"`
-	Comment 		string 				`orm:"column(comment);type(text)"`
-	UserName		string 				`orm:"column(user_name);size(200)"`
+	Id       int    `orm:"column(id);pk;auto"`
+	Domain   string `orm:"column(domain);size(100);unique"`
+	Class    string `orm:"column(class);size(100)"`
+	Comment  string `orm:"column(comment);type(text)"`
+	UserName string `orm:"column(user_name);size(200)"`
 
-	CreatedAt 		time.Time 			`orm:"column(created_at);type(datetime);auto_now_add;"`
+	CreatedAt time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
 
-	Project 		*Project			`orm:"rel(fk)"`
+	Project *Project `orm:"rel(fk)"`
 }
 
-func init(){
-	orm.RegisterModelWithPrefix("t_",new(DeleteDomainReco))
+func init() {
+	orm.RegisterModelWithPrefix("t_", new(DeleteDomainReco))
 }
-
 
 /*
 	创建 project 外键约束
 */
 
-func (c * SqlClass)DeleteDomainRecordsCreateForeignKeyProject() {
+func (c *SqlClass) DeleteDomainRecordsCreateForeignKeyProject() {
 
 	// 拼接两张表外键约束sql
-	addForeignSqlStr := fmt.Sprintf( "alter table %s ADD CONSTRAINT %s foreign key (%s) references %s(%s);",domainDeleteRecordsTableName,domainDeleteRecordsFroProjectForeignKeyName,projectId,projectTableName,primaryKey)
+	addForeignSqlStr := fmt.Sprintf("alter table %s ADD CONSTRAINT %s foreign key (%s) references %s(%s);", domainDeleteRecordsTableName, domainDeleteRecordsFroProjectForeignKeyName, projectId, projectTableName, primaryKey)
 
 	err := c.CreateForeignKey(addForeignSqlStr)
-	if err != nil{
+	if err != nil {
 		if strings.Index(err.Error(), errDuplicate) != -1 {
 			beego.Info("key is duplicate")
 		} else {
@@ -47,26 +46,25 @@ func (c * SqlClass)DeleteDomainRecordsCreateForeignKeyProject() {
 	}
 }
 
-
-func AddDomainRecord(d *DeleteDomainReco)(id int64, err error) {
+func AddDomainRecord(d *DeleteDomainReco) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(d)
-	if err != nil{
+	if err != nil {
 		return
 	}
 	return
 }
 
-func GetAllDomainRecords(projectId int)(res []*DeleteDomainReco, err error) {
+func GetAllDomainRecords(projectId int) (res []*DeleteDomainReco, err error) {
 
-	if _, err = o.QueryTable(domainDeleteRecordsTableName).Filter("project_id",projectId).RelatedSel().All(&res);err != nil{
+	if _, err = o.QueryTable(domainDeleteRecordsTableName).Filter("project_id", projectId).RelatedSel().All(&res); err != nil {
 		return
 	}
 
 	return
 }
 
-func SearchDomainRecords(projectId int, start, length int, class, searchText string)(total int64, res []*DeleteDomainReco, err error){
+func SearchDomainRecords(projectId int, start, length int, class, searchText string) (total int64, res []*DeleteDomainReco, err error) {
 
 	base := fmt.Sprintf("SELECT `t_delete_domain_reco`.`domain`, `t_delete_domain_reco`.`id`, `t_delete_domain_reco`.`user_name`, `t_delete_domain_reco`.`class`, `t_delete_domain_reco`.`created_at` , `t_delete_domain_reco`.`comment` FROM `%s` `t_delete_domain_reco`", domainDeleteRecordsTableName)
 
@@ -92,15 +90,14 @@ func SearchDomainRecords(projectId int, start, length int, class, searchText str
 		total = int64(common.GetInt(count[0]["count(id)"]))
 	}
 
-	_, err = o.Raw(sql + " order by id desc "+ " LIMIT ?,? ", start, length).QueryRows(&res)
+	_, err = o.Raw(sql+" order by id desc "+" LIMIT ?,? ", start, length).QueryRows(&res)
 
 	return
 }
 
-
 func GetDomainRecoByProjectForClass(projectId int) (list *orm.ParamsList, err error) {
 	list = new(orm.ParamsList)
 	o := orm.NewOrm()
-	_ ,err = o.QueryTable(domainDeleteRecordsTableName).Filter("project_id",projectId).GroupBy("class").OrderBy("class").ValuesFlat(list, "class")
+	_, err = o.QueryTable(domainDeleteRecordsTableName).Filter("project_id", projectId).GroupBy("class").OrderBy("class").ValuesFlat(list, "class")
 	return
 }

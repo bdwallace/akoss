@@ -7,7 +7,6 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
-
 type OperationRecordController struct {
 	controllers.BaseController
 }
@@ -31,8 +30,6 @@ func (c *OperationRecordController) RecordCount() {
 
 }
 
-
-
 // @Title 获取 operation_record count by service_id, class, count
 // @Description 根据 service_id, class, count 查询所有 operation_record 信息
 // @Param   id      query     int  		true         "deploy id"
@@ -52,4 +49,3 @@ func (c *OperationRecordController) RecordListCount() {
 	return
 
 }
-

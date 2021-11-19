@@ -141,14 +141,11 @@ const (
 	crontabLogForCrontabForeignKeyName = "crontab_log_for_crontab_id"
 
 	// t_domain_delete_records
-	domainDeleteRecordsTableName 		= "t_delete_domain_reco"
+	domainDeleteRecordsTableName                = "t_delete_domain_reco"
 	domainDeleteRecordsFroProjectForeignKeyName = "delete_domian_reco_for_project_id"
 
 	// t_domain_backup
 	DomainBackupTableName = "t_domain_backup"
-
-
-
 
 	//confTableName,confProjectForeignKeyName,projectId,projectTableName,primaryKey
 
@@ -172,8 +169,9 @@ const (
 
 	//inspect
 	inspectGrafanaTableName = "t_inspect_grafana"
-
 )
+
+var DomainBackupTableNameWithAccessKeyAndDate string
 
 func GetDBConnInfo() *SqlClass {
 
@@ -390,13 +388,13 @@ func CreateAkTables() {
 
 	// t_deleteDomain_reco
 	sqlObj.DeleteDomainRecordsCreateForeignKeyProject()
-/*
-	// t_host_conf
-	sqlObj.HostConfCreateForeignKeyProject()
-	sqlObj.HostConfCreateForeignKeyPlatform()
-	sqlObj.HostConfCreateForeignKeyService()
-	sqlObj.HostConfCreateForeignKeyHost()
-*/
+	/*
+		// t_host_conf
+		sqlObj.HostConfCreateForeignKeyProject()
+		sqlObj.HostConfCreateForeignKeyPlatform()
+		sqlObj.HostConfCreateForeignKeyService()
+		sqlObj.HostConfCreateForeignKeyHost()
+	*/
 
 }
 

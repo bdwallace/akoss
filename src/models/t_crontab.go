@@ -10,34 +10,33 @@ import (
 )
 
 type Crontab struct {
-	Id        int       `orm:"column(id);auto"`
-	Name      string    `orm:"column(name);unique"`
-	Direction string    `orm:"column(direction)"`
-	Crontab   string    `orm:"column(crontab)"`
-	Auto      int       `orm:"column(auto)"`
-	Api       string    `orm:"column(api)"`
-	Address   string    `orm:"column(address)"`
-	Script    string    `orm:"column(script)"`
-	Status    int16     `orm:"column(status)"`
-	Result    string    `orm:"column(result);type(text)"`
+	Id        int    `orm:"column(id);auto"`
+	Name      string `orm:"column(name);unique"`
+	Direction string `orm:"column(direction)"`
+	Crontab   string `orm:"column(crontab)"`
+	Auto      int    `orm:"column(auto)"`
+	Api       string `orm:"column(api)"`
+	Address   string `orm:"column(address)"`
+	Script    string `orm:"column(script)"`
+	Status    int16  `orm:"column(status)"`
+	Result    string `orm:"column(result);type(text)"`
 
-	CreatedAt              time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
-	UpdatedAt              time.Time `orm:"column(updated_at);type(datetime);auto_now;"`
+	CreatedAt time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
+	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);auto_now;"`
 
-	Project 		*Project			`orm:"rel(fk)"`
+	Project *Project `orm:"rel(fk)"`
 }
-
 
 /*
 	创建 project 外键约束
 */
-func (c * SqlClass)CrontabCreateForeignKeyProject() {
+func (c *SqlClass) CrontabCreateForeignKeyProject() {
 
 	// 拼接两张表外键约束sql
-	addForeignSqlStr := fmt.Sprintf( "alter table %s ADD CONSTRAINT %s foreign key (%s) references %s(%s);",crontabTableName,crontabForProjectForeignKeyName,projectId,projectTableName,primaryKey)
+	addForeignSqlStr := fmt.Sprintf("alter table %s ADD CONSTRAINT %s foreign key (%s) references %s(%s);", crontabTableName, crontabForProjectForeignKeyName, projectId, projectTableName, primaryKey)
 
 	err := c.CreateForeignKey(addForeignSqlStr)
-	if err != nil{
+	if err != nil {
 		if strings.Index(err.Error(), errDuplicate) != -1 {
 			beego.Info("key is duplicate")
 		} else {
@@ -48,7 +47,6 @@ func (c * SqlClass)CrontabCreateForeignKeyProject() {
 	}
 }
 
-
 // Auto 1：为自动，0：手动
 /*
 func (t *Crontab) TableName() string {
@@ -57,7 +55,7 @@ func (t *Crontab) TableName() string {
 */
 
 func init() {
-	orm.RegisterModelWithPrefix("t_",new(Crontab))
+	orm.RegisterModelWithPrefix("t_", new(Crontab))
 }
 
 // AddSystem insert a new System into database and returns
@@ -130,17 +128,16 @@ func UpCrontab(m *Crontab) (err error) {
 func DeleteCrontab(id int) error {
 	o := orm.NewOrm()
 
-
 	o.Begin()
-	if _, err := o.QueryTable(crontabLogTableName).Filter("crontab_id",id).Delete();err != nil{
-		err = fmt.Errorf("error:  o.QueryTable(crontabLogTableName).Filter(\"crontab_id\",id).Delete() %s \n",err)
+	if _, err := o.QueryTable(crontabLogTableName).Filter("crontab_id", id).Delete(); err != nil {
+		err = fmt.Errorf("error:  o.QueryTable(crontabLogTableName).Filter(\"crontab_id\",id).Delete() %s \n", err)
 		fmt.Println(err)
 		o.Rollback()
 		return err
 	}
 
 	if _, err := o.Delete(&Crontab{Id: id}); err != nil {
-		err = fmt.Errorf("error:   o.Delete(crontab) %s \n",err)
+		err = fmt.Errorf("error:   o.Delete(crontab) %s \n", err)
 		fmt.Println(err)
 		o.Rollback()
 		return err
@@ -149,5 +146,3 @@ func DeleteCrontab(id int) error {
 
 	return nil
 }
-
-

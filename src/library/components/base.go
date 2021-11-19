@@ -21,29 +21,28 @@ const SSHWorker = 10
 
 const SSHREMOTETIMEOUT = 600
 
-
 type BaseComponents struct {
-	Project  	*models.Project
-	Platform 	*models.Platform
-	Service 	*models.Service
-	Hosts 		[]*models.Host
-	Task    	*models.Task
-	User    	*models.User
-	Docker  	Docker
-	Repo		Repo
+	Project  *models.Project
+	Platform *models.Platform
+	Service  *models.Service
+	Hosts    []*models.Host
+	Task     *models.Task
+	User     *models.User
+	Docker   Docker
+	Repo     Repo
 }
 
 type Docker struct {
-	Name	string
-	Port 	string
-	Base    string
+	Name string
+	Port string
+	Base string
 }
 
 type Repo struct {
-	User					string
-	Pass					string
-	AddressImage			string
-	AddressApi 				string
+	User         string
+	Pass         string
+	AddressImage string
+	AddressApi   string
 }
 
 func (c *BaseComponents) SetProject(project *models.Project) {
@@ -55,7 +54,7 @@ func (c *BaseComponents) SetService(service *models.Service) {
 	c.Docker = Docker{}
 
 	if c.Service.DockerName == "" {
-		if  c.Project.Alias != ""{
+		if c.Project.Alias != "" {
 			c.Docker.Name = c.Service.Name + "_" + c.Project.Alias
 		} else {
 			c.Docker.Name = c.Service.Name + "_" + service.Project.Alias
@@ -87,33 +86,29 @@ func (c *BaseComponents) SetPlatform(platform *models.Platform) {
 	c.Platform = platform
 }
 
-
 func (c *BaseComponents) SetUser(user *models.User) {
 	c.User = user
 }
 
-
-func (c *BaseComponents) GetProject()(project *models.Project) {
+func (c *BaseComponents) GetProject() (project *models.Project) {
 	return c.Project
 }
 
-func (c *BaseComponents) GetService()(service *models.Service) {
+func (c *BaseComponents) GetService() (service *models.Service) {
 	return c.Service
 }
 
-func (c *BaseComponents) GetHost()(hosts []*models.Host) {
+func (c *BaseComponents) GetHost() (hosts []*models.Host) {
 	return c.Hosts
 }
 
-func (c *BaseComponents) GetTask()(task *models.Task) {
+func (c *BaseComponents) GetTask() (task *models.Task) {
 	return c.Task
 }
 
-func (c *BaseComponents) GetUser()(user *models.User) {
+func (c *BaseComponents) GetUser() (user *models.User) {
 	return c.User
 }
-
-
 
 /**
  * 万能的本地命令
@@ -167,7 +162,6 @@ func (c *BaseComponents) LocalOtherNull(command string, action int, re *models.O
 	return
 }
 
-
 /**
  * 万能的本地命令,非发布命令，在build,download,start,restart,stop时使用
  *
@@ -209,21 +203,19 @@ func (c *BaseComponents) LocalOther(command string, timeout int, action int, re 
 	return s, err
 }
 
-
 /**
  * 万能的本地命令
  *
  */
-func (c *BaseComponents) RunLocal(task *models.Task,command string, timeout int, host string, sql string) (s sshexec.ExecResult, resId int64,err error) {
+func (c *BaseComponents) RunLocal(task *models.Task, command string, timeout int, host string, sql string) (s sshexec.ExecResult, resId int64, err error) {
 	if timeout == 0 {
 		timeout = SSHTIMEOUT
 	}
 	s, cmdErr := gopubssh.CommandLocal(command, timeout)
 	if cmdErr != nil && cmdErr.Error() == "cmd time out" {
-		s.Result = fmt.Sprintf("%s: %s  cmd time out",command, host)
+		s.Result = fmt.Sprintf("%s: %s  cmd time out", command, host)
 		beego.Error(s.Result)
 	}
-
 
 	if sql != "" {
 		duration := common.GetInt(s.EndTime.Sub(s.StartTime).Seconds())
@@ -232,20 +224,19 @@ func (c *BaseComponents) RunLocal(task *models.Task,command string, timeout int,
 			status = 0
 		}
 
-		resId,err = c.SaveSql(task, command, duration, status, s, host, sql)
-		if err != nil{
-			return s, resId,err
+		resId, err = c.SaveSql(task, command, duration, status, s, host, sql)
+		if err != nil {
+			return s, resId, err
 		}
 	}
 
-	if cmdErr != nil{
-		return s,resId, cmdErr
+	if cmdErr != nil {
+		return s, resId, cmdErr
 	}
 	return s, resId, err
 }
 
-
-func (c *BaseComponents) RunDockerPs(command string, timeout int, host string)(s sshexec.ExecResult, err error){
+func (c *BaseComponents) RunDockerPs(command string, timeout int, host string) (s sshexec.ExecResult, err error) {
 
 	if timeout == 0 {
 		timeout = SSHTIMEOUT
@@ -260,10 +251,7 @@ func (c *BaseComponents) RunDockerPs(command string, timeout int, host string)(s
 	return
 }
 
-
-
-
-func (c *BaseComponents) SaveSql(task *models.Task, command string, duration int, status int, value interface{}, host string, sql string) (int64,error){
+func (c *BaseComponents) SaveSql(task *models.Task, command string, duration int, status int, value interface{}, host string, sql string) (int64, error) {
 	//beego.Info(value)
 	if duration < 0 {
 		duration = 0
@@ -296,15 +284,10 @@ func (c *BaseComponents) SaveSql(task *models.Task, command string, duration int
 		beego.Error(err)
 		return -1, err
 	}
-	return id,err
+	return id, err
 }
 
-
-
-
-
-
-func (c *BaseComponents) SaveSqlToOperationRecord(command string, duration int, status int, action int, value interface{}, host *models.Host,class string) (err error) {
+func (c *BaseComponents) SaveSqlToOperationRecord(command string, duration int, status int, action int, value interface{}, host *models.Host, class string) (err error) {
 	//beego.Info(value)
 	if duration < 0 {
 		duration = 0
@@ -331,15 +314,14 @@ func (c *BaseComponents) SaveSqlToOperationRecord(command string, duration int, 
 
 }
 
-
 func LineChangeHost(url string, host *models.Host, line string) (err error) {
 
-	hosts,err := models.GetHostRelated(host)
+	hosts, err := models.GetHostRelated(host)
 	if err != nil {
 		return
 	}
 
-	for _, service := range hosts.Services{
+	for _, service := range hosts.Services {
 		port := service.Port
 		hostPort := fmt.Sprintf("%s:%s", host.UseIp, port)
 		err = LineChange(url, hostPort, line)
@@ -351,7 +333,6 @@ func LineChangeHost(url string, host *models.Host, line string) (err error) {
 	return
 
 }
-
 
 // ????
 func LineChange(url string, hostPort string, line string) (err error) {
@@ -395,7 +376,6 @@ func LineChange(url string, hostPort string, line string) (err error) {
 
 }
 
-
 func Line(url string) (lineStr string, err error) {
 	req := httplib.Get(url)
 	req.Param("dataId", "grayReleaseConfig.properties")
@@ -410,13 +390,10 @@ func Line(url string) (lineStr string, err error) {
 	return
 }
 
-
-
-
 /**
 * 执行本地宿主机命令,并在record表记录执行的IP
  */
-func (c *BaseComponents) RunLocalCommandHostLog(task *models.Task, command string, timeout int, host string, sql string) (sshexec.ExecResult,int64, error) {
+func (c *BaseComponents) RunLocalCommandHostLog(task *models.Task, command string, timeout int, host string, sql string) (sshexec.ExecResult, int64, error) {
 	if timeout == 0 {
 		timeout = SSHTIMEOUT
 	}
@@ -434,27 +411,24 @@ func (c *BaseComponents) RunLocalCommandHostLog(task *models.Task, command strin
 		status = 0
 	}
 
-	resId, err := c.SaveSql(task, command,duration,status,s,host,sql)
-	if err != nil{
-		return s,resId, err
+	resId, err := c.SaveSql(task, command, duration, status, s, host, sql)
+	if err != nil {
+		return s, resId, err
 	}
 
 	return s, resId, err
 }
 
+func GetMqttHealth(domain *models.Domain) (health string, err error) {
 
-
-
-func GetMqttHealth(domain *models.Domain) (health string, err error){
-
-	confs, err := models.GetConfByConfNameAndProjectId("emqtt",domain.Project.Id)
-	if err != nil{
+	confs, err := models.GetConfByConfNameAndProjectId("emqtt", domain.Project.Id)
+	if err != nil {
 		//fmt.Println("error: ",err)
 		return health, err
 	}
 
-	confValues := make([]*models.ConfValue,0)
-	if err := json.Unmarshal([]byte(confs[0].Value),&confValues); err != nil{
+	confValues := make([]*models.ConfValue, 0)
+	if err := json.Unmarshal([]byte(confs[0].Value), &confValues); err != nil {
 		//fmt.Println("error: ",err)
 		return health, err
 	}
@@ -468,11 +442,10 @@ func GetMqttHealth(domain *models.Domain) (health string, err error){
 			mqttUserName = v.Value
 		}
 
-		if v.Key == "MQTT_PWD"{
+		if v.Key == "MQTT_PWD" {
 			mqttPwd = v.Value
 		}
 	}
-
 
 	opts := mqtt.NewClientOptions().AddBroker(broker)
 	opts = opts.SetClientID(uuid.NewV4().String())
@@ -483,14 +456,13 @@ func GetMqttHealth(domain *models.Domain) (health string, err error){
 
 	mqttClient := mqtt.NewClient(opts)
 	token := mqttClient.Connect()
-	if token.Wait() && token.Error() != nil{
+	if token.Wait() && token.Error() != nil {
 		err = token.Error()
 		return "", err
 	}
 	defer mqttClient.Disconnect(250)
 
-
-	if resIsConn := mqttClient.IsConnected(); resIsConn{
+	if resIsConn := mqttClient.IsConnected(); resIsConn {
 		health = "200"
 	}
 

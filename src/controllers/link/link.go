@@ -11,7 +11,6 @@ type LinkController struct {
 	controllers.BaseController
 }
 
-
 // @Title get link by id
 // @Description get link by id
 // @Param   id      query     int 		true       "link id"
@@ -36,7 +35,6 @@ func (c *LinkController) GetLinkById() {
 	c.SetJson(0, link, "")
 	return
 }
-
 
 // @Title get all link
 // @Description get all link
@@ -63,7 +61,6 @@ func (c *LinkController) GetAllLink() {
 	return
 }
 
-
 // @Title add link by new link
 // @Description add link by new link
 // @Success 0 {object} models.Link
@@ -85,23 +82,23 @@ func (c *LinkController) AddLink() {
 	if link.Id != 0 {
 		if err = models.UpdateLink(o, link); err != nil {
 			models.OrmRollback(o)
-			c.SetJson(1, nil, "修改失败: " + err.Error())
+			c.SetJson(1, nil, "修改失败: "+err.Error())
 			return
 		}
 		if err = models.DeleteLinkRelatedProjects(o, link); err != nil {
 			models.OrmRollback(o)
-			c.SetJson(1, nil, "删除关联失败: " + err.Error())
+			c.SetJson(1, nil, "删除关联失败: "+err.Error())
 			return
 		}
 
 	} else {
 		if _, err = models.AddLink(o, link); err != nil {
 			models.OrmRollback(o)
-			c.SetJson(1, nil, "新增失败:" + err.Error())
+			c.SetJson(1, nil, "新增失败:"+err.Error())
 			return
 		}
 	}
-	
+
 	if err := models.UpdateLinkRelatedProjects(o, link); err != nil {
 		models.OrmRollback(o)
 		c.SetJson(1, nil, "更新关联失败")
@@ -110,14 +107,13 @@ func (c *LinkController) AddLink() {
 
 	if err := models.OrmCommit(o); err != nil {
 		models.OrmRollback(o)
-		c.SetJson(1, nil, "操作失败: " + err.Error())
+		c.SetJson(1, nil, "操作失败: "+err.Error())
 		return
 	} else {
 		c.SetJson(0, link, "操作成功")
 		return
 	}
 }
-
 
 // @Title copy link by link id
 // @Description copy link by link id
@@ -147,14 +143,13 @@ func (c *LinkController) CopyLink() {
 	link.Name = link.Name + " - copy"
 	link.Id = 0
 
-
 	o, _ := models.OrmBegin()
 	if _, err := models.AddLink(o, link); err != nil {
 		models.OrmRollback(o)
 		c.SetJson(1, nil, "复制失败")
 		return
 	}
-	
+
 	if err := models.UpdateLinkRelatedProjects(o, link); err != nil {
 		models.OrmRollback(o)
 		c.SetJson(1, nil, "更新关联失败")
@@ -163,14 +158,13 @@ func (c *LinkController) CopyLink() {
 
 	if err = models.OrmCommit(o); err != nil {
 		models.OrmRollback(o)
-		c.SetJson(1, nil, "操作失败: " + err.Error())
+		c.SetJson(1, nil, "操作失败: "+err.Error())
 		return
 	} else {
 		c.SetJson(0, nil, "操作成功")
 		return
 	}
 }
-
 
 // @Title delete link by link id
 // @Description delete link by link id
@@ -184,7 +178,7 @@ func (c *LinkController) DeleteLink() {
 
 	link, err := models.GetLinkById(linkId)
 	if err != nil {
-		c.SetJson(1, nil, "查询异常: " + err.Error())
+		c.SetJson(1, nil, "查询异常: "+err.Error())
 		return
 	}
 
@@ -192,19 +186,19 @@ func (c *LinkController) DeleteLink() {
 
 	if err = models.DeleteLinkRelatedProjects(o, link); err != nil {
 		models.OrmRollback(o)
-		c.SetJson(1, nil, "删除关联失败: " + err.Error())
+		c.SetJson(1, nil, "删除关联失败: "+err.Error())
 		return
 	}
 
 	if err = models.DeleteLink(o, link); err != nil {
 		models.OrmRollback(o)
-		c.SetJson(1, nil, "删除失败: " + err.Error())
+		c.SetJson(1, nil, "删除失败: "+err.Error())
 		return
 	}
 
 	if err = models.OrmCommit(o); err != nil {
 		models.OrmRollback(o)
-		c.SetJson(1, nil, "操作失败: " + err.Error())
+		c.SetJson(1, nil, "操作失败: "+err.Error())
 		return
 	} else {
 		c.SetJson(0, nil, "操作成功")

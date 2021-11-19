@@ -1,7 +1,7 @@
 #docker 17.05+版本支持
 #sudo docker build -t  akgo .
 #sudo docker run --name akgo -p 8192:8192  --restart always  -d   akgo:latest 
-FROM golang:1.12.4-alpine3.9 as golang
+FROM golang:1.15.15-alpine3.14 as golang
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories && \
     apk update && \
     apk add  bash gcc musl-dev && \
@@ -11,11 +11,12 @@ ADD control /data/akgo/control
 WORKDIR /data/akgo/
 RUN ./control build
 
-FROM node:11.14.0-alpine as node 
+# FROM akoss-vue:v1.0.1 as node
+FROM node:11.14.0-alpine as node
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
     apk update --no-cache && \
-    apk add  --no-cache --virtual .gyp && \ 
-    rm -rf /var/cache/apk/*   /tmp/* 
+    apk add  --no-cache --virtual .gyp && \
+    rm -rf /var/cache/apk/*   /tmp/*
 ADD ./ /data/akgo/
 WORKDIR /data/akgo/vue-akgo
 RUN npm config set strict-ssl false && \
@@ -26,14 +27,10 @@ RUN npm config set strict-ssl false && \
     npm install node-sass sass-loader --unsafe-perm  && \
     npm install --unsafe-perm && \
     npm install vuex-persistedstate --save
-
-#RUN npm config set unsafe_perm true && \
-#    npm config set strict-ssl false && \
-#    npm install --unsafe-perm
-RUN npm run build 
+RUN npm run build
 
 FROM alpine:3.9.3
-ENV TZ='Asia/Shanghai' 
+ENV TZ='Asia/Shanghai'
 RUN TERM=linux && export TERM
 USER root 
 COPY src/file /data/akgo/src/file

@@ -9,7 +9,6 @@ type BackupController struct {
 	controllers.BaseController
 }
 
-
 // @Title get backup path
 // @Description get backup path
 // @Success 0 back path string
@@ -25,7 +24,6 @@ func (c *BackupController) BackupAkgoSql() {
 	c.SetJson(0, backPath, "")
 	return
 }
-
 
 // @Title get backup path
 // @Description get backup path
@@ -46,4 +44,3 @@ func (c *BackupController) GetService() {
 	// c.SetJson(0, data, backPath)
 	return
 }
-

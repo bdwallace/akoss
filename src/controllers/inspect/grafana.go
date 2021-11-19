@@ -13,8 +13,7 @@ type GrafanaController struct {
 	controllers.BaseController
 }
 
-
-// @Title 添加 
+// @Title 添加
 // @Description add the inspectgrafana
 // @Param   name 			 query     string   	true         "inspectgrafana name"
 // @Param   private_ip 		 query     string   	true         "private ip"
@@ -25,7 +24,7 @@ type GrafanaController struct {
 // @Failure 1 添加 inspectgrafana 失败
 // @Failure 2 User not found
 // @router /inspectgrafana [post]
-func (c *GrafanaController)PostInspectGrafana(){
+func (c *GrafanaController) PostInspectGrafana() {
 
 	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var inspectgrafana models.InspectGrafana
@@ -58,7 +57,6 @@ func (c *GrafanaController)PostInspectGrafana(){
 	return
 }
 
-
 // @Title 获取 inspectgrafana by id
 // @Description get the inspectgrafana by id
 // @Param   id      query     int   	true     "inspectgrafana id"
@@ -66,26 +64,23 @@ func (c *GrafanaController)PostInspectGrafana(){
 // @Failure 1 获取 inspectgrafana by id 失败
 // @Failure 2 User not found
 // @router /inspectgrafana/id/ [get]
-func (c *GrafanaController)GetInspectGrafanaById() {
+func (c *GrafanaController) GetInspectGrafanaById() {
 
 	id, err := c.GetInt("id")
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "获取 id 失败")
 		return
 	}
 
 	resInspectGrafana, err := models.GetInspectGrafanaById(id)
-	if err != nil{
-		c.SetJson(1, err,"获取 inspectgrafana by id失败")
+	if err != nil {
+		c.SetJson(1, err, "获取 inspectgrafana by id失败")
 		return
 	}
 
-	c.SetJson(0,resInspectGrafana,"")
+	c.SetJson(0, resInspectGrafana, "")
 	return
 }
-
-
-
 
 // @Title 删除 inspectgrafana inspectgrafana by id
 // @Description update the inspectgrafana inspectgrafana by id
@@ -94,28 +89,24 @@ func (c *GrafanaController)GetInspectGrafanaById() {
 // @Failure 1 删除 inspectgrafana inspectgrafana by id 失败
 // @Failure 2 User not found
 // @router /inspectgrafana/id/ [delete]
-func (c *GrafanaController)DeleteInspectGrafanaById(){
-
+func (c *GrafanaController) DeleteInspectGrafanaById() {
 
 	id, err := c.GetInt("id")
-	if err != nil{
-		c.SetJson(1,err,"获取 id 失败")
+	if err != nil {
+		c.SetJson(1, err, "获取 id 失败")
 		return
 	}
 
 	_, err = models.DeleteInspectGrafanaById(id)
 	if err != nil {
-		c.SetJson(1,err,"删除 inspectgrafana 失败")
+		c.SetJson(1, err, "删除 inspectgrafana 失败")
 		return
 	}
 
-	c.SetJson(0,nil,"")
+	c.SetJson(0, nil, "")
 	return
 
 }
-
-
-
 
 // @Title 获取所有 inspectgrafana
 // @Description get all the inspectgrafana
@@ -123,7 +114,7 @@ func (c *GrafanaController)DeleteInspectGrafanaById(){
 // @Failure 1 获取所有 inspectgrafana 失败
 // @Failure 2 User not found
 // @router /inspectgrafana/list/ [get]
-func (c *GrafanaController)GetAllInspectGrafana() {
+func (c *GrafanaController) GetAllInspectGrafana() {
 
 	page, _ := c.GetInt("page", 0)
 	start := 0
@@ -133,8 +124,8 @@ func (c *GrafanaController)GetAllInspectGrafana() {
 	}
 
 	count, resInspectGrafanas, err := models.GetAllInspectGrafanaPage(start, length)
-	if err != nil{
-		c.SetJson(1,err,"获取所有 InspectGrafana 失败")
+	if err != nil {
+		c.SetJson(1, err, "获取所有 InspectGrafana 失败")
 		return
 	}
 
@@ -142,32 +133,24 @@ func (c *GrafanaController)GetAllInspectGrafana() {
 	return
 }
 
-
-
-
-
 // @Title 获取所有 inspectgrafana
 // @Description get all the inspectgrafana
 // @Success 0 {object} models.InspectGrafana
 // @Failure 1 获取所有 inspectgrafana 失败
 // @Failure 2 User not found
 // @router /inspectgrafana/exec/ [get]
-func (c *GrafanaController)ExecAllInspectGrafana() {
-
+func (c *GrafanaController) ExecAllInspectGrafana() {
 
 	resInspectGrafanas, err := models.GetAllInspectGrafana()
-	if err != nil{
-		c.SetJson(1,err,"获取所有 InspectGrafana 失败")
+	if err != nil {
+		c.SetJson(1, err, "获取所有 InspectGrafana 失败")
 		return
 	}
 
 	for _, v := range resInspectGrafanas {
 		inspect.Grafana(v)
 	}
-	
 
-	c.SetJson(0,nil,"")
+	c.SetJson(0, nil, "")
 	return
 }
-
-

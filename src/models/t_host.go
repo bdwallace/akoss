@@ -12,25 +12,25 @@ import (
 )
 
 type Host struct {
-	Id        		int    				`orm:"column(id);pk;auto"`
-	Name      		string 				`orm:"column(name);size(100);unique"`
-	PrivateIp 		string 				`orm:"column(private_ip);size(100);unique"`
-	PublicIp  		string 				`orm:"column(public_ip);size(100)"`
-	UseIp			string				`orm:"column(use_ip)"`
-	InstanceId 		string 				`orm:"column(instance_id);size(200)"`	  //  ++
-	InstanceType 	string 				`orm:"column(instance_type);size(200)"`	  //  ++
-	IsDel			int					`orm:"column(is_del),default(0)"`
-	Region     		string 				`orm:"column(region);size(200)"`			// ++
-	StartTime  		string 				`orm:"column(start_time);size(100)"`		// ++
-	EndTime    		string 				`orm:"column(end_time);size(100)"`		// ++
+	Id           int    `orm:"column(id);pk;auto"`
+	Name         string `orm:"column(name);size(100);unique"`
+	PrivateIp    string `orm:"column(private_ip);size(100);unique"`
+	PublicIp     string `orm:"column(public_ip);size(100)"`
+	UseIp        string `orm:"column(use_ip)"`
+	InstanceId   string `orm:"column(instance_id);size(200)"`   //  ++
+	InstanceType string `orm:"column(instance_type);size(200)"` //  ++
+	IsDel        int    `orm:"column(is_del),default(0)"`
+	Region       string `orm:"column(region);size(200)"`     // ++
+	StartTime    string `orm:"column(start_time);size(100)"` // ++
+	EndTime      string `orm:"column(end_time);size(100)"`   // ++
 
-	CreatedAt              time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
-	UpdatedAt              time.Time `orm:"column(updated_at);type(datetime);auto_now;"`
+	CreatedAt time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
+	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);auto_now;"`
 
-	Project 		*Project			`orm:"rel(fk)"`
-	Services 		[]*Service			`orm:"reverse(many)"`
-
+	Project  *Project   `orm:"rel(fk)"`
+	Services []*Service `orm:"reverse(many)"`
 }
+
 // UsePublic 0:表示不使用公网IP,1:表示使用公网IP
 /*const(
 	// 设置表信息
@@ -45,22 +45,21 @@ type Host struct {
 */
 // hostMainTableName,serviceProjectForeignKeyName,hostProjectfield,projectMainTableName,projectMainField)
 
-func init(){
-	orm.RegisterModelWithPrefix("t_",new(Host))
+func init() {
+	orm.RegisterModelWithPrefix("t_", new(Host))
 }
-
 
 /*
 	创建 project 外键约束
 */
 
-func (c * SqlClass)HostCreateForeignKeyProject() {
+func (c *SqlClass) HostCreateForeignKeyProject() {
 
 	// 拼接两张表外键约束sql
-	addForeignSqlStr := fmt.Sprintf( "alter table %s ADD CONSTRAINT %s foreign key (%s) references %s(%s);",hostTableName,hostProjectForeignKeyName,projectId,projectTableName,primaryKey)
+	addForeignSqlStr := fmt.Sprintf("alter table %s ADD CONSTRAINT %s foreign key (%s) references %s(%s);", hostTableName, hostProjectForeignKeyName, projectId, projectTableName, primaryKey)
 
 	err := c.CreateForeignKey(addForeignSqlStr)
-	if err != nil{
+	if err != nil {
 		if strings.Index(err.Error(), errDuplicate) != -1 {
 			beego.Info("key is duplicate")
 		} else {
@@ -71,8 +70,6 @@ func (c * SqlClass)HostCreateForeignKeyProject() {
 	}
 }
 
-
-
 //////  host curd
 
 func AddHost(h *Host) (id int64, err error) {
@@ -80,14 +77,12 @@ func AddHost(h *Host) (id int64, err error) {
 	o := orm.NewOrm()
 
 	id, err = o.Insert(h)
-	if err != nil{
+	if err != nil {
 		return
 	}
 
 	return
 }
-
-
 
 /*
 	查询所有 host
@@ -96,16 +91,14 @@ func GetAllHost(projectId int) (h []*Host, err error) {
 
 	o := orm.NewOrm()
 
-	if _, err = o.QueryTable(hostTableName).Filter("project_id",projectId).Filter("is_del",0) .RelatedSel().All(&h);err != nil{
+	if _, err = o.QueryTable(hostTableName).Filter("project_id", projectId).Filter("is_del", 0).RelatedSel().All(&h); err != nil {
 		return nil, err
 	}
 
 	return
 }
 
-
-
-func SearchHosts(projectId int, awsRegion string, searchText string)(h []*Host, err error){
+func SearchHosts(projectId int, awsRegion string, searchText string) (h []*Host, err error) {
 	base := fmt.Sprintf("SELECT `T0`.`id`, `T0`.`name`, `T0`.`private_ip`, `T0`.`public_ip`, `T0`.`use_ip`, `T0`.`region`, `T0`.`instance_id`,  `T0`.`instance_type`, `T0`.`start_time`, `T0`.`end_time` FROM `%s` `T0`", hostTableName)
 
 	where := "WHERE is_del=0 AND "
@@ -137,7 +130,6 @@ func SearchHosts(projectId int, awsRegion string, searchText string)(h []*Host, 
 	return
 }
 
-
 /*
 	通过 id  查询 host
 */
@@ -156,13 +148,13 @@ func GetHostById(id int) (h *Host, err error) {
 func GetHostByProjectId(project_id int) (h []*Host, err error) {
 
 	o := orm.NewOrm()
-	_ ,err = o.QueryTable(hostTableName).Filter("project_id",project_id).RelatedSel().All(&h)
+	_, err = o.QueryTable(hostTableName).Filter("project_id", project_id).RelatedSel().All(&h)
 	if err != nil {
-		fmt.Println("error: o.QueryTable(hostMainTableName) by project_id  ",err)
+		fmt.Println("error: o.QueryTable(hostMainTableName) by project_id  ", err)
 		return nil, err
 	}
 
-	return h,err
+	return h, err
 
 }
 
@@ -172,29 +164,24 @@ func GetHostByProjectId(project_id int) (h []*Host, err error) {
 func GetHostByUseIp(useIp string) (h *Host, err error) {
 
 	o := orm.NewOrm()
-	err = o.QueryTable(hostTableName).Filter("use_ip",useIp).RelatedSel().One(&h)
+	err = o.QueryTable(hostTableName).Filter("use_ip", useIp).RelatedSel().One(&h)
 	if err != nil {
-		fmt.Println("error: o.QueryTable(hostMainTableName) by project_id  ",err)
+		fmt.Println("error: o.QueryTable(hostMainTableName) by project_id  ", err)
 		return nil, err
 	}
 
-	return h,err
+	return h, err
 }
 
-
-
-
-
-func UpdateHostById(h *Host)(id int64, err error){
+func UpdateHostById(h *Host) (id int64, err error) {
 
 	o := orm.NewOrm()
 
-	if id, err = o.Update(h); err != nil{
+	if id, err = o.Update(h); err != nil {
 		return
 	}
 	return
 }
-
 
 func UpdateHostByHost(m *Host) (err error) {
 	o := orm.NewOrm()
@@ -202,11 +189,11 @@ func UpdateHostByHost(m *Host) (err error) {
 	return
 }
 
-func DeleteHostById(id int)(err error){
+func DeleteHostById(id int) (err error) {
 
 	o := orm.NewOrm()
 
-	h := &Host{Id:id}
+	h := &Host{Id: id}
 	if err := o.Read(h); err != nil {
 		return err
 	}
@@ -217,7 +204,6 @@ func DeleteHostById(id int)(err error){
 
 	return
 }
-
 
 func GetHostRelated(host *Host) (*Host, error) {
 
@@ -230,7 +216,6 @@ func GetHostRelated(host *Host) (*Host, error) {
 	return host, nil
 }
 
-
 func GetHostRelatedProject(host *Host) (err error) {
 
 	o := orm.NewOrm()
@@ -242,15 +227,11 @@ func GetHostRelatedProject(host *Host) (err error) {
 	return
 }
 
-
 func GetHostStopCheck(projectId int) (m []*Host, err error) {
 	o := orm.NewOrm()
 	_, err = o.QueryTable(hostTableName).Filter("project_id", projectId).Exclude("instance_id__exact", "").Exclude("start_time__exact", "").Exclude("end_time__exact", "").All(&m)
 	return
 }
-
-
-
 
 func SetHostStopTime(m []*Host) (err error) {
 	o := orm.NewOrm()
@@ -268,28 +249,25 @@ func SetHostStopTime(m []*Host) (err error) {
 	return
 }
 
-
-
-func SearchServiceAndHost(hostUseIP, class string, projectId int) (confRelaltion[]*response.ConfRelation,err error){
+func SearchServiceAndHost(hostUseIP, class string, projectId int) (confRelaltion []*response.ConfRelation, err error) {
 
 	sql := "select s.id, s.name, sh.t_host_id, h.use_ip from t_service as s INNER JOIN t_service_t_hosts as sh on sh.t_service_id = s.id INNER JOIN t_host as h on h.id = sh.t_host_id"
-	if hostUseIP != "" && class != ""{
-		sql = fmt.Sprintf("%s where s.class = '%s' and h.use_ip = '%s';\n",sql,class,hostUseIP)
+	if hostUseIP != "" && class != "" {
+		sql = fmt.Sprintf("%s where s.class = '%s' and h.use_ip = '%s';\n", sql, class, hostUseIP)
 	}
 
-	if hostUseIP != "" && class == ""{
-		sql = fmt.Sprintf("%s where h.use_ip='%s' and s.project_id = %d;",sql,hostUseIP,projectId)
+	if hostUseIP != "" && class == "" {
+		sql = fmt.Sprintf("%s where h.use_ip='%s' and s.project_id = %d;", sql, hostUseIP, projectId)
 	}
 
-	if class != "" && hostUseIP == ""{
-		sql = fmt.Sprintf("%s where s.class='%s' and s.project_id = %d;",sql,class,projectId)
+	if class != "" && hostUseIP == "" {
+		sql = fmt.Sprintf("%s where s.class='%s' and s.project_id = %d;", sql, class, projectId)
 	}
 
 	o := orm.NewOrm()
-	if _, err := o.Raw(sql).QueryRows(&confRelaltion); err != nil{
+	if _, err := o.Raw(sql).QueryRows(&confRelaltion); err != nil {
 		return nil, err
 	}
-	return confRelaltion,nil
-
+	return confRelaltion, nil
 
 }

@@ -6,8 +6,6 @@ import (
 	"models"
 )
 
-
-
 // @Title restart
 // @Description restart
 // @Param   id       query    	 int   	 true      "service id"
@@ -17,8 +15,7 @@ import (
 // @Failure 1 restart 失败
 // @Failure 2 User not found
 // @router /walle/restart/ [post]
-func (c *WalleController)Restart() {
-
+func (c *WalleController) Restart() {
 
 	//beego.Info(string(c.Ctx.Input.RequestBody))
 	// var domain *models.Domain
@@ -37,7 +34,6 @@ func (c *WalleController)Restart() {
 
 	d := new(components.BaseDocker)
 	d.SetBaseComponents(s)
-
 
 	err = d.Restart(operationRecord)
 	if err != nil {

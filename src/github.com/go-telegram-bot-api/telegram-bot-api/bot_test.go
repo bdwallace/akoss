@@ -644,7 +644,7 @@ func ExampleWebhookHandler() {
 		log.Printf("[Telegram callback failed]%s", info.LastErrorMessage)
 	}
 
-	http.HandleFunc("/" + bot.Token, func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/"+bot.Token, func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%+v\n", bot.HandleUpdate(w, r))
 	})
 

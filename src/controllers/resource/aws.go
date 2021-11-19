@@ -15,8 +15,6 @@ type ResourceController struct {
 	controllers.BaseController
 }
 
-
-
 // @Title AWS 资源监控
 // @Description AWS 资源监控
 // @Param   awsRegion      query     string   	true     "awsRegion"
@@ -32,8 +30,8 @@ func (c *ResourceController) Aws() {
 	server := c.GetString("server")
 
 	project, err := models.GetProjectById(c.User.ProjectId)
-	if err != nil{
-		fmt.Println("error: GetProjectById ",err)
+	if err != nil {
+		fmt.Println("error: GetProjectById ", err)
 		c.SetJson(1, err, "获取 project by id 失败")
 		return
 	}
@@ -52,9 +50,9 @@ func (c *ResourceController) Aws() {
 			beego.Error(err)
 			c.SetJson(501, nil, "获取EC2Info失败")
 		}
-		resEc2InstanceInfos := make([]*aws.EC2InstanceInfo,0)
-		for _, v := range myAws.SourceInfo.EC2Info.EC2Reservations{
-			resEc2InstanceInfos = append(resEc2InstanceInfos,v.Instances...)
+		resEc2InstanceInfos := make([]*aws.EC2InstanceInfo, 0)
+		for _, v := range myAws.SourceInfo.EC2Info.EC2Reservations {
+			resEc2InstanceInfos = append(resEc2InstanceInfos, v.Instances...)
 		}
 
 		c.SetJson(200, resEc2InstanceInfos, "")
@@ -109,7 +107,6 @@ func (c *ResourceController) Aws() {
 	}
 	return
 }
-
 
 // @Title AWS 资源监控
 // @Description AWS 资源监控

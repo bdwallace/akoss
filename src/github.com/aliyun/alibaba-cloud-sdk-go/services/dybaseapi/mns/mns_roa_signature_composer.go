@@ -23,7 +23,6 @@ import (
  * limitations under the License.
  */
 
-
 func signMnsRoaRequest(request requests.AcsRequest, signer auth.Signer) (err error) {
 	completeROASignParams(request, signer)
 	stringToSign := buildRoaStringToSign(request)
@@ -107,4 +106,3 @@ func appendIfContain(sourceMap map[string]string, target *bytes.Buffer, key, sep
 		target.WriteString(separator)
 	}
 }
-

@@ -13,7 +13,7 @@ type MarshalerUnmarshaler interface {
 
 //easyjson:json
 type NestedMarshaler struct {
-	Value MarshalerUnmarshaler
+	Value  MarshalerUnmarshaler
 	Value2 int
 }
 
@@ -28,4 +28,3 @@ func (s *StructWithMarshaler) UnmarshalEasyJSON(w *jlexer.Lexer) {
 func (s *StructWithMarshaler) MarshalEasyJSON(w *jwriter.Writer) {
 	w.Int(s.Value)
 }
-

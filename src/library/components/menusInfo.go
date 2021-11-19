@@ -36,21 +36,18 @@ func reverse(m []MenusAuth) []MenusAuth {
 }
 */
 
-
-const(
-	IconHome = "fa-home"
-	IconProject = "el-icon-menu"
-	IconDeploy = "fa-table"
+const (
+	IconHome     = "fa-home"
+	IconProject  = "el-icon-menu"
+	IconDeploy   = "fa-table"
 	IconResource = "el-icon-menu"
-	IconCrontab = "el-icon-menu"
-	IconFast = "el-icon-share"
-	IconUser = "el-icon-setting"
+	IconCrontab  = "el-icon-menu"
+	IconFast     = "el-icon-share"
+	IconUser     = "el-icon-setting"
 )
 
-
-
 //
-func FindRootMenu(menus []MenusAuth)(rootNode MenusAuth){
+func FindRootMenu(menus []MenusAuth) (rootNode MenusAuth) {
 
 	for i := 0; i < len(menus); i++ {
 		if menus[i].ParentId == 0 {
@@ -60,9 +57,8 @@ func FindRootMenu(menus []MenusAuth)(rootNode MenusAuth){
 	return rootNode
 }
 
-
 // 递归
-func FindChild(menus *[]MenusAuth, m *MenusAuth)(Node *MenusAuth){
+func FindChild(menus *[]MenusAuth, m *MenusAuth) (Node *MenusAuth) {
 	menusLen := len(*menus)
 	if menusLen == 0 {
 		return nil
@@ -71,18 +67,17 @@ func FindChild(menus *[]MenusAuth, m *MenusAuth)(Node *MenusAuth){
 	m.Icon = MenuIcon(m)
 	for i := 0; i < menusLen; i++ {
 		if m.Id == (*menus)[i].ParentId {
-			child := FindChild(menus,&(*menus)[i])
-			if child == nil{
+			child := FindChild(menus, &(*menus)[i])
+			if child == nil {
 				return
 			}
-			m.Child = append(m.Child,(*menus)[i])
+			m.Child = append(m.Child, (*menus)[i])
 		}
 	}
-	respMenus := make([]MenusAuth,0)
-	copy(respMenus,m.Child)
+	respMenus := make([]MenusAuth, 0)
+	copy(respMenus, m.Child)
 	return m
 }
-
 
 func FindDeployList(menus *[]MenusAuth, u models.User) {
 	for i := 0; i < len(*menus); i++ {
@@ -93,7 +88,7 @@ func FindDeployList(menus *[]MenusAuth, u models.User) {
 	}
 }
 
-func MenuIcon(m *MenusAuth) (icon string){
+func MenuIcon(m *MenusAuth) (icon string) {
 	switch m.Path {
 	case "/home":
 		icon = IconHome

@@ -1,29 +1,27 @@
 package inspect
 
 import (
-	"strings"
-	"library/bot"
-	"library/common"
-	"models"
 	"context"
 	_ "flag"
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/chromedp/cdproto/cdp"
-	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/cdproto/emulation"
+	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/cdproto/page"
 	"github.com/chromedp/chromedp"
+	"library/bot"
+	"library/common"
+	"models"
+	"strings"
 	// "github.com/chromedp/chromedp/client"
 	// "io/ioutil"
 	"math"
 	"time"
 )
 
-
-
 func Grafana(grafana *models.InspectGrafana) {
-	parent, cancel := chromedp.NewExecAllocator(context.Background(), 
+	parent, cancel := chromedp.NewExecAllocator(context.Background(),
 		chromedp.Flag("window-size", "1280,1024"),
 		chromedp.Flag("headless", "true"),
 	)
@@ -122,7 +120,7 @@ func Grafana(grafana *models.InspectGrafana) {
 	// if err := telegram.SendPhotoFile("mojotv_full_screen_shot.png"); err != nil {
 	// 	beego.Error("send photo err: ", err)
 	// }
-	timeStr:=time.Now().Format("2006-01-02 15:04:05")
+	timeStr := time.Now().Format("2006-01-02 15:04:05")
 	if err := telegram.SendPhoto(buf, fmt.Sprintf("%s %s", timeStr, grafana.Name)); err != nil {
 		beego.Error("send photo err: ", err)
 	}

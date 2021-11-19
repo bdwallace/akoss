@@ -11,30 +11,28 @@ import (
 )
 
 type CrontabLog struct {
-	Id          int       		`orm:"column(id);auto"`
-	CrontabName string    		`orm:"column(crontab_name)"`
-	Auto        int       		`orm:"column(auto)"`
-	Status      int16     		`orm:"column(status)"`
-	Result      string    		`orm:"column(result);type(text)"`
+	Id          int    `orm:"column(id);auto"`
+	CrontabName string `orm:"column(crontab_name)"`
+	Auto        int    `orm:"column(auto)"`
+	Status      int16  `orm:"column(status)"`
+	Result      string `orm:"column(result);type(text)"`
 
-	CreatedAt   time.Time 		`orm:"column(created_at);type(datetime);auto_now_add;"`
-	UpdatedAt   time.Time 		`orm:"column(updated_at);type(datetime);auto_now;"`
+	CreatedAt time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
+	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);auto_now;"`
 
-	Crontab 	*Crontab		`orm:"rel(fk)"`
+	Crontab *Crontab `orm:"rel(fk)"`
 }
-
-
 
 /*
 	创建 crontab 外键约束
 */
-func (c * SqlClass)CrontabLogCreateForeignKeyCrontab() {
+func (c *SqlClass) CrontabLogCreateForeignKeyCrontab() {
 
 	// 拼接两张表外键约束sql
-	addForeignSqlStr := fmt.Sprintf( "alter table %s ADD CONSTRAINT %s foreign key (%s) references %s(%s);",crontabLogTableName,crontabLogForCrontabForeignKeyName,crontabId,crontabTableName,primaryKey)
+	addForeignSqlStr := fmt.Sprintf("alter table %s ADD CONSTRAINT %s foreign key (%s) references %s(%s);", crontabLogTableName, crontabLogForCrontabForeignKeyName, crontabId, crontabTableName, primaryKey)
 
 	err := c.CreateForeignKey(addForeignSqlStr)
-	if err != nil{
+	if err != nil {
 		if strings.Index(err.Error(), errDuplicate) != -1 {
 			beego.Info("key is duplicate")
 		} else {
@@ -45,8 +43,6 @@ func (c * SqlClass)CrontabLogCreateForeignKeyCrontab() {
 	}
 }
 
-
-
 // Auto 1：为自动，0：手动
 
 /*
@@ -55,7 +51,7 @@ func (t *CrontabLog) TableName() string {
 }
 */
 func init() {
-	orm.RegisterModelWithPrefix("t_",new(CrontabLog))
+	orm.RegisterModelWithPrefix("t_", new(CrontabLog))
 }
 
 // AddSystem insert a new System into database and returns
@@ -86,16 +82,14 @@ func GetCrontabLogAllPage(start int, length int) (count int64, m []*CrontabLog) 
 	return
 }
 
-
-
-func GetCrontabLogByCrontabId(crontabId int)(c []CrontabLog, err error) {
+func GetCrontabLogByCrontabId(crontabId int) (c []CrontabLog, err error) {
 	o := orm.NewOrm()
-	_ ,err = o.QueryTable(crontabLogTableName).Filter("crontab_id",crontabId).RelatedSel().All(&c)
+	_, err = o.QueryTable(crontabLogTableName).Filter("crontab_id", crontabId).RelatedSel().All(&c)
 	if err != nil {
 		return nil, err
 	}
 
-	return c,nil
+	return c, nil
 }
 
 // GetSystemById retrieves System by Id. Returns error if
@@ -142,5 +136,3 @@ func DeleteCrontabLog(id int) (err error) {
 	}
 	return
 }
-
-

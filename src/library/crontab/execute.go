@@ -30,7 +30,7 @@ func Execute(id int, auto int) (err error) {
 
 	var crontabLog models.CrontabLog
 	crontabLog.CrontabName = crontab.Name
-	crontabLog.Crontab = &models.Crontab{Id:crontab.Id}
+	crontabLog.Crontab = &models.Crontab{Id: crontab.Id}
 	crontabLog.CreatedAt = crontab.UpdatedAt
 	crontabLog.Status = crontab.Status
 	crontabLog.Result = crontab.Result

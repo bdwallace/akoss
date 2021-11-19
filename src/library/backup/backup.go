@@ -20,7 +20,6 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
-
 type Mysql struct {
 	Host     string
 	Port     string
@@ -30,9 +29,7 @@ type Mysql struct {
 	Table    string
 }
 
-
 func BackupSql() (backPath string, err error) {
-
 
 	var mysql Mysql
 	mysql.Host = beego.AppConfig.String("mysqlhost")
@@ -84,7 +81,6 @@ func BackupSql() (backPath string, err error) {
 	return
 }
 
-
 func (c *Mysql) Backup(sqlPath string) (err error) {
 	var cmd *exec.Cmd
 	var cmd_str string
@@ -109,25 +105,22 @@ func (c *Mysql) Backup(sqlPath string) (err error) {
 
 	_, err = ioutil.ReadAll(stdout)
 	if err != nil {
-		fmt.Println("error: Backup 获取命令结果失败  ",err)
+		fmt.Println("error: Backup 获取命令结果失败  ", err)
 		return err
 	}
 
 	if err := cmd.Wait(); err != nil {
-		fmt.Println("error: Backup 等待任务执行完  ",err)
+		fmt.Println("error: Backup 等待任务执行完  ", err)
 		return err
 	}
 
 	return
 }
 
-
-
-
 func BackupService(serviceClass string) (data []map[string]interface{}, backPath string, err error) {
-	data,err = GetService(serviceClass)
-	if err != nil{
-		return nil,"",err
+	data, err = GetService(serviceClass)
+	if err != nil {
+		return nil, "", err
 	}
 
 	f := excelize.NewFile()
@@ -159,7 +152,6 @@ func BackupService(serviceClass string) (data []map[string]interface{}, backPath
 		cell, _ = excelize.CoordinatesToCellName(4, x)
 		f.SetCellValue("Sheet1", cell, row["PsImage3"])
 
-
 		style, _ := f.NewStyle(`{"alignment":{"wrap_text":true}}`)
 
 		cell, _ = excelize.CoordinatesToCellName(5, x)
@@ -173,7 +165,6 @@ func BackupService(serviceClass string) (data []map[string]interface{}, backPath
 		cell, _ = excelize.CoordinatesToCellName(7, x)
 		f.SetCellValue("Sheet1", cell, row["ServiceStatus3"])
 		f.SetCellStyle("Sheet1", cell, cell, style)
-
 
 	}
 
@@ -220,31 +211,29 @@ func BackupService(serviceClass string) (data []map[string]interface{}, backPath
 	return
 }
 
-type ServiceRelatedProject struct{
-	ServiceName string
-	ServiceTag string
+type ServiceRelatedProject struct {
+	ServiceName               string
+	ServiceTag                string
 	ServiceRelatedProjectName string
 }
 
-
-
-func GetServiceTag(serviceClass string) (serviceObj [][]ServiceRelatedProject,  err error) {
+func GetServiceTag(serviceClass string) (serviceObj [][]ServiceRelatedProject, err error) {
 
 	serviceNameList := new(orm.ParamsList)
-	if serviceClass	== "java" {
+	if serviceClass == "java" {
 		serviceNameList, err = models.GetServiceClassJava()
-	}else {
+	} else {
 		serviceNameList, err = models.GetServiceClassOther()
 	}
-	if err != nil{
-		return nil,err
+	if err != nil {
+		return nil, err
 	}
 
 	wildcardServiceName := make(map[string]int, 0)
 	for _, serviceName := range *serviceNameList {
 		strServiceName := serviceName.(string)
-		if strings.Index(strServiceName,"_") > 0{
-			serviceName = strings.Replace(strServiceName,"_","-",-1)
+		if strings.Index(strServiceName, "_") > 0 {
+			serviceName = strings.Replace(strServiceName, "_", "-", -1)
 		}
 		wildcardServiceName[serviceName.(string)] += 1
 	}
@@ -255,34 +244,32 @@ func GetServiceTag(serviceClass string) (serviceObj [][]ServiceRelatedProject,  
 
 		services, _ = models.GetServiceByServiceName(serviceName)
 		oldServiceName := ""
-		if num == 2 && strings.Index(serviceName,"-") > 0{
-			oldServiceName = strings.Replace(serviceName,"-","_",-1)
+		if num == 2 && strings.Index(serviceName, "-") > 0 {
+			oldServiceName = strings.Replace(serviceName, "-", "_", -1)
 		}
 		services2, _ := models.GetServiceByServiceName(oldServiceName)
 		services = append(services, services2...)
 
-		sameNameOfServices := make([]ServiceRelatedProject,0)
+		sameNameOfServices := make([]ServiceRelatedProject, 0)
 
 		for _, s := range services {
-			serviceRelatedProjectOjb := ServiceRelatedProject {
-				ServiceName:s.Name,
-				ServiceTag:s.Tag,
-				ServiceRelatedProjectName:s.Project.Name,
+			serviceRelatedProjectOjb := ServiceRelatedProject{
+				ServiceName:               s.Name,
+				ServiceTag:                s.Tag,
+				ServiceRelatedProjectName: s.Project.Name,
 			}
 
 			if serviceName == "" {
 				fmt.Println("error:  serviceName == nil")
 			}
 
-			sameNameOfServices = append(sameNameOfServices,serviceRelatedProjectOjb)
+			sameNameOfServices = append(sameNameOfServices, serviceRelatedProjectOjb)
 		}
 		serviceObj = append(serviceObj, sameNameOfServices)
 	}
 
 	return
 }
-
-
 
 //
 //func GetServiceTag(serviceClass string) (serviceObj [][]ServiceRelatedProject,  err error) {
@@ -376,21 +363,20 @@ func GetServiceTag(serviceClass string) (serviceObj [][]ServiceRelatedProject,  
 //	return
 //}
 
-
-func GetService(serviceClass string) (data []map[string]interface{},err error) {
+func GetService(serviceClass string) (data []map[string]interface{}, err error) {
 
 	serviceNameList := new(orm.ParamsList)
-	if serviceClass	== "java" {
+	if serviceClass == "java" {
 		serviceNameList, err = models.GetServiceClassJava()
-	}else {
+	} else {
 		serviceNameList, err = models.GetServiceClassOther()
 	}
-	if err != nil{
-		return nil,err
+	if err != nil {
+		return nil, err
 	}
 
 	for _, serviceName := range *serviceNameList {
-		services := make([]*models.Service,0)
+		services := make([]*models.Service, 0)
 		if value, ok := serviceName.(string); ok {
 			services, _ = models.GetServiceByServiceName(value)
 		}
@@ -407,8 +393,8 @@ func GetService(serviceClass string) (data []map[string]interface{},err error) {
 
 		for _, service := range services {
 			service, err := models.GetServiceAllRelated(service)
-			if err != nil{
-				return nil,err
+			if err != nil {
+				return nil, err
 			}
 
 			if len(service.Hosts) == 0 {
@@ -443,4 +429,3 @@ func GetService(serviceClass string) (data []map[string]interface{},err error) {
 
 	return
 }
-

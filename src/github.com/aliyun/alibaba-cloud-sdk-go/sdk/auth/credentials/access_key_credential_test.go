@@ -10,7 +10,7 @@ func TestAccessKeyCredential(t *testing.T) {
 	c := NewAccessKeyCredential("accesskeyid", "accesskeysecret")
 	assert.Equal(t, "accesskeyid", c.AccessKeyId)
 	assert.Equal(t, "accesskeysecret", c.AccessKeySecret)
-	b:= NewBaseCredential("accesskeyid", "accesskeysecret")
+	b := NewBaseCredential("accesskeyid", "accesskeysecret")
 	assert.Equal(t, "accesskeyid", b.AccessKeyId)
 	assert.Equal(t, "accesskeysecret", b.AccessKeySecret)
 	a := b.ToAccessKeyCredential()

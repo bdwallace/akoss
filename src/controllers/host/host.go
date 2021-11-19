@@ -13,7 +13,6 @@ type HostController struct {
 	controllers.BaseController
 }
 
-
 // @Title 添加 host
 // @Description add the host
 // @Param   name 			 query     string   	true         "host name"
@@ -25,7 +24,7 @@ type HostController struct {
 // @Failure 1 添加 host 失败
 // @Failure 2 User not found
 // @router /host [post]
-func (c *HostController)AddHost(){
+func (c *HostController) AddHost() {
 
 	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var host models.Host
@@ -34,7 +33,6 @@ func (c *HostController)AddHost(){
 		c.SetJson(1, nil, "数据格式错误")
 		return
 	}
-
 
 	if host.Id != 0 {
 		_, err = models.UpdateHostById(&host)
@@ -52,23 +50,21 @@ func (c *HostController)AddHost(){
 	return
 }
 
-
-
 // @Title 获取所有 host
 // @Description get all the host
 // @Success 0 {object} models.Host
 // @Failure 1 获取所有 host 失败
 // @Failure 2 User not found
 // @router /host/list/ [get]
-func (c *HostController)GetAllHost() {
+func (c *HostController) GetAllHost() {
 
 	searchText := c.GetString("search_text")
 	awsRegion := c.GetString("aws_region")
 	projectId, err := c.GetInt("project_id")
 
-	if err != nil{
-		fmt.Println("error: GetInt(\"project_id\")",err)
-		c.SetJson(1,err,"获取 project_id 失败")
+	if err != nil {
+		fmt.Println("error: GetInt(\"project_id\")", err)
+		c.SetJson(1, err, "获取 project_id 失败")
 		return
 	}
 
@@ -82,15 +78,15 @@ func (c *HostController)GetAllHost() {
 	// 		return
 	// 	}
 	// }else {
-		resHosts, err = models.SearchHosts(projectId, awsRegion, searchText)
-		if err != nil{
-			fmt.Println("error: SearchHosts ",err)
-			c.SetJson(1,err,"搜索 host匹配内容 失败")
-			return
-		}
+	resHosts, err = models.SearchHosts(projectId, awsRegion, searchText)
+	if err != nil {
+		fmt.Println("error: SearchHosts ", err)
+		c.SetJson(1, err, "搜索 host匹配内容 失败")
+		return
+	}
 	// }
 
-	for _, s := range resHosts{
+	for _, s := range resHosts {
 		err = models.GetHostRelatedProject(s)
 		if err != nil {
 			c.SetJson(1, err, "获取 host 的 porject 关联失败")
@@ -103,12 +99,9 @@ func (c *HostController)GetAllHost() {
 		}
 	}
 
-	c.SetJson(0,resHosts,"")
+	c.SetJson(0, resHosts, "")
 	return
 }
-
-
-
 
 /*
 func (c *HostController)GetAllHost() {
@@ -152,7 +145,6 @@ func (c *HostController)GetAllHost() {
 
 */
 
-
 // @Title 获取 host by id
 // @Description get the host by id
 // @Param   id      query     int   	true     "host id"
@@ -160,27 +152,23 @@ func (c *HostController)GetAllHost() {
 // @Failure 1 获取 host by id 失败
 // @Failure 2 User not found
 // @router /host/id/ [get]
-func (c *HostController)GetHostById() {
+func (c *HostController) GetHostById() {
 
 	id, err := c.GetInt("id")
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "获取 id 失败")
 		return
 	}
 
 	resHost, err := models.GetHostById(id)
-	if err != nil{
-		c.SetJson(1, err,"获取 host by id失败")
+	if err != nil {
+		c.SetJson(1, err, "获取 host by id失败")
 		return
 	}
 
-	c.SetJson(0,resHost,"")
+	c.SetJson(0, resHost, "")
 	return
 }
-
-
-
-
 
 // @Title 获取 host by projects id
 // @Description get the host by projects id
@@ -189,21 +177,21 @@ func (c *HostController)GetHostById() {
 // @Failure 1 获取 host by projects id 失败
 // @Failure 2 User not found
 // @router /host/projectId/ [get]
-func (c *HostController)GetHostByProjectsId() {
+func (c *HostController) GetHostByProjectsId() {
 
-	projectId, err :=  c.GetInt("project_id")
-	if err != nil{
+	projectId, err := c.GetInt("project_id")
+	if err != nil {
 		c.SetJson(1, err, "获取project_id 失败")
 		return
 	}
 
 	resHost, err := models.GetHostByProjectId(projectId)
-	if err != nil{
-		c.SetJson(1, err,"获取 host by project id失败")
+	if err != nil {
+		c.SetJson(1, err, "获取 host by project id失败")
 		return
 	}
 
-	for _, s := range resHost{
+	for _, s := range resHost {
 		_, err := models.GetHostRelated(s)
 		if err != nil {
 			c.SetJson(1, err, "获取 service host conf by id失败")
@@ -211,12 +199,9 @@ func (c *HostController)GetHostByProjectsId() {
 		}
 	}
 
-
-	c.SetJson(0,resHost,"")
+	c.SetJson(0, resHost, "")
 	return
 }
-
-
 
 // @Title 删除 host host by id
 // @Description update the host host by id
@@ -225,27 +210,24 @@ func (c *HostController)GetHostByProjectsId() {
 // @Failure 1 删除 host host by id 失败
 // @Failure 2 User not found
 // @router /host/id/ [delete]
-func (c *HostController)DeleteHostById(){
-
+func (c *HostController) DeleteHostById() {
 
 	id, err := c.GetInt("id")
-	if err != nil{
-		c.SetJson(1,err,"获取 id 失败")
+	if err != nil {
+		c.SetJson(1, err, "获取 id 失败")
 		return
 	}
 	err = models.DeleteHostById(id)
 	if err != nil {
-		fmt.Println("error: ",err)
-		c.SetJson(1,err,"删除 host 失败")
+		fmt.Println("error: ", err)
+		c.SetJson(1, err, "删除 host 失败")
 		return
 	}
 
-	c.SetJson(0,nil,"")
+	c.SetJson(0, nil, "")
 	return
 
 }
-
-
 
 // @Title 拷贝 host by id
 // @Description copy the host host by id
@@ -273,7 +255,7 @@ func (c *HostController) CopyHostById() {
 	resHost.Name = fmt.Sprintf("%s - copy", resHost.Name)
 	_, err = models.AddHost(resHost)
 	if err != nil {
-		fmt.Println("error:  ",err)
+		fmt.Println("error:  ", err)
 		c.SetJson(1, err, "添加 host 失败")
 		return
 	}
@@ -283,25 +265,22 @@ func (c *HostController) CopyHostById() {
 
 }
 
-
-
 // @Title 获取 host docker ps
 // @Description get host docker ps
 // @Param   use_ip      query     string   		true         "use_ip"
 // @Failure 1 获取 获取 host docker ps 状态 失败
 // @Failure 2 User not found
 // @router /host/dockerPs/ [get]
-func (c *HostController)GetHostDockerPs() {
+func (c *HostController) GetHostDockerPs() {
 
-	useIp :=  c.GetString("use_ip")
+	useIp := c.GetString("use_ip")
 
 	d := components.BaseDocker{}
 	res, err := d.GetStatusHost(useIp)
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, res, fmt.Sprintf("获取 %s docker ps 状态 失败", useIp))
 		return
 	}
-	c.SetJson(0,res,"")
+	c.SetJson(0, res, "")
 	return
 }
-

@@ -166,7 +166,16 @@ deny 2.2.2.2；
 allow all;"
                     v-model.trim="form.BlackList" style="width: 599px;"></el-input>
             </el-form-item>
-          </div>
+
+            <el-form-item label="禁止UA:" prop="DenyUserAgent" label-width="100px">
+              <el-input type="textarea" :rows="5" placeholder="eg:
+...
+...
+...
+"
+                        v-model.trim="form.DenyUserAgent" style="width: 599px;"></el-input>
+            </el-form-item>
+            </div>
 
           </el-form-item>
         </el-col>
@@ -339,6 +348,7 @@ allow all;"
           Port: "",
           LogKeyword: "Started .* seconds",
           BlackList:"",
+          DenyUserAgent: "",
           // IsRegister: 0,
           Health: "",
           DockerName: "",

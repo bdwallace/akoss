@@ -232,14 +232,14 @@ const routes = [{
             auth: true
         }
     }, {
-        path: '/domainExport',
-        name: 'domainExImport',
+        path: '/domainBackup',
+        name: 'domainBackup',
         components: {
             default: require('pages/domain_backup/list'),
             menuView: require('components/leftSlide')
         },
         meta: {
-            title: "域名导出",
+            title: "域名备份",
             auth: true
         }
     }, {

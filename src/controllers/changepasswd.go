@@ -80,7 +80,7 @@ func (c *ChangePasswdController) Post() {
 	var user models.User
 	o := orm.NewOrm()
 	err = o.Raw("SELECT * FROM `user` WHERE id= ?", c.User.Id).QueryRow(&user)
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, nil, "获取用户信息失败")
 		return
 	}
@@ -98,21 +98,21 @@ func (c *ChangePasswdController) Post() {
 		respAuth, err := c.AkossAuth(reqAuth)
 		user.AuthKey = common.Md5String(user.Username + common.GetString(time.Now().Unix()))
 		models.UpdateUserById(&user)
-		if err != nil{
-			c.SetJson(1,nil,respAuth.Msg)
+		if err != nil {
+			c.SetJson(1, nil, respAuth.Msg)
 			return
 		}
 		if !respAuth.AuthPassed {
 			fmt.Println("*************************")
-			fmt.Println("reqAuth.Uri: ",reqAuth.RequestUri)
-			fmt.Println("respAuth.AuthPassed: ",respAuth.AuthPassed)
-			fmt.Println("respAuth.Msg: ",respAuth.Msg)
+			fmt.Println("reqAuth.Uri: ", reqAuth.RequestUri)
+			fmt.Println("respAuth.AuthPassed: ", respAuth.AuthPassed)
+			fmt.Println("respAuth.Msg: ", respAuth.Msg)
 			fmt.Println("*************************")
 
-			if respAuth.Msg == "Couldn't handle this token:"{
-				c.SetJson(1,nil,"登录状态已过期，请重新登录")
-			}else {
-				c.SetJson(1,nil,respAuth.Msg)
+			if respAuth.Msg == "Couldn't handle this token:" {
+				c.SetJson(1, nil, "登录状态已过期，请重新登录")
+			} else {
+				c.SetJson(1, nil, respAuth.Msg)
 			}
 		}
 	} else {

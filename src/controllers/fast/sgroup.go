@@ -15,12 +15,10 @@ type SgroupController struct {
 	controllers.BaseController
 }
 
-
 type GroupData struct {
 	ProjectId int
-	Data  ec2.SecurityGroup
+	Data      ec2.SecurityGroup
 }
-
 
 // @Title 获取 sgroup
 // @Description 获取 sgroup
@@ -33,8 +31,8 @@ func (c *SgroupController) GetSgroup() {
 
 	projectId, err := c.GetInt("projectId")
 	project, err := models.GetProjectById(projectId)
-	if err != nil{
-		fmt.Println("error: GetProjectById(pro.Id) ",err)
+	if err != nil {
+		fmt.Println("error: GetProjectById(pro.Id) ", err)
 		c.SetJson(1, err, "获取 project by id 失败")
 		return
 	}
@@ -55,8 +53,6 @@ func (c *SgroupController) GetSgroup() {
 	return
 }
 
-
-
 // @Title 设置 sgroup
 // @Description set sgroup
 // @Success 0 {id} int64
@@ -72,7 +68,7 @@ func (c *SgroupController) SetSgroup() {
 		return
 	}
 
-	project	, _ := models.GetProjectById(myAws.Project)
+	project, _ := models.GetProjectById(myAws.Project)
 	myAws.Region = project.AwsRegion
 	myAws.Alias = project.Alias
 
@@ -88,9 +84,6 @@ func (c *SgroupController) SetSgroup() {
 	c.SetJson(0, data, "")
 	return
 }
-
-
-
 
 // @Title 删除 sgroup
 // @Description delete sgroup

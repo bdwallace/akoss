@@ -18,7 +18,6 @@ import (
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
 )
 
-
 func (client *Queue) BatchDeleteMessage(request *BatchDeleteMessageRequest) (response *BatchDeleteMessageResponse, err error) {
 	response = CreateBatchDeleteMessageResponse()
 	err = client.DoActionWithSigner(request, response)
@@ -27,24 +26,24 @@ func (client *Queue) BatchDeleteMessage(request *BatchDeleteMessageRequest) (res
 
 type BatchDeleteMessageRequest struct {
 	*requests.RoaRequest
-	QueueName		string 			`position:"Path" name:"QueueName"`
+	QueueName string `position:"Path" name:"QueueName"`
 }
 
 type BatchDeleteMessageResponse struct {
 	*responses.BaseResponse
-	RequestId       string          `json:"RequestId" xml:"RequestId"`
-	Code            string          `json:"Code" xml:"Code"`
+	RequestId string `json:"RequestId" xml:"RequestId"`
+	Code      string `json:"Code" xml:"Code"`
 }
 
 type ReceiptHandles struct {
-	XMLName xml.Name 				`xml:"ReceiptHandles"`
-	Xmlns 	string   				`xml:"xmlns,attr"`
-	Handles []string				`xml:"ReceiptHandle"`
+	XMLName xml.Name `xml:"ReceiptHandles"`
+	Xmlns   string   `xml:"xmlns,attr"`
+	Handles []string `xml:"ReceiptHandle"`
 }
 
 func (request *BatchDeleteMessageRequest) SetReceiptHandles(receiptHandles []string) {
 	receiptHandlesObj := &ReceiptHandles{
-		Xmlns: "http://mns.aliyuncs.com/doc/v1/",
+		Xmlns:   "http://mns.aliyuncs.com/doc/v1/",
 		Handles: receiptHandles,
 	}
 	content, err := xml.Marshal(receiptHandlesObj)
@@ -56,10 +55,9 @@ func (request *BatchDeleteMessageRequest) SetReceiptHandles(receiptHandles []str
 
 func CreateBatchDeleteMessageRequest() (request *BatchDeleteMessageRequest) {
 	request = &BatchDeleteMessageRequest{
-		RoaRequest: &requests.RoaRequest{
-		},
+		RoaRequest: &requests.RoaRequest{},
 	}
-	request.InitWithApiInfo("MNS", "2015-06-06","BatchDeleteMessage","/queues/[QueueName]/messages", "", "")
+	request.InitWithApiInfo("MNS", "2015-06-06", "BatchDeleteMessage", "/queues/[QueueName]/messages", "", "")
 	request.Method = "DELETE"
 	request.Headers["x-mns-version"] = "2015-06-06"
 	request.AcceptFormat = "XML"

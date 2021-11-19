@@ -10,20 +10,20 @@ import (
 )
 
 type Deploy struct {
-	Id             	int       				`orm:"column(id);auto"`
-	Action         	int16     				`orm:"column(action)"`
-	Status         	int16     				`orm:"column(status)" description:"0未上线1状态未定义,2审核失败,3上线完成,4上线失败"`
-	Title          	string    				`orm:"column(title);size(100);null"`
-	IsRun          	int       				`orm:"column(is_run);null"`
-	Class			string     	    		`orm:"column(class)"`
-	Count          	int       				`orm:"column(count);default(0)"`
+	Id     int    `orm:"column(id);auto"`
+	Action int16  `orm:"column(action)"`
+	Status int16  `orm:"column(status)" description:"0未上线1状态未定义,2审核失败,3上线完成,4上线失败"`
+	Title  string `orm:"column(title);size(100);null"`
+	IsRun  int    `orm:"column(is_run);null"`
+	Class  string `orm:"column(class)"`
+	Count  int    `orm:"column(count);default(0)"`
 
-	CreatedAt       time.Time 				`orm:"column(created_at);type(datetime);auto_now_add;"`
-	UpdatedAt       time.Time 				`orm:"column(updated_at);type(datetime);auto_now;"`
+	CreatedAt time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
+	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);auto_now;"`
 
-	Project 		*Project				`orm:"rel(fk)"`
-	User         	*User					`orm:"rel(fk)"`
-	Tasks   		[]*Task					`orm:"reverse(many)"`
+	Project *Project `orm:"rel(fk)"`
+	User    *User    `orm:"rel(fk)"`
+	Tasks   []*Task  `orm:"reverse(many)"`
 }
 
 // func (t *Deploy) TableName() string {
@@ -31,20 +31,19 @@ type Deploy struct {
 // }
 
 func init() {
-	orm.RegisterModelWithPrefix("t_",new(Deploy))
+	orm.RegisterModelWithPrefix("t_", new(Deploy))
 }
-
 
 /*
 	添加 user id 外键约束
 */
-func (c *SqlClass)DeployCreateForeignKeyUser() {
+func (c *SqlClass) DeployCreateForeignKeyUser() {
 
 	// 拼接两张表外键约束sql
-	addForeignSqlStr := fmt.Sprintf( "alter table %s ADD CONSTRAINT %s foreign key (%s) references %s(%s);",deployTableName,deployUserForeignKeyName,userId,userTableName,primaryKey)
+	addForeignSqlStr := fmt.Sprintf("alter table %s ADD CONSTRAINT %s foreign key (%s) references %s(%s);", deployTableName, deployUserForeignKeyName, userId, userTableName, primaryKey)
 
 	err := c.CreateForeignKey(addForeignSqlStr)
-	if err != nil{
+	if err != nil {
 		if strings.Index(err.Error(), errDuplicate) != -1 {
 			beego.Info("key is duplicate")
 		} else {
@@ -58,13 +57,13 @@ func (c *SqlClass)DeployCreateForeignKeyUser() {
 /*
 	创建 project 外键约束
 */
-func (c * SqlClass)DeployCreateForeignKeyProject() {
+func (c *SqlClass) DeployCreateForeignKeyProject() {
 
 	// 拼接两张表外键约束sql
-	addForeignSqlStr := fmt.Sprintf( "alter table %s ADD CONSTRAINT %s foreign key (%s) references %s(%s);",deployTableName,deployProjectForeignKeyName,projectId,projectTableName,primaryKey)
+	addForeignSqlStr := fmt.Sprintf("alter table %s ADD CONSTRAINT %s foreign key (%s) references %s(%s);", deployTableName, deployProjectForeignKeyName, projectId, projectTableName, primaryKey)
 
 	err := c.CreateForeignKey(addForeignSqlStr)
-	if err != nil{
+	if err != nil {
 		if strings.Index(err.Error(), errDuplicate) != -1 {
 			beego.Info("key is duplicate")
 		} else {
@@ -75,12 +74,9 @@ func (c * SqlClass)DeployCreateForeignKeyProject() {
 	}
 }
 
-
-
-
 func AddDeploy(d *Deploy) (id int64, err error) {
 	o := orm.NewOrm()
-	if id, err = o.Insert(d); err == nil{
+	if id, err = o.Insert(d); err == nil {
 		return id, nil
 	}
 
@@ -104,11 +100,8 @@ func UpdateDeployAndAddTaskRelated(d *Deploy, tasks []*Task) (deployId int64, er
 	}
 	o.Commit()
 
-
 	return deployId, err
 }
-
-
 
 func GetDeployById(id int) (d *Deploy, err error) {
 	o := orm.NewOrm()
@@ -116,22 +109,21 @@ func GetDeployById(id int) (d *Deploy, err error) {
 
 	err = o.QueryTable(deployTableName).Filter("id", id).RelatedSel().One(d)
 	if err != nil {
-		fmt.Println("id: ",id,"    error: ",err)
+		fmt.Println("id: ", id, "    error: ", err)
 		return nil, err
 	}
 
 	return
 }
 
-
 func GetDeployByProjectId(projectId int) (t []*Deploy, err error) {
 
 	o := orm.NewOrm()
-	_ ,err = o.QueryTable(deployTableName).Filter("project_id",projectId).OrderBy("-id").RelatedSel().All(&t)
+	_, err = o.QueryTable(deployTableName).Filter("project_id", projectId).OrderBy("-id").RelatedSel().All(&t)
 	if err != nil {
 		return nil, err
 	}
-	return t,err
+	return t, err
 
 }
 
@@ -140,11 +132,11 @@ func GetDeployByProjectIdUserId(projectId int, userId int, start int, length int
 	// count, _ = o.QueryTable(crontabLogTableName).Count()
 	// o.QueryTable(crontabLogTableName).Limit(length, start).OrderBy("-id").All(&m)
 	if userId == 0 {
-		count, _ = o.QueryTable(deployTableName).Filter("project_id",projectId).Count()
-		_ ,err = o.QueryTable(deployTableName).Filter("project_id",projectId).Limit(length, start).OrderBy("-id").RelatedSel("user").All(&t)
+		count, _ = o.QueryTable(deployTableName).Filter("project_id", projectId).Count()
+		_, err = o.QueryTable(deployTableName).Filter("project_id", projectId).Limit(length, start).OrderBy("-id").RelatedSel("user").All(&t)
 	} else {
-		count, _ = o.QueryTable(deployTableName).Filter("project_id",projectId).Filter("user_id", userId).Count()
-		_ ,err = o.QueryTable(deployTableName).Filter("project_id",projectId).Filter("user_id", userId).Limit(length, start).OrderBy("-id").RelatedSel("user").All(&t)
+		count, _ = o.QueryTable(deployTableName).Filter("project_id", projectId).Filter("user_id", userId).Count()
+		_, err = o.QueryTable(deployTableName).Filter("project_id", projectId).Filter("user_id", userId).Limit(length, start).OrderBy("-id").RelatedSel("user").All(&t)
 	}
 	if err != nil {
 		return 0, nil, err
@@ -156,37 +148,34 @@ func GetDeployByProjectIdUserId(projectId int, userId int, start int, length int
 func GetDeployByServiceId(serviceId int) (d []*Deploy, err error) {
 
 	o := orm.NewOrm()
-	_ ,err = o.QueryTable(deployTableName).Filter("service_id",serviceId).RelatedSel().All(&d)
+	_, err = o.QueryTable(deployTableName).Filter("service_id", serviceId).RelatedSel().All(&d)
 	if err != nil {
 		return nil, err
 	}
-	if _, err = o.LoadRelated(d,"Tasks"); err != nil{
+	if _, err = o.LoadRelated(d, "Tasks"); err != nil {
 		return nil, err
 	}
-	return d,err
+	return d, err
 }
 
-
-func GetAllDeploy()(d []*Deploy,err error){
+func GetAllDeploy() (d []*Deploy, err error) {
 
 	o := orm.NewOrm()
-	if _, err = o.QueryTable(deployTableName).All(&d);err != nil{
-		return nil,err
+	if _, err = o.QueryTable(deployTableName).All(&d); err != nil {
+		return nil, err
 	}
-	return d,nil
+	return d, nil
 
 }
 
-
-func UpdateDeployById(d *Deploy) (id int64 ,err error) {
+func UpdateDeployById(d *Deploy) (id int64, err error) {
 	o := orm.NewOrm()
 
 	if id, err = o.Update(d); err == nil {
-		return -1,err
+		return -1, err
 	}
 	return id, nil
 }
-
 
 func DeleteDeploy(id int) (num int64, err error) {
 
@@ -200,58 +189,58 @@ func DeleteDeploy(id int) (num int64, err error) {
 /*
 	通过 project id 查询 deploy 以及关联表数据
 */
-func GetDeployRelated(deploys *Deploy) error{
+func GetDeployRelated(deploys *Deploy) error {
 
 	o := orm.NewOrm()
 
 	_, err := o.LoadRelated(deploys, "Tasks")
-	if err != nil{
+	if err != nil {
 		return err
 	}
 
 	for _, task := range deploys.Tasks {
 		_, err = o.LoadRelated(task, "Project")
-		if err != nil{
+		if err != nil {
 			return err
 		}
 
 		_, err = o.LoadRelated(task, "Service")
-		if err != nil{
+		if err != nil {
 			return err
 		}
 
 		_, err = o.LoadRelated(task.Service, "Hosts")
-		if err != nil{
+		if err != nil {
 			return err
 		}
 
 		_, err = o.LoadRelated(task.Service, "Domains")
-		if err != nil{
+		if err != nil {
 			return err
 		}
 
 		_, err = o.LoadRelated(task.Service, "Confs")
-		if err != nil{
+		if err != nil {
 			return err
 		}
 
 		_, err = o.LoadRelated(task.Service, "Platforms")
-		if err != nil{
+		if err != nil {
 			return err
 		}
 
 		_, err = o.LoadRelated(task.Service, "Project")
-		if err != nil{
+		if err != nil {
 			return err
 		}
 
 		_, err = o.LoadRelated(task, "Hosts")
-		if err != nil{
+		if err != nil {
 			return err
 		}
 
 	}
 
-	return  nil
+	return nil
 
 }

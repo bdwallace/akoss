@@ -14,8 +14,7 @@ import (
 // @Failure 1 download file 失败
 // @Failure 2 User not found
 // @router /walle/download/ [post]
-func (c *WalleController)Download() {
-
+func (c *WalleController) Download() {
 
 	//beego.Info(string(c.Ctx.Input.RequestBody))
 	operationRecord := new(models.OperationRecord)
@@ -43,4 +42,3 @@ func (c *WalleController)Download() {
 	c.SetJson(0, pathZip, "")
 	c.ServeJSON()
 }
-

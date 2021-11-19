@@ -6,11 +6,9 @@ import (
 	"models"
 )
 
-
 type RobotController struct {
 	controllers.BaseController
 }
-
 
 // @Title restart
 // @Description robot restart back-end service
@@ -20,27 +18,27 @@ type RobotController struct {
 // @Failure 1 restart 失败
 // @Failure 2 User not found
 // @router /robot/restart/ [get]
-func (c *RobotController)RobotRestart() {
+func (c *RobotController) RobotRestart() {
 
 	serviceId, err := c.GetInt("service_id")
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "获取 serviceId 失败")
 		return
 	}
 	hostId, err := c.GetInt("host_id")
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "获取 hostId 失败")
 		return
 	}
 
 	service, err := models.GetServiceById(serviceId)
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "获取 service by service id 失败")
 		return
 	}
 
 	host, err := models.GetHostById(hostId)
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "获取 host by host id 失败")
 		return
 	}
@@ -49,7 +47,6 @@ func (c *RobotController)RobotRestart() {
 	operationRecord.Service = service
 	operationRecord.Host = host
 	operationRecord.User = c.User
-
 
 	operationRecord.Class = "restart"
 
@@ -61,7 +58,6 @@ func (c *RobotController)RobotRestart() {
 	d := new(components.BaseDocker)
 	d.SetBaseComponents(s)
 
-
 	err = d.Restart(operationRecord)
 	if err != nil {
 		c.SetJson(1, "", "docker关闭出错"+err.Error())
@@ -72,9 +68,6 @@ func (c *RobotController)RobotRestart() {
 	c.ServeJSON()
 }
 
-
-
-
 // @Title reload
 // @Description robot reload front-end service
 // @Param   service_id       query    	 int   	 true      "service id"
@@ -83,27 +76,27 @@ func (c *RobotController)RobotRestart() {
 // @Failure 1 reload 失败
 // @Failure 2 User not found
 // @router /robot/reload/ [get]
-func (c *RobotController)RobotReload() {
+func (c *RobotController) RobotReload() {
 
 	serviceId, err := c.GetInt("service_id")
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "获取 serviceId 失败")
 		return
 	}
 	hostId, err := c.GetInt("host_id")
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "获取 hostId 失败")
 		return
 	}
 
 	service, err := models.GetServiceById(serviceId)
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "获取 service by service id 失败")
 		return
 	}
 
 	host, err := models.GetHostById(hostId)
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "获取 host by host id 失败")
 		return
 	}
@@ -132,6 +125,3 @@ func (c *RobotController)RobotReload() {
 	c.SetJson(0, "", "")
 	c.ServeJSON()
 }
-
-
-

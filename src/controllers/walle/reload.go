@@ -14,7 +14,7 @@ import (
 // @Failure 1 reload 失败
 // @Failure 2 User not found
 // @router /walle/reload/ [post]
-func (c *WalleController)Reload() {
+func (c *WalleController) Reload() {
 
 	//beego.Info(string(c.Ctx.Input.RequestBody))
 	operationRecord := new(models.OperationRecord)
@@ -43,7 +43,6 @@ func (c *WalleController)Reload() {
 	c.ServeJSON()
 }
 
-
 // @Title reload
 // @Description 批量服务主机重载
 // @Param   OperationRecord[]       query    	 obj   	 true      "OperationsRecord"
@@ -51,17 +50,17 @@ func (c *WalleController)Reload() {
 // @Failure 1 reload 失败
 // @Failure 2 User not found
 // @router /walle/multiReload/ [post]
-func (c *WalleController)MultiReload() {
+func (c *WalleController) MultiReload() {
 
 	//beego.Info(string(c.Ctx.Input.RequestBody))
 
-	type multiReload struct{
-		User 	 		models.User
-		Services 		[]models.Service
+	type multiReload struct {
+		User     models.User
+		Services []models.Service
 	}
 
 	muReload := new(multiReload)
-	muReload.Services = make([]models.Service,0)
+	muReload.Services = make([]models.Service, 0)
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, muReload)
 	if err != nil {
 		c.SetJson(1, nil, "数据格式错误")
@@ -71,7 +70,7 @@ func (c *WalleController)MultiReload() {
 	for _, service := range muReload.Services {
 		operationRecord := new(models.OperationRecord)
 		operationRecord.Service = &service
-		if len(service.Hosts) == 0{
+		if len(service.Hosts) == 0 {
 			continue
 		}
 		operationRecord.Host = service.Hosts[0]
@@ -93,8 +92,6 @@ func (c *WalleController)MultiReload() {
 
 	}
 
-
 	c.SetJson(0, "", "")
 	c.ServeJSON()
 }
-

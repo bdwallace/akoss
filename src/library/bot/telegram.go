@@ -1,23 +1,23 @@
 package bot
 
 import (
-	"library/common"
 	"github.com/astaxie/beego"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"library/common"
 )
 
 type Telegram struct {
-	ToKen 	string
-	ChatId  int64
-	Token   string
-	Bot		*tgbotapi.BotAPI
+	ToKen  string
+	ChatId int64
+	Token  string
+	Bot    *tgbotapi.BotAPI
 }
 
 // 初始化机器人信息
-func (c *Telegram)AkReptileInit() (err error) {
+func (c *Telegram) AkReptileInit() (err error) {
 	// 机器人的token
 	// c.ToKen = "1203023143:AAF0evjZCJtL-oz-7vCFlEarlO78VDczxic"
-	c.ToKen =  beego.AppConfig.String("telegramToken")
+	c.ToKen = beego.AppConfig.String("telegramToken")
 	// 聊天组的chanId
 	// c.ChatId = -417018845
 	c.ChatId = common.StrToInt64(beego.AppConfig.String("telegramChatId"))
@@ -33,21 +33,21 @@ func (c *Telegram)AkReptileInit() (err error) {
 	return
 }
 
-func (c *Telegram)SendText(text string) (err error) {
+func (c *Telegram) SendText(text string) (err error) {
 
 	msg := tgbotapi.NewMessage(c.ChatId, text)
 	_, err = c.Bot.Send(msg)
 	return
 }
 
-func (c *Telegram)SendPhotoFile(photo string) (err error) {
+func (c *Telegram) SendPhotoFile(photo string) (err error) {
 	msg := tgbotapi.NewPhotoUpload(c.ChatId, photo)
 	msg.Caption = "Test"
 	_, err = c.Bot.Send(msg)
 	return
 }
 
-func (c *Telegram)SendPhoto(photo []byte, name string) (err error) {
+func (c *Telegram) SendPhoto(photo []byte, name string) (err error) {
 	b := tgbotapi.FileBytes{Name: "image.jpg", Bytes: photo}
 	msg := tgbotapi.NewPhotoUpload(c.ChatId, b)
 	msg.Caption = name

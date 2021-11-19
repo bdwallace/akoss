@@ -15,7 +15,7 @@ import (
 // @Failure 1 upload file 失败
 // @Failure 2 User not found
 // @router /walle/upload [post]
-func (c *WalleController) Upload(){
+func (c *WalleController) Upload() {
 
 	name := c.GetString("name")
 	file, _, err := c.GetFile("file")
@@ -44,4 +44,3 @@ func (c *WalleController) Upload(){
 
 	return
 }
-

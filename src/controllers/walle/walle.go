@@ -82,14 +82,13 @@ func (c *WalleController) LineGet() {
 	//levelId, _ := c.GetInt("project_id")
 	//project, _ := models.GetProjectById(levelId)
 
-
 	sId, err := c.GetInt("service_id")
-	if err != nil{
+	if err != nil {
 		fmt.Println("error: get service id faild")
 		c.SetJson(0, err, "error: get service id faild")
 	}
 
-	if err := c.GetServiceNacos(sId); err != nil{
+	if err := c.GetServiceNacos(sId); err != nil {
 		fmt.Println("error: get service nacos faild")
 		c.SetJson(0, err, "error: get service nacos faild")
 	}
@@ -115,17 +114,16 @@ func (c *WalleController) LineGet() {
 // @router /walle/linechange [get]
 func (c *WalleController) LineChange() {
 
-
 	hostPort := c.GetString("host_port")
 	line := c.GetString("line")
 
 	sId, err := c.GetInt("service_id")
-	if err != nil{
+	if err != nil {
 		fmt.Println("error: get service id faild")
 		c.SetJson(0, err, "error: get service id faild")
 	}
 
-	if err := c.GetServiceNacos(sId); err != nil{
+	if err := c.GetServiceNacos(sId); err != nil {
 		fmt.Println("error: get service nacos faild")
 		c.SetJson(0, err, "error: get service nacos faild")
 	}
@@ -173,19 +171,16 @@ func (c *WalleController) LineChange() {
 	return
 }
 
+func (c *WalleController) GetServiceNacos(serviceId int) (err error) {
 
-
-
-func (c * WalleController) GetServiceNacos (serviceId int) (err error){
-
-	c.Service ,err = models.GetServiceById(serviceId)
-	if err != nil{
+	c.Service, err = models.GetServiceById(serviceId)
+	if err != nil {
 		return
 	}
 
-	if c.Service.UseNacos == ""{
+	if c.Service.UseNacos == "" {
 		c.Service.UseNacos = c.Project.Nacos1
-		if err = models.UpdateServiceAndRelated(c.Service); err != nil{
+		if err = models.UpdateServiceAndRelated(c.Service); err != nil {
 			c.SetJson(1, err.Error(), "update service.UseNacos failed!")
 			return
 		}

@@ -8,18 +8,18 @@ import (
 )
 
 type Link struct {
-	Id        	int       	`orm:"column(id);auto"`
-	Name      	string    	`orm:"column(name);"`
-	Direction 	string    	`orm:"column(direction)"`
-	Link   		string    	`orm:"column(link);"`
-	Class   	string    	`orm:"column(class)"`
+	Id        int    `orm:"column(id);auto"`
+	Name      string `orm:"column(name);"`
+	Direction string `orm:"column(direction)"`
+	Link      string `orm:"column(link);"`
+	Class     string `orm:"column(class)"`
 
-	CreatedAt   time.Time 	`orm:"column(created_at);type(datetime);auto_now_add;"`
-	UpdatedAt   time.Time 	`orm:"column(updated_at);type(datetime);auto_now;"`
+	CreatedAt time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
+	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);auto_now;"`
 
 	// Project 	*Project	`orm:"rel(fk)"`
 	// Platform	*Platform	`orm:"rel(fk)"`
-	Projects 	[]*Project	`orm:"rel(m2m)"`
+	Projects []*Project `orm:"rel(m2m)"`
 	// Platforms	[]*Platform	`orm:"rel(m2m)"`
 }
 
@@ -100,14 +100,14 @@ func DeleteLink(o orm.Ormer, s *Link) (err error) {
 //////////////
 /*
 	多对多操作
- */
+*/
 
 //通过 link 查询 projects 关联表数据
-func GetLinkRelatedProjects(link *Link) (err error){
+func GetLinkRelatedProjects(link *Link) (err error) {
 
 	o := orm.NewOrm()
 
-	if _, err = o.LoadRelated(link, "Projects"); err != nil{
+	if _, err = o.LoadRelated(link, "Projects"); err != nil {
 		return
 	}
 
@@ -124,7 +124,7 @@ func DeleteLinkRelatedProjects(o orm.Ormer, link *Link) (err error) {
 	}
 	// 获取 link 关联的 projects， 直接全部清除
 	m2mForProjcts := o.QueryM2M(link, "Projects")
-	if _, err = m2mForProjcts.Clear(); err != nil{
+	if _, err = m2mForProjcts.Clear(); err != nil {
 		return
 	}
 
@@ -133,7 +133,7 @@ func DeleteLinkRelatedProjects(o orm.Ormer, link *Link) (err error) {
 
 /*
 	添加 link 以及关联表 数据
- */
+*/
 func UpdateLinkRelatedProjects(o orm.Ormer, link *Link) (err error) {
 
 	if o == nil {
@@ -141,11 +141,11 @@ func UpdateLinkRelatedProjects(o orm.Ormer, link *Link) (err error) {
 	}
 
 	// 校验 conf 数据 是否为 nil
-	if len(link.Projects) != 0{
+	if len(link.Projects) != 0 {
 		// 建立 host 关系, 插入link_host表 host 数据
 		m2m := o.QueryM2M(link, "Projects")
 		_, err = m2m.Add(link.Projects)
-		if err != nil{
+		if err != nil {
 			fmt.Println("error: m2m.Add(link.Projects): ", err)
 			return
 		}

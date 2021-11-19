@@ -10,17 +10,14 @@ import (
 type DeployController struct {
 	controllers.BaseController
 	//Coment components.BaseComponents
-	Task *models.Task
+	Task     *models.Task
 	TaskUser *models.User
 }
-
 
 ///////////
 /*
 	deploy  curd
- */
-
-
+*/
 
 // @Title 获取 deploy by Id
 // @Description 获取 deploy by Id
@@ -33,7 +30,7 @@ func (c *DeployController) GetDeployById() {
 
 	deployId, _ := c.GetInt("id")
 	deploy, err := models.GetDeployById(deployId)
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, nil, "获取 deploy by Id 失败")
 		return
 	}
@@ -57,14 +54,14 @@ func (c *DeployController) GetDeployById() {
 // @router /deploy/projectId/userId [get]
 func (c *DeployController) GetDeployByProjectIdUserId() {
 
-	projectId, err :=  c.GetInt("project_id")
-	if err != nil{
+	projectId, err := c.GetInt("project_id")
+	if err != nil {
 		c.SetJson(1, err, "获取 project id 失败")
 		return
 	}
 
-	userId, err :=  c.GetInt("user_id", 0)
-	if err != nil{
+	userId, err := c.GetInt("user_id", 0)
+	if err != nil {
 		c.SetJson(1, err, "获取 user id 失败")
 		return
 	}
@@ -77,8 +74,8 @@ func (c *DeployController) GetDeployByProjectIdUserId() {
 	}
 
 	count, resDeploy, err := models.GetDeployByProjectIdUserId(projectId, userId, start, length)
-	if err != nil{
-		c.SetJson(1, err,"获取 host by project id失败")
+	if err != nil {
+		c.SetJson(1, err, "获取 host by project id失败")
 		return
 	}
 
@@ -95,8 +92,6 @@ func (c *DeployController) GetDeployByProjectIdUserId() {
 	return
 }
 
-
-
 // @Title 获取 deploys by project id
 // @Description get deploys by project id
 // @Param   project_id      query     int  	  true      "project id"
@@ -106,15 +101,15 @@ func (c *DeployController) GetDeployByProjectIdUserId() {
 // @router /deploy/projectId/ [get]
 func (c *DeployController) GetDeployByProjectId() {
 
-	projectId, err :=  c.GetInt("project_id")
-	if err != nil{
+	projectId, err := c.GetInt("project_id")
+	if err != nil {
 		c.SetJson(1, err, "获取 project id 失败")
 		return
 	}
 
 	resDeploy, err := models.GetDeployByProjectId(projectId)
-	if err != nil{
-		c.SetJson(1, err,"获取 host by project id失败")
+	if err != nil {
+		c.SetJson(1, err, "获取 host by project id失败")
 		return
 	}
 
@@ -139,23 +134,21 @@ func (c *DeployController) GetDeployByProjectId() {
 // @router /deploy/serviceId/ [get]
 func (c *DeployController) GetDeployByServiceId() {
 
-	serviceId, err :=  c.GetInt("service_id")
-	if err != nil{
+	serviceId, err := c.GetInt("service_id")
+	if err != nil {
 		c.SetJson(1, err, "获取 service id 失败")
 		return
 	}
 
 	resDeploy, err := models.GetDeployByServiceId(serviceId)
-	if err != nil{
-		c.SetJson(1, err,"获取 host by service id失败")
+	if err != nil {
+		c.SetJson(1, err, "获取 host by service id失败")
 		return
 	}
 
-	c.SetJson(0,resDeploy,"")
+	c.SetJson(0, resDeploy, "")
 	return
 }
-
-
 
 // @Title 获取所有 deploy
 // @Description get all the deploy
@@ -163,7 +156,7 @@ func (c *DeployController) GetDeployByServiceId() {
 // @Failure 1 获取所有 deploy 失败
 // @Failure 2 User not found
 // @router /deploy/list/ [get]
-func (c *DeployController)GetAllDeploy() {
+func (c *DeployController) GetAllDeploy() {
 
 	resDeploy, err := models.GetAllDeploy()
 
@@ -177,8 +170,6 @@ func (c *DeployController)GetAllDeploy() {
 	return
 
 }
- 
-
 
 // @Title delete deploy by deploy id
 // @Description delete deploy by deploy id
@@ -187,10 +178,10 @@ func (c *DeployController)GetAllDeploy() {
 // @Failure 1 删除 deploy by deploy id 失败
 // @Failure 2 User not found
 // @router /deploy/id/ [delete]
-func  (c *DeployController)DeleteDeploy(id int) () {
+func (c *DeployController) DeleteDeploy(id int) {
 
 	resId, err := models.DeleteDeploy(id)
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, err, "删除 deploy by id 失败")
 		return
 	}
@@ -200,11 +191,9 @@ func  (c *DeployController)DeleteDeploy(id int) () {
 
 }
 
-
-
 // @Title 添加空白 deploy
 // @Description 添加没有tag和host的deploy
-// @Param servcies body []models.Service ture 
+// @Param servcies body []models.Service ture
 // @Success 0 {id} int
 // @Failure 1 添加 deploy 失败
 // @Failure 2 User not found
@@ -221,7 +210,6 @@ func (c *DeployController) AddDeploy() {
 
 	deploy := new(models.Deploy)
 
-
 	deploy.User = c.User
 	deploy.Class = services[0].Class
 	deploy.Project = &models.Project{Id: c.User.ProjectId}
@@ -232,7 +220,7 @@ func (c *DeployController) AddDeploy() {
 		return
 	}
 
-	for _, s :=range services {
+	for _, s := range services {
 		task := new(models.Task)
 		task.Deploy = &models.Deploy{Id: int(deployId)}
 		task.Service = &s
@@ -246,7 +234,7 @@ func (c *DeployController) AddDeploy() {
 		// }
 
 		_, err = models.AddTask(task)
-		if err != nil{
+		if err != nil {
 			c.SetJson(1, nil, "创建 docker cmd 插入 deploy 相关 task cmd 失败")
 			return
 		}
@@ -257,11 +245,9 @@ func (c *DeployController) AddDeploy() {
 
 }
 
-
-
 // @Title 添加空白 deploy
 // @Description 添加没有tag和host的deploy
-// @Param servcies body []models.Service ture 
+// @Param servcies body []models.Service ture
 // @Success 0 {id} int
 // @Failure 1 添加 deploy 失败
 // @Failure 2 User not found
@@ -297,7 +283,7 @@ func (c *DeployController) AddDeployFromBuild() {
 	task.User = deploy.User
 
 	_, err = models.AddTask(task)
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, nil, "创建 docker cmd 插入 deploy 相关 task cmd 失败")
 		return
 	}
@@ -307,13 +293,13 @@ func (c *DeployController) AddDeployFromBuild() {
 	if deploy.Class != "java" {
 		// 初始化 平台
 		s, err := models.GetServiceAndPlatformRelated(&service)
-		if err != nil{
-			c.SetJson(1, nil,"获取 前端服务所属平台 失败")
+		if err != nil {
+			c.SetJson(1, nil, "获取 前端服务所属平台 失败")
 			return
 		}
-		deployPlatform,err = models.GetPlatformById(s.Platforms[0].Id)
-		if err != nil{
-			c.SetJson(1, nil,"获取 前端服务所属平台 失败")
+		deployPlatform, err = models.GetPlatformById(s.Platforms[0].Id)
+		if err != nil {
+			c.SetJson(1, nil, "获取 前端服务所属平台 失败")
 			return
 		}
 	}
@@ -322,24 +308,22 @@ func (c *DeployController) AddDeployFromBuild() {
 	docker.BaseComponents.SetPlatform(deployPlatform)
 	docker.BaseComponents.SetService(task.Service)
 
-	err = docker.CreateDockerCmd(task, deploy.Count,deploy.Class)
-	if err != nil{
+	err = docker.CreateDockerCmd(task, deploy.Count, deploy.Class)
+	if err != nil {
 		c.SetJson(1, nil, "创建 docker cmd 失败")
 		return
 	}
 	task.Cmd = docker.Cmds
 	_, err = models.UpdateTaskById(task)
-	if err != nil{
+	if err != nil {
 		c.SetJson(1, nil, "创建 docker cmd 插入 deploy 相关 task cmd 失败")
 		return
 	}
-
 
 	c.SetJson(0, deploy.Id, "")
 	return
 
 }
-
 
 // @Title 添加tagcmd deploy
 // @Description 添加有tag会生成docker命令,但没有确实要发布哪些主机
@@ -365,20 +349,20 @@ func (c *DeployController) AddDeployTagCmd() {
 			docker.BaseComponents.SetPlatform(task.Service.Platforms[0])
 		}
 
-		err := docker.CreateDockerCmd(task, deploy.Count,task.Service.Class)
-		if err != nil{
+		err := docker.CreateDockerCmd(task, deploy.Count, task.Service.Class)
+		if err != nil {
 			c.SetJson(1, nil, "创建 docker cmd 失败")
 			return
 		}
 		task.Cmd = docker.Cmds
 		_, err = models.UpdateTaskById(task)
-		if err != nil{
+		if err != nil {
 			c.SetJson(1, nil, "创建 docker cmd 插入 deploy 相关 task cmd 失败")
 			return
 		}
 
 		// 更新服务最新tag
-		if err := c.UpdateServiceTagAndLastTag(task);err != nil{
+		if err := c.UpdateServiceTagAndLastTag(task); err != nil {
 			c.SetJson(1, nil, "发布 service 更新 tag 失败")
 			return
 		}
@@ -388,8 +372,6 @@ func (c *DeployController) AddDeployTagCmd() {
 	return
 
 }
-
-
 
 ////// 以服务发布
 // @Title 发布
@@ -418,22 +400,21 @@ func (c *DeployController) DeployService() {
 
 	ch := make(chan int, 0)
 	//  多个 task 需要并发
-	for _, t :=  range deploy.Tasks{
+	for _, t := range deploy.Tasks {
 
 		t.Count = deploy.Count
-		if _, err := models.UpdateTaskById(t);err != nil{
+		if _, err := models.UpdateTaskById(t); err != nil {
 			c.SetJson(1, nil, "修改 task count 失败")
 			return
 		}
-
 
 		go c.releaseHandling(ch, t, deploy, t.Hosts)
 		//  需要添加 goroutine 间同步机制 保证
 	}
 	var res int
-	for{
+	for {
 		res = res + <-ch
-		if res == len(deploy.Tasks){
+		if res == len(deploy.Tasks) {
 			break
 		}
 		continue
@@ -449,6 +430,3 @@ func (c *DeployController) DeployService() {
 	c.SetJson(0, deploy.Count, "")
 	return
 }
-
-
-

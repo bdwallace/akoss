@@ -11,12 +11,12 @@ import (
 )
 
 type TaskErrLog struct {
-	Id         int       `orm:"column(id);auto"`
-	TaskId     int       `orm:"column(task_id);null"`
-	ErrInfo    string    `orm:"column(err_info);null"`
+	Id      int    `orm:"column(id);auto"`
+	TaskId  int    `orm:"column(task_id);null"`
+	ErrInfo string `orm:"column(err_info);null"`
 
-	CreatedAt              time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
-	UpdatedAt              time.Time `orm:"column(updated_at);type(datetime);auto_now;"`
+	CreatedAt time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
+	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);auto_now;"`
 }
 
 func (t *TaskErrLog) TableName() string {
@@ -119,6 +119,7 @@ func GetAllTaskErrLog(query map[string]string, fields []string, sortby []string,
 	}
 	return nil, err
 }
+
 /*
 // UpdateTaskErrLog updates TaskErrLog by Id and returns error if
 // the record to be updated doesn't exist

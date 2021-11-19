@@ -1,6 +1,5 @@
 package myoss
 
-
 type BaseOss struct {
 	Endpoint        string
 	AccessKeyId     string

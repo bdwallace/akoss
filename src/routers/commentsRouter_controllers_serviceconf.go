@@ -7,13 +7,13 @@ import (
 
 func init() {
 
-    beego.GlobalControllerRouter["controllers/serviceconf:ServiceConfController"] = append(beego.GlobalControllerRouter["controllers/serviceconf:ServiceConfController"],
-        beego.ControllerComments{
-            Method: "GetConfByProjectId",
-            Router: `/serviceConf/projectId/`,
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
+	beego.GlobalControllerRouter["controllers/serviceconf:ServiceConfController"] = append(beego.GlobalControllerRouter["controllers/serviceconf:ServiceConfController"],
+		beego.ControllerComments{
+			Method:           "GetConfByProjectId",
+			Router:           `/serviceConf/projectId/`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil})
 
 }

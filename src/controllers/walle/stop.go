@@ -6,8 +6,6 @@ import (
 	"models"
 )
 
-
-
 // @Title restart
 // @Description restart
 // @Param   id       query    	 int   	 true      "service id"
@@ -16,8 +14,7 @@ import (
 // @Failure 1 restart 失败
 // @Failure 2 User not found
 // @router /walle/stop/ [post]
-func (c *WalleController)Stop() {
-
+func (c *WalleController) Stop() {
 
 	//beego.Info(string(c.Ctx.Input.RequestBody))
 	operationRecord := new(models.OperationRecord)

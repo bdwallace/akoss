@@ -28,8 +28,6 @@ type ResAwsHosts struct {
 	EC2InstanceInfoS []*aws.EC2InstanceInfo
 }
 
-
-
 // @Title get awsrsync by ip
 // @Description get awsrsync by ip
 // @Param   ip      query     int 		true       "host ip"
@@ -37,7 +35,7 @@ type ResAwsHosts struct {
 // @Failure 1 获取 awsrsync by ip 失败
 // @Failure 2 User not found
 // @router /awsHost/awsrsync/ [post]
-func (c *HostCheckController)AwsRsync() {
+func (c *HostCheckController) AwsRsync() {
 	// hostId, _ := c.GetInt("hostId", 0)
 	// host, _ := models.GetHostById(hostId)
 	// ip := c.GetString("ip")
@@ -99,7 +97,6 @@ func (c *HostCheckController)AwsRsync() {
 	return
 }
 
-
 // @Title get awsRsyncUpdate by project id
 // @Description get awsrsync by ip
 // @Param   id      query     int 		true       "project id"
@@ -158,7 +155,7 @@ func (c *HostCheckController) AwsRsyncUpdate() {
 			for _, vv := range v.EC2InstanceInfoS {
 				if host.PrivateIp == vv.PrivateIP {
 					if host.Region != v.Region || host.InstanceId != vv.InstanceID || host.InstanceType != vv.InstanceType || host.PublicIp != vv.PublicIP {
-						resData := map[string]string{host.PrivateIp:""}
+						resData := map[string]string{host.PrivateIp: ""}
 						if host.Region != v.Region {
 							resData[host.PrivateIp] = fmt.Sprintf("%s,%s to %s", resData[host.PrivateIp], host.Region, v.Region)
 							host.Region = v.Region
@@ -196,8 +193,6 @@ func (c *HostCheckController) AwsRsyncUpdate() {
 	return
 }
 
-
-
 // @Title get AwsStatus by instanceId and region
 // @Description get AwsStatus by instanceId and region
 // @Param   id      query     int 		true       "instanceId"
@@ -233,8 +228,6 @@ func (c *HostCheckController) AwsStatus() {
 	return
 }
 
-
-
 // @Title get AwsStatus by instanceId and region
 // @Description get AwsStatus by instanceId and region
 // @Param   id      query     int 		true       "instanceId"
@@ -252,9 +245,9 @@ func (c *HostCheckController) AwsStop() {
 		return
 	}
 
-	if c.Service.UseNacos == ""{
+	if c.Service.UseNacos == "" {
 		c.Service.UseNacos = c.Project.Nacos1
-		if err := models.UpdateServiceAndRelated(c.Service); err != nil{
+		if err := models.UpdateServiceAndRelated(c.Service); err != nil {
 			c.SetJson(1, err.Error(), "update service.UseNacos failed!")
 			return
 		}
@@ -268,7 +261,7 @@ func (c *HostCheckController) AwsStop() {
 		return
 	}
 
-	time.Sleep(time.Duration(10)*time.Second)
+	time.Sleep(time.Duration(10) * time.Second)
 
 	var myAws aws.BaseAws
 	myAws.Alias = host.Project.Alias
@@ -287,8 +280,6 @@ func (c *HostCheckController) AwsStop() {
 	return
 }
 
-
-
 // @Title get AwsStatus by instanceId and region
 // @Description get AwsStatus by instanceId and region
 // @Param   id     		query     string 		true       "instance id"
@@ -298,7 +289,6 @@ func (c *HostCheckController) AwsStop() {
 // @Failure 2 User not found
 // @router /awsHost/awsStart/ [post]
 func (c *HostCheckController) AwsStart() {
-
 
 	//beego.Info(string(c.Ctx.Input.RequestBody))
 	var host models.Host
@@ -321,10 +311,10 @@ func (c *HostCheckController) AwsStart() {
 		return
 	}
 
-	time.Sleep(time.Duration(10)*time.Second)
-	if c.Service.UseNacos == ""{
+	time.Sleep(time.Duration(10) * time.Second)
+	if c.Service.UseNacos == "" {
 		c.Service.UseNacos = c.Project.Nacos1
-		if err := models.UpdateServiceAndRelated(c.Service); err != nil{
+		if err := models.UpdateServiceAndRelated(c.Service); err != nil {
 			c.SetJson(1, err.Error(), "update service.UseNacos failed!")
 			return
 		}
@@ -337,13 +327,9 @@ func (c *HostCheckController) AwsStart() {
 		return
 	}
 
-
 	c.SetJson(0, result, "")
 	return
 }
-
-
-
 
 // @Title get AwsStatus by instanceId and region
 // @Description get AwsStatus by instanceId and region
@@ -363,9 +349,9 @@ func (c *HostCheckController) AwsCheckStop() {
 
 	myAws.Alias = project.Alias
 
-	if c.Service.UseNacos == ""{
+	if c.Service.UseNacos == "" {
 		c.Service.UseNacos = c.Project.Nacos1
-		if err := models.UpdateServiceAndRelated(c.Service); err != nil{
+		if err := models.UpdateServiceAndRelated(c.Service); err != nil {
 			c.SetJson(1, err.Error(), "update service.UseNacos failed!")
 			return
 		}
@@ -423,9 +409,6 @@ func (c *HostCheckController) AwsCheckStop() {
 	return
 }
 
-
-
-
 // @Title get AwsStatus by instanceId and region
 // @Description get AwsStatus by instanceId and region
 // @Param   id     		query     string 		true       "instance id"
@@ -453,8 +436,6 @@ func (c *HostCheckController) AwsSetStopTime() {
 	return
 }
 
-
-
 // @Title get AwsStatus by instanceId and region
 // @Description get AwsStatus by instanceId and region
 // @Param   id     		query     string 		true       "instance id"
@@ -467,10 +448,9 @@ func (c *HostCheckController) AwsStopOnlineHost() {
 	hostId, _ := c.GetInt("hostId", 0)
 	host, _ := models.GetHostById(hostId)
 
-
-	if c.Service.UseNacos == ""{
+	if c.Service.UseNacos == "" {
 		c.Service.UseNacos = c.Project.Nacos1
-		if err := models.UpdateServiceAndRelated(c.Service); err != nil{
+		if err := models.UpdateServiceAndRelated(c.Service); err != nil {
 			c.SetJson(1, err.Error(), "update service.UseNacos failed!")
 			return
 		}
@@ -501,5 +481,3 @@ func (c *HostCheckController) AwsStopOnlineHost() {
 	return
 
 }
-
-
