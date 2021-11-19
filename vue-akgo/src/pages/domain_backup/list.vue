@@ -66,14 +66,14 @@
             prop="DnsServer"
             label="DnsServer"
             align="center"
-            width="600">
+            width="500">
           </el-table-column>
 
           <el-table-column
             prop="DomainSource"
             label="来源"
             align="center"
-            width="600">
+            width="500">
           </el-table-column>
 
           <el-table-column
