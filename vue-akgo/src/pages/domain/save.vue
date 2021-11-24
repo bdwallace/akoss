@@ -202,7 +202,7 @@
         itemPlatform: [],
         itemService: [],
         itemDomain: [],
-        itemClass: ["download", "h5", "download-share", "gateway", "mqtt", "other"],
+        itemClass: ["download", "h5", "h5-proxy", "h5-site", "download-share", "gateway", "mqtt", "other"],
 
         form: {
           Name: null,

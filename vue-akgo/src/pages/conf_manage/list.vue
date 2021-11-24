@@ -149,6 +149,8 @@
         on_submit_loading: false,
         itemClass: [
           "h5",
+          "h5-proxy",
+          "h5-site",
           "merchant",
           "download",
           "download-share",

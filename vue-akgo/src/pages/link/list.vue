@@ -207,6 +207,8 @@
                 table_platform_data: [],
                 itemClass: [
                     "h5",
+                    "h5-proxy",
+                    "h5-site",
                     "merchant",
                     "download",
                     "download-share",

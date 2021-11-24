@@ -156,7 +156,7 @@
               <el-button type="primary" icon="plus" size="mini"   @click="add_valueJson()">添加</el-button>
             </div>
 
-          <el-form-item v-if="form.Class == 'h5' || form.Class == 'merchant' || form.Class == 'other'">
+          <el-form-item v-if="form.Class == 'h5' || form.Class == 'h5-proxy' || form.Class == 'h5-site' || form.Class == 'merchant' || form.Class == 'other'">
             <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px">
 
             <el-form-item label="黑名单列表:" prop="BlackList" label-width="100px">
@@ -371,6 +371,8 @@ allow all;"
         itemClass: [
           "java",
           "h5",
+          "h5-proxy",
+          "h5-site",
           "merchant",
           "download",
           "download-share",

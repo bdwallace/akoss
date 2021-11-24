@@ -449,11 +449,10 @@ func (c *BaseDocker) CreateH5BlackListCmd(host *models.Host) (cmd string, err er
 
 	//docker cp 命令
 	blackListCmds := make([]string, 0)
-	blackListCmds = append(blackListCmds, "date +%Y%m%d-%H%M%S-%s")
 	cc := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s ", host.UseIp, c.BaseComponents.Docker.Port)
 	blackListCmds = append(blackListCmds, fmt.Sprintf("%s cp %s %s:/etc/nginx/conf.d/deny.conf", cc, srcFilePath, c.BaseComponents.Docker.Name))
-
 	blackListCmds = append(blackListCmds, fmt.Sprintf("sleep 1s; %s restart %s ", cc, c.BaseComponents.Docker.Name))
+	//blackListCmds = append(blackListCmds, fmt.Sprintf("sleep 1s;  %s exec -i %s nginx -s reload", cc, c.BaseComponents.Docker.Name))
 	cmd = strings.Join(blackListCmds, " ; ")
 	cmd = fmt.Sprintf("%s:%s##\n", host.UseIp, cmd)
 
@@ -556,6 +555,12 @@ func (c *BaseDocker) CreateDockerCmd(task *models.Task, count int, serviceClass 
 
 	}
 
+	//   add other service class
+	m := make(map[string]bool, 0)
+	m["h5"] = true
+	m["h5-proxy"] = true
+	m["h5-site"] = true
+
 	//var domainCmd string
 	// 遍历hosts  创建所有主机的 pull run 命令
 	for i, host := range c.BaseComponents.Hosts {
@@ -598,7 +603,7 @@ func (c *BaseDocker) CreateDockerCmd(task *models.Task, count int, serviceClass 
 			}
 		}
 
-		if c.BaseComponents.Service.Class == "h5" && c.BaseComponents.Service.BlackList != "" {
+		if m[c.BaseComponents.Service.Class] && c.BaseComponents.Service.BlackList != "" {
 			blackListCmd, err = c.CreateH5BlackListCmd(host)
 		}
 	}
@@ -624,7 +629,9 @@ func (c *BaseDocker) CreateDockerCmd(task *models.Task, count int, serviceClass 
 		}
 	}
 
-	if c.BaseComponents.Service.Class == "h5" && blackListCmd != "" {
+	// add other service class
+
+	if m[c.BaseComponents.Service.Class] && blackListCmd != "" {
 		c.Cmds += fmt.Sprintf("%s\n[%s]", "h5-black-list", blackListCmd)
 	}
 

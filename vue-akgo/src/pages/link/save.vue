@@ -36,9 +36,9 @@
             </el-form-item>
 
             <el-form-item v-if="form.Projects[0] && form.Projects[0].Id != null" label="选择平台:" prop="Project" label-width="120px">
-              <el-select 
+              <el-select
                   v-if="form.Platforms[0]"
-                  v-model="form.Platforms[0].Id" 
+                  v-model="form.Platforms[0].Id"
                   clearable
                   placeholder="请选择"
                   @change="change_itemPlatform()">
@@ -49,9 +49,9 @@
                   :value="item.Id">
                 </el-option>
               </el-select>
-              <el-select 
+              <el-select
                   v-if="form.Platforms[0] && form.Platforms[0].Id != null"
-                  v-model="form.Class" 
+                  v-model="form.Class"
                   placeholder="请选择">
                 <el-option
                   v-for="item in itemClass"
@@ -100,14 +100,16 @@
         itemProject: [],
         itemPlatform: [],
         itemClass: [
-          "h5", 
+          "h5",
+          "h5-proxy",
+          "h5-site",
           "merchant",
-          "download", 
-          "download-share", 
-          "agent", 
-          "share-agent", 
-          "customer", 
-          "chat-backend", 
+          "download",
+          "download-share",
+          "agent",
+          "share-agent",
+          "customer",
+          "chat-backend",
         ],
         route_id: this.$route.params.id,
         load_data: false,
@@ -134,7 +136,7 @@
                 this.itemProject.unshift({Id: null, Name: "共同环境"})
             })
         },
-        
+
         // 下拉框获得选择的环境所有平台
         get_itemPlatform(){
           this.load_data = true

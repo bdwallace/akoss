@@ -154,7 +154,12 @@ func (c *DeployController) AnalyzeDockerCmd(allCmd string, class string) (checkR
 	blackListCmds = make([]string, 0)
 
 	if class != "java" {
-		if class == "h5" && blackListIndex > 0 {
+		// add other service class
+		m := make(map[string]bool, 0)
+		m["h5"] = true
+		m["h5-proxy"] = true
+		m["h5-site"] = true
+		if m[class] && blackListIndex > 0 {
 			blackListCmd := allCmd[blackListIndex:]
 			blackListCmds = append(blackListCmds, c.getEveryoneCmd(blackListCmd)...)
 		}
@@ -279,7 +284,12 @@ func (c *DeployController) releaseHandling(ch chan int, task *models.Task, deplo
 		// }
 
 	}
-	if deploy.Class == "h5" && blackListCmds != nil {
+	// add other service class
+	m := make(map[string]bool, 0)
+	m["h5"] = true
+	m["h5-proxy"] = true
+	m["h5-site"] = true
+	if m[deploy.Class] && blackListCmds != nil {
 		var blackListResId int64
 		for _, cmd := range blackListCmds {
 			if cmd == "" {
