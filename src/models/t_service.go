@@ -310,7 +310,7 @@ func SearchFrontendServices(searchText string, projectId int, platformId int) (s
 func GetServiceClassJava() (list *orm.ParamsList, err error) {
 	list = new(orm.ParamsList)
 	o := orm.NewOrm()
-	_, err = o.QueryTable(serviceTableName).Filter("class", "java").Filter("is_del", 0).GroupBy("name").OrderBy("name").ValuesFlat(list, "name")
+	_, err = o.QueryTable(serviceTableName).Filter("class", "java").Filter("is_del", 0).Filter("project_id__lt",3).GroupBy("name").OrderBy("name").ValuesFlat(list, "name")
 
 	return
 }
@@ -318,7 +318,7 @@ func GetServiceClassJava() (list *orm.ParamsList, err error) {
 func GetServiceClassOther() (list *orm.ParamsList, err error) {
 	list = new(orm.ParamsList)
 	o := orm.NewOrm()
-	_, err = o.QueryTable(serviceTableName).Exclude("class", "java").Filter("is_del", 0).GroupBy("name").OrderBy("name").ValuesFlat(list, "name")
+	_, err = o.QueryTable(serviceTableName).Exclude("class", "java").Filter("is_del", 0).Filter("project_id__lt",3).GroupBy("name").OrderBy("name").ValuesFlat(list, "name")
 	return
 }
 
