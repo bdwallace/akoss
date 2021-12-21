@@ -356,7 +356,7 @@ func (c *DomainController) GetAllMonitor() {
 	}
 
 	// add other service class
-	var dataNew [6]Domain
+	dataNew := make([]Domain,10)
 	dataNew[0].Class = "download"
 	dataNew[1].Class = "h5"
 	dataNew[2].Class = "h5-proxy"
@@ -371,13 +371,13 @@ func (c *DomainController) GetAllMonitor() {
 		case "h5":
 			dataNew[1].Domain = append(dataNew[1].Domain, data.Domain)
 		case "h5-proxy":
-			dataNew[2].Domain = append(dataNew[1].Domain, data.Domain)
+			dataNew[2].Domain = append(dataNew[2].Domain, data.Domain)
 		case "h5-site":
-			dataNew[3].Domain = append(dataNew[1].Domain, data.Domain)
+			dataNew[3].Domain = append(dataNew[3].Domain, data.Domain)
 		case "gateway":
-			dataNew[4].Domain = append(dataNew[2].Domain, data.Domain)
+			dataNew[4].Domain = append(dataNew[4].Domain, data.Domain)
 		case "mqtt":
-			dataNew[5].Domain = append(dataNew[3].Domain, fmt.Sprintf("%s:%s", data.Domain, data.Port))
+			dataNew[5].Domain = append(dataNew[5].Domain, fmt.Sprintf("%s:%s", data.Domain, data.Port))
 		}
 	}
 
