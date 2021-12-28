@@ -356,13 +356,14 @@ func (c *DomainController) GetAllMonitor() {
 	}
 
 	// add other service class
-	dataNew := make([]Domain,10)
+	dataNew := make([]Domain,7)
 	dataNew[0].Class = "download"
 	dataNew[1].Class = "h5"
 	dataNew[2].Class = "h5-proxy"
 	dataNew[3].Class = "h5-site"
 	dataNew[4].Class = "gateway"
 	dataNew[5].Class = "mqtt"
+	dataNew[6].Class = "other"
 	datas, _ := models.GetDomainMonitorAll()
 	for _, data := range datas {
 		switch data.Class {
@@ -378,6 +379,8 @@ func (c *DomainController) GetAllMonitor() {
 			dataNew[4].Domain = append(dataNew[4].Domain, data.Domain)
 		case "mqtt":
 			dataNew[5].Domain = append(dataNew[5].Domain, fmt.Sprintf("%s:%s", data.Domain, data.Port))
+		case "other":
+			dataNew[6].Domain = append(dataNew[6].Domain, data.Domain)
 		}
 	}
 
