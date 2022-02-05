@@ -28,6 +28,12 @@
                         style="width: 300px;"></el-input>
             </el-form-item>
 
+            <el-form-item label="Nacos-3:" prop="Nacos3" label-width="120px">
+              <el-input v-model="form.Nacos3" placeholder="请类型名称"
+                        style="width: 300px;"></el-input>
+            </el-form-item>
+
+
             <el-form-item label="Prometheus:" prop="Prometheus" label-width="120px">
               <el-input v-model="form.Prometheus" placeholder="请类型名称"
                         style="width: 300px;"></el-input>

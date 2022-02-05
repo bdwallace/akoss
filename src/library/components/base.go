@@ -16,7 +16,7 @@ import (
 	"github.com/gaoyue1989/sshexec"
 )
 
-const SSHTIMEOUT = 3600
+const SSHTIMEOUT = 10
 const SSHWorker = 10
 
 const SSHREMOTETIMEOUT = 600

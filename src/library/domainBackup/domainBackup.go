@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/alidns"
+	tencentDNSpod "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/dnspod/v20210323"
 	"models"
 	"strings"
 	"sync"
@@ -16,25 +17,25 @@ type AnalysisImportDomain struct {
 	Client    *alidns.Client
 }
 
-type ImportDomainRecords struct {
+type ImportAliDomainRecords struct {
 	keyId      string
 	keySecret  string
 	domainName string
 	client     *alidns.Client
 }
 
-type ReqImportDomainRecord struct {
+type ReqImportAliDomainRecord struct {
 	KeyId     string
 	KeySecret string
-	Domains   []*models.DomainBackup
+	Domains   []*models.AliDomain
 }
 
-func AnalysisResponse(importDomain *AnalysisImportDomain) (backupDomains []*models.DomainBackup, err error) {
+func AliCloudAnalysisResponse(importDomain *AnalysisImportDomain) (backupDomains []*models.AliDomain, err error) {
 
 	var wgA sync.WaitGroup
 	wgA.Add(len(importDomain.Resp.Domains.Domain))
 	for i, _ := range importDomain.Resp.Domains.Domain {
-		tmp := new(models.DomainBackup)
+		tmp := new(models.AliDomain)
 		info, err := json.Marshal(importDomain.Resp.Domains.Domain[i])
 		if err != nil {
 			fmt.Printf("error:  AnalysisResponse.json.Marshal(Domian) is failed domainName: %s  ::  %s\n", importDomain.Resp.Domains.Domain[i].DomainName, err.Error())
@@ -47,13 +48,13 @@ func AnalysisResponse(importDomain *AnalysisImportDomain) (backupDomains []*mode
 			return nil, err
 		}
 
-		importDomainRecords := &ImportDomainRecords{
+		importDomainRecords := &ImportAliDomainRecords{
 			keyId:      importDomain.KeyId,
 			keySecret:  importDomain.KeySecret,
 			domainName: importDomain.Resp.Domains.Domain[i].DomainName,
 			client:     importDomain.Client,
 		}
-		record, err := DomainRecords(importDomainRecords)
+		record, err := AliCloudDomainRecords(importDomainRecords)
 		if err != nil {
 			fmt.Printf("error:  AnalysisResponse.DomainRecords is failed domainName: %s  ::  %s\n", importDomain.Resp.Domains.Domain[i].DomainName, err.Error())
 			record = ""
@@ -73,7 +74,7 @@ func AnalysisResponse(importDomain *AnalysisImportDomain) (backupDomains []*mode
 	return
 }
 
-func DomainRecords(importDomainRecords *ImportDomainRecords) (domainRecords string, err error) {
+func AliCloudDomainRecords(importDomainRecords *ImportAliDomainRecords) (domainRecords string, err error) {
 	//client, err := alidns.NewClientWithAccessKey("cn-hangzhou",importDomainRecords.keyId, importDomainRecords.keySecret)
 
 	request := alidns.CreateDescribeDomainRecordsRequest()
@@ -93,7 +94,7 @@ func DomainRecords(importDomainRecords *ImportDomainRecords) (domainRecords stri
 	return string(domainRecordsJson), err
 }
 
-func ImportDomain(req *ReqImportDomainRecord) (existsDomainLlist []string, err error) {
+func AliCloudImportDomain(req *ReqImportAliDomainRecord) (existsDomainLlist []string, err error) {
 
 	client, err := alidns.NewClientWithAccessKey("cn-qingdao", req.KeyId, req.KeySecret)
 	if err != nil {
@@ -148,5 +149,49 @@ func ImportDomain(req *ReqImportDomainRecord) (existsDomainLlist []string, err e
 		}
 	}
 
+	return
+}
+
+
+
+func AnalysisTenCentDNSpodDomainToDatabase(domain *tencentDNSpod.DescribeDomainListResponse)(err error){
+
+	for _, item := range domain.Response.DomainList{
+		tmp := new(models.Tencentdnspod)
+		var strEffectiveDNS string
+		for i, effe := range item.EffectiveDNS{
+			if i > 0 {
+				strEffectiveDNS += ", "
+			}
+			strEffectiveDNS += *effe
+		}
+		tmp.DomainId = int(*item.DomainId)
+		tmp.Name = *item.Name
+		tmp.Status = *item.Status
+		tmp.TTL = int(*item.TTL)
+		tmp.CNAMESpeedup = *item.CNAMESpeedup
+		tmp.DNSStatus = *item.DNSStatus
+		tmp.Grade = *item.Grade
+		tmp.GroupId = int(*item.GroupId)
+		tmp.SearchEnginePush = *item.SearchEnginePush
+		tmp.Remark = *item.Remark
+		tmp.Punycode = *item.Punycode
+		tmp.EffectiveDNS = strEffectiveDNS
+		tmp.GradeLevel = int(*item.GradeLevel)
+		tmp.GradeTitle = *item.GradeTitle
+		tmp.IsVip = *item.IsVip
+		tmp.VipStartAt = *item.VipStartAt
+		tmp.VipEndAt = *item.VipEndAt
+		tmp.VipAutoRenew = *item.VipAutoRenew
+		tmp.RecordCount = int(*item.RecordCount)
+		tmp.CreatedOn = *item.CreatedOn
+		tmp.UpdatedOn = *item.UpdatedOn
+		tmp.Owner = *item.Owner
+
+		err = models.AddOrUpdateTenCentDNSPod(tmp)
+		if err != nil{
+			return
+		}
+	}
 	return
 }

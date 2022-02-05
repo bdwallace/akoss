@@ -243,6 +243,17 @@ const routes = [{
             auth: true
         }
     }, {
+        path: '/godaddy',
+        name: 'godaddy',
+        components: {
+            default: require('pages/godaddy/list'),
+            menuView: require('components/leftSlide')
+        },
+        meta: {
+            title: "godaddy",
+            auth: true
+        }
+    }, {
         path: '/domainExport/info',
         name: 'domainExImportInfo',
         components: {

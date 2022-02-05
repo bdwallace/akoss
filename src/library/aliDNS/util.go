@@ -18,9 +18,10 @@ type ReqGetAliDNS struct {
 }
 
 type RespGetAliDNS struct {
-	PageNumber int
-	Total      int
-	Domains    []*models.DomainBackup
+	PageNumber 	int
+	Total      	int
+	Class 		string
+	Domains  	[]*models.AliDomain
 }
 
 type ReqRemoteAliDomain struct {
@@ -84,7 +85,7 @@ func GetAliDNS(req *ReqGetAliDNS) (resp *RespGetAliDNS, err error) {
 	return
 }
 
-func GetRemoteAliDomains(remote *ReqRemoteAliDomain) (domains []*models.DomainBackup, err error) {
+func GetRemoteAliDomains(remote *ReqRemoteAliDomain) (domains []*models.AliDomain, err error) {
 
 	importDomian := &domainBackup.AnalysisImportDomain{
 		Resp:      remote.response,
@@ -92,7 +93,7 @@ func GetRemoteAliDomains(remote *ReqRemoteAliDomain) (domains []*models.DomainBa
 		KeySecret: remote.req.KeySecret,
 		Client:    remote.client,
 	}
-	domains, err = domainBackup.AnalysisResponse(importDomian)
+	domains, err = domainBackup.AliCloudAnalysisResponse(importDomian)
 	if err != nil {
 		fmt.Println("error:  domainBackup.AnalysisResponse  ::  ", err.Error())
 		err = fmt.Errorf("获取域名失败")
@@ -124,7 +125,7 @@ func GetRemoteAliDomains(remote *ReqRemoteAliDomain) (domains []*models.DomainBa
 	return
 }
 
-func BackupAliDomainToLocal(domains []*models.DomainBackup) {
+func BackupAliDomainToLocal(domains []*models.AliDomain) {
 	var wgM sync.WaitGroup
 	wgM.Add(len(domains))
 	for i, _ := range domains {
@@ -137,5 +138,4 @@ func BackupAliDomainToLocal(domains []*models.DomainBackup) {
 		}(i)
 	}
 	wgM.Wait()
-
 }

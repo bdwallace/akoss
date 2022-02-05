@@ -93,12 +93,14 @@ func (c *WalleController) LineGet() {
 		c.SetJson(0, err, "error: get service nacos faild")
 	}
 
-	url := "http://" + c.Service.UseNacos + "/nacos/v1/cs/configs"
-
-	ipList, err := components.LineGet(url)
-	if err != nil {
-		c.SetJson(1, err.Error(), "访问nacos的下线列表失败")
-		return
+	ipList := ""
+	if c.Service.UseNacos != "" {
+		url := "http://" + c.Service.UseNacos + "/nacos/v1/cs/configs"
+		ipList, err = components.LineGet(url)
+		if err != nil {
+			c.SetJson(1, err.Error(), "访问nacos的下线列表失败")
+			return
+		}
 	}
 
 	c.SetJson(0, ipList, "")
@@ -120,12 +122,14 @@ func (c *WalleController) LineChange() {
 	sId, err := c.GetInt("service_id")
 	if err != nil {
 		fmt.Println("error: get service id faild")
-		c.SetJson(0, err, "error: get service id faild")
+		c.SetJson(0, err, "获取关联 service 失败")
+		return
 	}
 
 	if err := c.GetServiceNacos(sId); err != nil {
 		fmt.Println("error: get service nacos faild")
-		c.SetJson(0, err, "error: get service nacos faild")
+		c.SetJson(0, err, "获取服务关联 nacos 失败")
+		return
 	}
 
 	url := "http://" + c.Service.UseNacos + "/nacos/v1/cs/configs"
@@ -178,7 +182,7 @@ func (c *WalleController) GetServiceNacos(serviceId int) (err error) {
 		return
 	}
 
-	if c.Service.UseNacos == "" {
+	if c.Service.UseNacos == "" && c.Project.Nacos1 != ""{
 		c.Service.UseNacos = c.Project.Nacos1
 		if err = models.UpdateServiceAndRelated(c.Service); err != nil {
 			c.SetJson(1, err.Error(), "update service.UseNacos failed!")

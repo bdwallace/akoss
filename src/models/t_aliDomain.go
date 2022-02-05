@@ -9,7 +9,7 @@ import (
 )
 
 // table
-type DomainBackup struct {
+type AliDomain struct {
 	Id              int    `orm:"column(id);pk;auto"`
 	DomainName      string `orm:"column(domain_name);size(100)"`
 	InstanceEndTime string `orm:"column(instance_end_time);size(100)"`
@@ -48,7 +48,7 @@ var DBStr string
 var MysqlDB *sql.DB
 
 func init() {
-	orm.RegisterModelWithPrefix("t_", new(DomainBackup))
+	orm.RegisterModelWithPrefix("t_", new(AliDomain))
 }
 
 func ConnDB() {
@@ -68,21 +68,21 @@ func ConnDB() {
 	return
 }
 
-func GetBackupById(id int) (*DomainBackup, error) {
+func GetBackupById(id int) (*AliDomain, error) {
 
 	o := orm.NewOrm()
-	domainBackup := &DomainBackup{Id: id}
+	domainBackup := &AliDomain{Id: id}
 	if err := o.Read(domainBackup); err != nil {
 		return nil, err
 	}
 	return domainBackup, nil
 }
 
-func GetBackupByDomainName(domainName string) (*DomainBackup, error) {
+func GetBackupByDomainName(domainName string) (*AliDomain, error) {
 	o := orm.NewOrm()
 
-	r := new(DomainBackup)
-	if err := o.QueryTable(DomainBackupTableName).Filter("domain_name", domainName).One(r); err != nil {
+	r := new(AliDomain)
+	if err := o.QueryTable(AliDomainTableName).Filter("domain_name", domainName).One(r); err != nil {
 
 		return nil, err
 	}
@@ -90,11 +90,11 @@ func GetBackupByDomainName(domainName string) (*DomainBackup, error) {
 	return r, nil
 }
 
-func GetBackupDomainByPageBreak(start, length int) ([]*DomainBackup, error) {
+func GetBackupDomainByPageBreak(start, length int) ([]*AliDomain, error) {
 
 	o := orm.NewOrm()
-	resDomainBackup := make([]*DomainBackup, 0, 60)
-	_, err := o.QueryTable(DomainBackupTableName).Limit(length, start).OrderBy("id").All(&resDomainBackup)
+	resDomainBackup := make([]*AliDomain, 0, 60)
+	_, err := o.QueryTable(AliDomainTableName).Limit(length, start).OrderBy("id").All(&resDomainBackup)
 	if err != nil {
 		return nil, err
 	}
@@ -102,11 +102,11 @@ func GetBackupDomainByPageBreak(start, length int) ([]*DomainBackup, error) {
 	return resDomainBackup, nil
 }
 
-func AddOrUpdateBackupDomain(domainBackup *DomainBackup) (err error) {
+func AddOrUpdateBackupDomain(domainBackup *AliDomain) (err error) {
 
 	o := orm.NewOrm()
-	r := new(DomainBackup)
-	err = o.QueryTable(DomainBackupTableName).Filter("domain_name", domainBackup.DomainName).One(r)
+	r := new(AliDomain)
+	err = o.QueryTable(AliDomainTableName).Filter("domain_name", domainBackup.DomainName).One(r)
 
 	if r.Id > 0 {
 		// update
@@ -131,7 +131,7 @@ func AddOrUpdateBackupDomain(domainBackup *DomainBackup) (err error) {
 func CreateTableForBackupTheDomainWithAccKeyAndDate(accessKeyId string) (tableName string, err error) {
 
 	date := time.Now().Format("2006-01-02")
-	tableName = fmt.Sprintf("t_domain_backup_%s_%s", accessKeyId, date)
+	tableName = fmt.Sprintf("t_ali_domain_backup_%s_%s", accessKeyId, date)
 
 	createSql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS `%s` ("+
 		"`id` int(11) NOT NULL AUTO_INCREMENT, "+
@@ -140,7 +140,7 @@ func CreateTableForBackupTheDomainWithAccKeyAndDate(accessKeyId string) (tableNa
 		"`dns_server` varchar(100) NOT NULL DEFAULT '', "+
 		"`domain_info` longtext NOT NULL, "+
 		"`domain_record` longtext NOT NULL, "+
-		"`domain_source` varchar(100) NOT NULL DEFAULT '', "+
+		"`domain_source` longtext NOT NULL, "+
 		"PRIMARY KEY (`id`)"+
 		") ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8;",
 		tableName,
@@ -166,10 +166,10 @@ func TruncateBackupTable(tableName string) (err error) {
 	return
 }
 
-func ExportAliDomainDataToBackup() (allData []*DomainBackup, err error) {
+func ExportAliDomainDataToBackup() (allData []*AliDomain, err error) {
 
 	o := orm.NewOrm()
-	_, err = o.QueryTable(DomainBackupTableName).All(&allData)
+	_, err = o.QueryTable(AliDomainTableName).All(&allData)
 	return
 }
 
@@ -195,7 +195,7 @@ func InsertTempDomainBackup(tableName string, domain *TempDomainBackup) (err err
 func InsertTempDomainBackupFormBackup(tempTableName string) (err error) {
 
 	o := orm.NewOrm()
-	insertSql := fmt.Sprintf("INSERT INTO `%s` SELECT * FROM `%s`", tempTableName, DomainBackupTableName)
+	insertSql := fmt.Sprintf("INSERT INTO `%s` SELECT * FROM `%s`", tempTableName, AliDomainTableName)
 	_, err = o.Raw(insertSql).Exec()
 	return
 }

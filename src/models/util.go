@@ -144,8 +144,8 @@ const (
 	domainDeleteRecordsTableName                = "t_delete_domain_reco"
 	domainDeleteRecordsFroProjectForeignKeyName = "delete_domian_reco_for_project_id"
 
-	// t_domain_backup
-	DomainBackupTableName = "t_domain_backup"
+	// t_ali_domain
+	AliDomainTableName = "t_ali_domain"
 
 	//confTableName,confProjectForeignKeyName,projectId,projectTableName,primaryKey
 
@@ -159,6 +159,12 @@ const (
 	// linkProjectForLinkId = "t_link_id"
 	// linkProjectForProjectForeignKeyName = "link_project_for_project_id"
 	// linkProjectForProjectId = "t_project_idw
+
+
+	// t_godaddy
+	GoDaddyTableName = "t_godaddy"
+	//t_tencentdnspod
+	TenCentDNSPodTableName = "t_tencentdnspod"
 
 	// t_cloud 各种云帐号信息
 	cloudTableName = "t_cloud"

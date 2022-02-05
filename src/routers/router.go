@@ -17,6 +17,7 @@ import (
 	domaincontroller "controllers/domain"
 	"controllers/domainExImport"
 	fastcontrollers "controllers/fast"
+	godaddycontrollers "controllers/godaddyDomain"
 	hostcontrollers "controllers/host"
 	inspectcontrollers "controllers/inspect"
 	linkcontrollers "controllers/link"
@@ -146,6 +147,9 @@ func init() {
 		),
 		beego.NSInclude(
 			&domainExImport.DomainExImport{},
+		),
+		beego.NSInclude(
+			&godaddycontrollers.GodaddyControllers{},
 		),
 	)
 	beego.AddNamespace(akNs)

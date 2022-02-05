@@ -4,10 +4,12 @@ import (
 	"controllers"
 	"encoding/json"
 	"fmt"
-	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
-	"github.com/aliyun/alibaba-cloud-sdk-go/services/alidns"
+	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
+	"library/CloudDNSDomain"
+	"library/TenCentDNS"
+	"models/request"
+
 	"library/aliDNS"
-	"library/domainBackup"
 	"models"
 )
 
@@ -15,16 +17,19 @@ type DomainExImport struct {
 	controllers.BaseController
 }
 
-// @Title 域名导出
-// @Description alicloud domain export
+
+// @Title search domain
+// @Description search domain
 // @Success 0 {id} int64
 // @Failure 1 导出 domain 失败
 // @Failure 2 User not found
 // @router /searchAliDomain [get]
-func (c *DomainExImport) DomainExport() {
+func (c *DomainExImport) SearchDomain() {
 
-	keyId := c.GetString("export_key_id")
-	keySecret := c.GetString("export_key_secret")
+
+	src := c.GetString("src_class")
+	keyId := c.GetString("src_key_id")
+	keySecret := c.GetString("src_key_secret")
 	domainName := c.GetString("domain_name")
 	pageSize, err := c.GetInt("page_size", 20)
 	if err != nil {
@@ -39,37 +44,35 @@ func (c *DomainExImport) DomainExport() {
 		c.SetJson(1, err, "获取 page number 失败")
 		return
 	}
-
-	resp := new(aliDNS.RespGetAliDNS)
-
-	if domainName == "" {
-		// 获取全部
-		req := new(aliDNS.ReqGetAliDNS)
-		req.KeyId = keyId
-		req.KeySecret = keySecret
-		req.SearchDomain = domainName
-		req.PageSize = pageSize
-		req.PageNumber = pageNumber
-		resp, err = aliDNS.GetAliDNS(req)
-		if err != nil {
-			c.SetJson(1, err, err.Error())
-			return
-		}
-	} else {
-		// 搜索获取本地
-		searchDomain, err := models.GetBackupByDomainName(domainName)
-		if err != nil {
-			fmt.Printf("error:  GetBackupByDomainName is failed! domian:%s  ::  %s\n", domainName, err.Error())
-			c.SetJson(1, err, "该域名不存在")
-			return
-		}
-		resp.Domains = append(resp.Domains, searchDomain)
-		resp.Total = 1
-		pageNumber = 1
+	if src == "" {
+		fmt.Printf("error:  SearchDomain  ::  src class can't be empty")
+		c.SetJson(1, err, "获取 page number 失败")
+		return
 	}
+	searchReq := new(request.DomainForSearchRequest)
+	searchReq.Src = src
+	searchReq.SrcKeyId = keyId
+	searchReq.SrcKeySecret = keySecret
+	searchReq.SearchDomain = domainName
+	searchReq.PageSize = pageSize
+	searchReq.PageNum = pageNumber
 
-	c.SetJson(0, map[string]interface{}{"item_total": resp.Total, "page_num": pageNumber, "domains": resp.Domains}, "")
-	return
+
+	respSearch, err :=  CloudDNSDomain.DomainSearch(searchReq)
+	if err != nil{
+		fmt.Printf("error:  CloudDNSDomain.DomainSearch(searchReq) is failed!  ::  %s\n", err.Error())
+		c.SetJson(1, err, "搜索 domain 失败")
+		return
+	}
+	if resp, ok := respSearch.(*aliDNS.RespGetAliDNS); ok {
+		resp.Class = "ALi"
+		c.SetJson(0, map[string]interface{}{"item_total": resp.Total, "page_num": pageNumber, "domains": resp.Domains}, "")
+		return
+	}
+	// if resp is tencent domain
+
+	// if resp is cloudfare domain
+
 }
 
 // @Title 域名导入
@@ -80,36 +83,47 @@ func (c *DomainExImport) DomainExport() {
 // @router /domainImport [post]
 func (c *DomainExImport) DomainImport() {
 
-	keyId := c.GetString("dest_key_id")
-	keySecret := c.GetString("dest_key_secret")
-	if keyId == "" || keySecret == "" {
+	src := c.GetString("src_class")
+	dest := c.GetString("dest_class")
+	destKeyId := c.GetString("dest_key_id")
+	destKeySecret := c.GetString("dest_key_secret")
+	if destKeyId == "" || destKeySecret == "" {
 		c.SetJson(1, nil, "请输入目标 key id 和 key secret")
 		return
 	}
+	importReq := new(request.DomainForImportOtherCloudRequest)
+	importReq.Src = src
+	importReq.Dest = dest
+	importReq.DestKeyId = destKeyId
+	importReq.DestKeySecret = destKeySecret
 
-	importDomains := make([]*models.DomainBackup, 0)
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &importDomains)
-	if err != nil {
-		fmt.Println("error：  DomainImport.json.Unmarshal is failed  ::  ", err)
-		c.SetJson(1, err, "解析数据失败，请联系管理员")
-		return
-	}
-	req := &domainBackup.ReqImportDomainRecord{
-		KeyId:     keyId,
-		KeySecret: keySecret,
-		Domains:   importDomains,
-	}
-	failedDomains, err := domainBackup.ImportDomain(req)
-	if err != nil {
-		if len(failedDomains) > 0 {
-			fmt.Println("failed:  domainBackup.ImportDomain is failed  ::  ", failedDomains)
-			resp := fmt.Sprintf("导入域名失败： %s\n", failedDomains)
-			c.SetJson(1, nil, resp)
+
+	if src == "ALi"	{
+		importAliDomains := make([]*models.AliDomain, 0)
+		err := json.Unmarshal(c.Ctx.Input.RequestBody, &importAliDomains)
+		if err != nil {
+			fmt.Println("error：  DomainImport.json.Unmarshal is failed  ::  ", err)
+			c.SetJson(1, err, "解析数据失败，请联系管理员")
 			return
 		}
 
-		fmt.Println("error：  domainBackup.ImportDomain is failed  ::  ", err)
-		c.SetJson(1, err, err.Error())
+		importReq.AliDomain = make([]*models.AliDomain,0)
+		importReq.AliDomain = append(importReq.AliDomain,importAliDomains...)
+	}
+	if src == "TenCent" {
+
+	}
+	if src == "CloudFare" {
+
+	}
+
+	msg, err := CloudDNSDomain.DomainImportToCloud(importReq)
+	if err != nil{
+		if errMsg, ok := msg.(string); ok {
+			c.SetJson(1, err, errMsg)
+		} else {
+			c.SetJson(1, err, "域名导入失败，请联系管理员")
+		}
 		return
 	}
 
@@ -125,116 +139,28 @@ func (c *DomainExImport) DomainImport() {
 // @router /domainBackupAll [get]
 func (c *DomainExImport) DomainBackupAll() {
 
-	keyId := c.GetString("export_key_id")
-	keySecret := c.GetString("export_key_secret")
+	src := c.GetString("src_class")
+	keyId := c.GetString("src_key_id")
+	keySecret := c.GetString("src_key_secret")
 
-	client, err := alidns.NewClientWithAccessKey("cn-qingdao", keyId, keySecret)
-	if err != nil {
-		fmt.Print("error:  alidns.NewClientWithAccessKey is failed  ::  ", err)
-		c.SetJson(1, err, "获取域名失败")
+	backupReq := new(request.DomainForBackUpTolocalRequest)
+	backupReq.Src = src
+	backupReq.SrcKeyId = keyId
+	backupReq.SrcKeySecret = keySecret
+
+	err := CloudDNSDomain.DomainBackUpToLocal(backupReq)
+	if err != nil{
+		fmt.Println("Success：  成功备份全部域名")
+		c.SetJson(1, err, "全量备份到本地失败，请联系管理员")
 		return
+	}else {
+		fmt.Println("Success：  全量备份成功")
+		c.SetJson(0, nil, "全量备份成功")
 	}
-
-	remoteDomains := make([]*models.DomainBackup, 0)
-	request := alidns.CreateDescribeDomainsRequest()
-	request.Scheme = "https"
-	request.PageSize = requests.NewInteger(100)
-	remoteTotal := 100
-	response := new(alidns.DescribeDomainsResponse)
-	models.ConnDB()
-	for i := 1; (100*i)-remoteTotal < 100; i++ {
-		request.PageNumber = requests.NewInteger(i)
-		response, err = client.DescribeDomains(request)
-		if err != nil {
-			fmt.Println("error:  DescribeDomains is failed  ::  ", err.Error())
-			c.SetJson(1, err, "获取域名失败")
-			return
-		}
-		remoteTotal = int(response.TotalCount)
-
-		backupDomian := &domainBackup.AnalysisImportDomain{
-			Resp:      response,
-			KeyId:     keyId,
-			KeySecret: keySecret,
-			Client:    client,
-		}
-
-		domains, err := domainBackup.AnalysisResponse(backupDomian)
-		if err != nil {
-			fmt.Println("error:  domainBackupAll.AnalysisResponse  ::  ", err.Error())
-			c.SetJson(1, err, "获取域名失败")
-			return
-		}
-		remoteDomains = append(remoteDomains, domains...)
-	}
-
-	for _, updateDomain := range remoteDomains {
-		if err = models.AddOrUpdateBackupDomain(updateDomain); err != nil {
-			fmt.Println("error:  domainBackupAll.AddOrUpdateBackupDomain  ::  ", err.Error())
-			c.SetJson(1, err, "更新本地数据失败")
-			return
-		}
-	}
-
-	if int(response.TotalCount) == len(remoteDomains) {
-
-		// 备份，清空，
-		tableName, err := models.CreateTableForBackupTheDomainWithAccKeyAndDate(keyId)
-		if err != nil {
-			fmt.Println("error:  CreateTableForBackupTheDomainWithAccKeyAndDate  ::  ", err.Error())
-			c.SetJson(1, err, "本地创建备份表失败")
-			return
-		}
-
-		oldCount, err := models.CountTempDomainBackup(tableName)
-		if err != nil {
-			fmt.Printf("error:  domainBackupAll.CountTempDomainBackup is failed  ::  %s\n", err.Error())
-			c.SetJson(1, err, "域名未完全备份,请联系管理员")
-			return
-		}
-		if oldCount > 1 {
-			if err = models.TruncateBackupTable(tableName); err != nil {
-				fmt.Printf("error:  domainBackup.TruncateBackupTable is failed  tableName: %s ::  %s\n", tableName, err.Error())
-			}
-		}
-		if err = models.InsertTempDomainBackupFormBackup(tableName); err != nil {
-
-			fmt.Printf("error:  domainBackupAll.InsertTempDomainBackupFormBackup  table : %s ::  %s\n", tableName, err.Error())
-			c.SetJson(1, err, "域名备份失败")
-			return
-		}
-		newCount, err := models.CountTempDomainBackup(tableName)
-		if err != nil {
-			fmt.Printf("error:  domainBackupAll.CountTempDomainBackup is failed  ::  %s\n", err.Error())
-			c.SetJson(1, err, "域名未完全备份,请联系管理员")
-			return
-		}
-		countBackupTable, err := models.CountTempDomainBackup(models.DomainBackupTableName)
-		if err != nil {
-			fmt.Printf("error:  domainBackupAll.t_domain_backup is failed  ::  %s\n", err.Error())
-			c.SetJson(1, err, "域名未完全备份,请联系管理员")
-			return
-		}
-		if newCount >= len(remoteDomains) && newCount == countBackupTable {
-			// truncate
-			if err = models.TruncateBackupTable(models.DomainBackupTableName); err != nil {
-				fmt.Printf("error:  domainBackupAll.TruncateBackupTable is failed  tableName: %s  ::  %s\n", models.DomainBackupTableName, err.Error())
-				c.SetJson(1, err, "域名未完全备份,请联系管理员")
-				return
-			}
-		}
-
-	} else {
-		fmt.Printf("error:   int(response.TotalCount) != len(resDomains) ")
-		c.SetJson(1, err, "域名备份数量不符,请联系管理员")
-		return
-	}
-
-	fmt.Println("Success：  成功备份全部域名")
-	c.SetJson(0, nil, "备份成功")
 	return
 }
 
+/*
 // @Title 域名增量备份
 // @Description alicloud domain backup incr
 // @Success 0 {id} int64
@@ -244,7 +170,7 @@ func (c *DomainExImport) DomainBackupAll() {
 func (c *DomainExImport) DomainBackupIncr() {
 	keyId := c.GetString("export_key_id")
 	keySecret := c.GetString("export_key_secret")
-	backupDomains := make([]*models.DomainBackup, 0)
+	backupDomains := make([]*models.AliDomain, 0)
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &backupDomains)
 	if err != nil {
 		fmt.Println("error：  DomainImport.json.Unmarshal is failed  ::  ", err)
@@ -281,7 +207,7 @@ func (c *DomainExImport) DomainBackupIncr() {
 			KeySecret: keySecret,
 			Client:    client,
 		}
-		domains, err := domainBackup.AnalysisResponse(importDomian)
+		domains, err := domainBackup.AliCloudAnalysisResponse(importDomian)
 		if err != nil {
 			fmt.Println("error:  DomainBackupIncr.AnalysisResponse  ::  ", err.Error())
 			err = fmt.Errorf("获取域名失败")
@@ -305,3 +231,75 @@ func (c *DomainExImport) DomainBackupIncr() {
 	return
 
 }
+*/
+
+
+// @Title TenCentCloudDNS Get Domain List
+// @Description TenCentCloudDNS Get Domain List
+// @Success 0 {id} int64
+// @Failure 1 获取 TenCentCloudDNS Domain List 失败
+// @Failure 2 User not found
+// @router /tenCentDomain [get]
+func (c * DomainExImport)TenCentCloutDomainList(){
+
+	credential := common.NewCredential(
+		"AKIDXv50g6GAoDMFsGPKzOXQ3QXOzKPEm46s",
+		"Zty83kBNIxMVO1OWP8crsd8NNI0WqwmN",
+	)
+	TenCentDNS.TenCentDNSPodDescribeDomainList(credential)
+	fmt.Println("end")
+	c.SetJson(0,nil, "")
+	return
+}
+
+
+
+// @Title TenCentCloudDNS Post Created Domain
+// @Description TenCentCloudDNS Post Created Domain
+// @Success 0 {id} int64
+// @Failure 1 添加 TenCentCloudDNS Domain 失败
+// @Failure 2 User not found
+// @router /tenCentDomain [post]
+func (c * DomainExImport)CreateTenCentCloutDomain(){
+
+	credential := common.NewCredential(
+		"AKIDXv50g6GAoDMFsGPKzOXQ3QXOzKPEm46s",
+		"Zty83kBNIxMVO1OWP8crsd8NNI0WqwmN",
+	)
+	TenCentDNS.TenCentDNSPodCreateDomain(credential)
+	fmt.Printf("end")
+	c.SetJson(0,nil, "")
+	return
+}
+
+
+// @Title TenCentCloudDNS Get Domain Details
+// @Description TenCentCloudDNS Get Domain Details
+// @Success 0 {id} int64
+// @Failure 1 获取 TenCentCloudDNS Domain Details 失败
+// @Failure 2 User not found
+// @router /tenCentDomainDescribe [get]
+func (c * DomainExImport)TenCentDescribeDomain(){
+
+	credential := common.NewCredential(
+		"AKIDXv50g6GAoDMFsGPKzOXQ3QXOzKPEm46s",
+		"Zty83kBNIxMVO1OWP8crsd8NNI0WqwmN",
+	)
+/*	domain := c.GetString("domain")
+	domainId, err := c.GetInt("domain_id")
+	if err != nil{
+		return
+	}*/
+
+	//TenCentDNS.DescribeDomain(credential, domain, domainId)
+	TenCentDNS.DescribeDomain(credential, "fengniao668.com", 91281812)
+	fmt.Printf("end")
+	c.SetJson(0,nil, "")
+	return
+}
+
+
+
+
+
+
