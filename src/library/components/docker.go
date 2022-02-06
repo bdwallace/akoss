@@ -8,7 +8,6 @@ import (
 	"models"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/astaxie/beego"
@@ -183,76 +182,65 @@ func (c *BaseDocker) DockerPs(lineData string) (res []map[string]string, err err
 		url := "http://" + c.BaseComponents.Service.UseNacos + "/nacos/v1/cs/configs"
 		lineData, err = LineGet(url)
 		if err != nil {
-				  return
-				  }
+	  		return
+	  	}
 	}
 
 	if lineData != "----" {
 		lineList = strings.Split(lineData, ",")
 	}
 
-	wg := sync.WaitGroup{}
 
-	wg.Add(len(c.BaseComponents.Hosts))
-	for i, _ := range c.BaseComponents.Hosts {
+	for _, host := range c.BaseComponents.Hosts {
 
-		go c.RunDockerPs(c.BaseComponents.Hosts[i],lineList,&res)
+		PsStatus := "------"
+		PsCreatedAt := "------"
+		PsImage := "------"
+		Line := "------"
+
+		if c.BaseComponents.Service.Class == "java" {
+			hostPort := host.PrivateIp + ":" + strings.Split(strings.Split(c.BaseComponents.Service.Port, ",")[0], ":")[0]
+			if common.InList(hostPort, lineList) {
+				Line = "off"
+			} else {
+				Line = "on"
+			}
+		}
+
+		cmd := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s ps -a -f name='^%s$' --format {{.Status}}#{{.CreatedAt}}#{{.Image}}", host.UseIp, c.BaseComponents.Docker.Port, c.BaseComponents.Docker.Name)
+		//beego.Info(cmd)
+
+		s, err := c.BaseComponents.RunDockerPs(cmd, 3, host.UseIp)
+		if err != nil {
+			stErr := fmt.Sprintf("%s", err)
+			if stErr == "cmd time out" {
+				PsStatus = "超时"
+			}
+		} else {
+			if s.Result != "" {
+				arr := strings.Split(s.Result, "#")
+				PsStatus = arr[0]
+				PsCreatedAt = arr[1][:19]
+				if len(strings.Split(arr[2], ":")) == 2 {
+					PsImage = strings.Split(arr[2], ":")[1]
+				} else if len(strings.Split(arr[2], ":")) == 3 {
+					PsImage = strings.Split(arr[2], ":")[2]
+				} else {
+					PsImage = arr[2]
+				}
+			}
+		}
+
+		p, have443 := c.GetPortForDockerServiceHealth()
+		health, url := c.DockerServiceHealth(host, p, have443)
+
+		res = append(res, map[string]string{"host_id": common.IntToStr(host.Id), "ip": host.PrivateIp, "ip_pub": host.PublicIp, "ip_show": host.UseIp, "ps_status": PsStatus, "ps_created_at": PsCreatedAt, "ps_image": PsImage, "line": Line, "health": health, "url": url, "service_id": strconv.Itoa(c.BaseComponents.Service.Id)})
+
 	}
-	wg.Wait()
 	return res, err
 }
 
-var rwm sync.RWMutex
 
-func (c *BaseDocker) RunDockerPs(host *models.Host,lineList []string, res *[]map[string]string)(){
-
-	PsStatus := "------"
-	PsCreatedAt := "------"
-	PsImage := "------"
-	Line := "------"
-
-	if c.BaseComponents.Service.Class == "java" {
-		hostPort := host.PrivateIp + ":" + strings.Split(strings.Split(c.BaseComponents.Service.Port, ",")[0], ":")[0]
-		if common.InList(hostPort, lineList) {
-			Line = "off"
-		} else {
-			Line = "on"
-		}
-	}
-
-	cmd := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s ps -a -f name='^%s$' --format {{.Status}}#{{.CreatedAt}}#{{.Image}}", host.UseIp, c.BaseComponents.Docker.Port, c.BaseComponents.Docker.Name)
-	//beego.Info(cmd)
-
-	s, err := c.BaseComponents.RunDockerPs(cmd, 10, host.UseIp)
-	if err != nil {
-		stErr := fmt.Sprintf("%s", err)
-		if stErr == "cmd time out" {
-			PsStatus = "超时"
-		}
-	} else {
-		if s.Result != "" {
-			arr := strings.Split(s.Result, "#")
-			PsStatus = arr[0]
-			PsCreatedAt = arr[1][:19]
-			if len(strings.Split(arr[2], ":")) == 2 {
-				PsImage = strings.Split(arr[2], ":")[1]
-			} else if len(strings.Split(arr[2], ":")) == 3 {
-				PsImage = strings.Split(arr[2], ":")[2]
-			} else {
-				PsImage = arr[2]
-			}
-		}
-	}
-
-	p, have443 := c.GetPortForDockerServiceHealth()
-	health, url := c.DockerServiceHealth(host, p, have443)
-
-	rwm.Lock()
-	*res = append(*res, map[string]string{"host_id": common.IntToStr(host.Id), "ip": host.PrivateIp, "ip_pub": host.PublicIp, "ip_show": host.UseIp, "ps_status": PsStatus, "ps_created_at": PsCreatedAt, "ps_image": PsImage, "line": Line, "health": health, "url": url, "service_id": strconv.Itoa(c.BaseComponents.Service.Id)})
-	rwm.Unlock()
-
-	return
-}
 
 
 func (c *BaseDocker) createDockerPull(dockerTag string, host *models.Host) (cmdPull string, err error) {
