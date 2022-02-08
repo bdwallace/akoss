@@ -13,7 +13,7 @@ type AliDomain struct {
 	Id              int    `orm:"column(id);pk;auto"`
 	DomainName      string `orm:"column(domain_name);size(100)"`
 	InstanceEndTime string `orm:"column(instance_end_time);size(100)"`
-	DnsServer       string `orm:"column(dns_server);size(100)"`
+	Dns		        string `orm:"column(dns);size(100)"`
 	DomainSource    string `orm:"column(domain_source);size(100)"`
 	DomainInfo      string `orm:"column(domain_info);type(text)"`
 	DomainRecord    string `orm:"column(domain_record);type(text)"`

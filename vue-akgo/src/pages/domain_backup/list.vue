@@ -11,7 +11,7 @@
         <div style="margin-top: 20px">
           <el-radio v-model="srcClass" label="ALi" border size="medium">ALi</el-radio>
           <el-radio v-model="srcClass" label="TenCent" border size="medium">TenCent</el-radio>
-          <el-radio v-model="srcClass" label="CloudFare" border size="medium">CloadFare</el-radio>
+<!--          <el-radio v-model="srcClass" label="CloudFare" border size="medium">CloadFare</el-radio>-->
         </div>
       </el-form-item>
 
@@ -32,7 +32,7 @@
         <div style="margin-top: 20px">
           <el-radio v-model="destClass" label="ALi" border size="medium">ALi</el-radio>
           <el-radio v-model="destClass" label="TenCent" border size="medium">TenCent</el-radio>
-          <el-radio v-model="destClass" label="CloudFare" border size="medium">CloadFare</el-radio>
+<!--          <el-radio v-model="destClass" label="CloudFare" border size="medium">CloadFare</el-radio>-->
         </div>
       </el-form-item>
 
@@ -86,8 +86,8 @@
           </el-table-column>
 
           <el-table-column
-            prop="DnsServer"
-            label="DnsServer"
+            prop="Dns"
+            label="DNS"
             align="center"
             width="500">
           </el-table-column>
@@ -276,6 +276,7 @@
         }
         this.$http.post("/api/domainImport",this.selection,{
           params: {
+            src_class: this.srcClass,
             dest_class: this.destClass,
             dest_key_id: this.Form.DestAccessKeyId,
             dest_key_secret: this.Form.DestAccessKeySecret,

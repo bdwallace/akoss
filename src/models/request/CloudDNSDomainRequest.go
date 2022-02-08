@@ -42,5 +42,6 @@ type DomainForImportOtherCloudRequest struct {
 	DestKeyId 		string
 	DestKeySecret 	string
 	AliDomain 		[]*models.AliDomain
+	TenCentDomain	[]*models.TencentDomain
 
 }

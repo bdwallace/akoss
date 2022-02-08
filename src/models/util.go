@@ -164,7 +164,8 @@ const (
 	// t_godaddy
 	GoDaddyTableName = "t_godaddy"
 	//t_tencentdnspod
-	TenCentDNSPodTableName = "t_tencentdnspod"
+	//TenCentDNSPodTableName = "t_tencentdnspod"
+	TenCentDomainTableName = "t_tencent_domain"
 
 	// t_cloud 各种云帐号信息
 	cloudTableName = "t_cloud"

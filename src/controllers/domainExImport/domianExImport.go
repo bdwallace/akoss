@@ -4,12 +4,9 @@ import (
 	"controllers"
 	"encoding/json"
 	"fmt"
-	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"library/CloudDNSDomain"
-	"library/TenCentDNS"
 	"models/request"
 
-	"library/aliDNS"
 	"models"
 )
 
@@ -64,14 +61,26 @@ func (c *DomainExImport) SearchDomain() {
 		c.SetJson(1, err, "搜索 domain 失败")
 		return
 	}
-	if resp, ok := respSearch.(*aliDNS.RespGetAliDNS); ok {
-		resp.Class = "ALi"
-		c.SetJson(0, map[string]interface{}{"item_total": resp.Total, "page_num": pageNumber, "domains": resp.Domains}, "")
+	if resp, ok := respSearch.(*CloudDNSDomain.RespCloudDomain); ok {
+		// resp is ali domain
+		if resp.AliDomains != nil {
+			c.SetJson(0, map[string]interface{}{"item_total": resp.Total, "page_num": pageNumber, "domains": resp.AliDomains}, "")
+			return
+		}
+
+		// resp is tencent domain
+		if resp.TenCentDomains != nil {
+			c.SetJson(0, map[string]interface{}{"item_total": resp.Total, "page_num": pageNumber, "domains": resp.TenCentDomains}, "")
+			return
+		}
+
+		// if resp is cloudfare domain
+
+
+	}else {
+		c.SetJson(1, err, "获取域名失败，请联系管理员")
 		return
 	}
-	// if resp is tencent domain
-
-	// if resp is cloudfare domain
 
 }
 
@@ -111,6 +120,14 @@ func (c *DomainExImport) DomainImport() {
 		importReq.AliDomain = append(importReq.AliDomain,importAliDomains...)
 	}
 	if src == "TenCent" {
+		importTenCentDomains := make([]*models.TencentDomain, 0)
+		err := json.Unmarshal(c.Ctx.Input.RequestBody, &importTenCentDomains)
+		if err != nil {
+			fmt.Println("error：  DomainImport.json.Unmarshal is failed  ::  ", err)
+			c.SetJson(1, err, "解析数据失败，请联系管理员")
+		}
+		importReq.TenCentDomain = make([]*models.TencentDomain, 0)
+		importReq.TenCentDomain = append(importReq.TenCentDomain, importTenCentDomains...)
 
 	}
 	if src == "CloudFare" {
@@ -150,7 +167,7 @@ func (c *DomainExImport) DomainBackupAll() {
 
 	err := CloudDNSDomain.DomainBackUpToLocal(backupReq)
 	if err != nil{
-		fmt.Println("Success：  成功备份全部域名")
+		fmt.Println("Failed：  备份全部域名失败")
 		c.SetJson(1, err, "全量备份到本地失败，请联系管理员")
 		return
 	}else {
@@ -232,74 +249,4 @@ func (c *DomainExImport) DomainBackupIncr() {
 
 }
 */
-
-
-// @Title TenCentCloudDNS Get Domain List
-// @Description TenCentCloudDNS Get Domain List
-// @Success 0 {id} int64
-// @Failure 1 获取 TenCentCloudDNS Domain List 失败
-// @Failure 2 User not found
-// @router /tenCentDomain [get]
-func (c * DomainExImport)TenCentCloutDomainList(){
-
-	credential := common.NewCredential(
-		"AKIDXv50g6GAoDMFsGPKzOXQ3QXOzKPEm46s",
-		"Zty83kBNIxMVO1OWP8crsd8NNI0WqwmN",
-	)
-	TenCentDNS.TenCentDNSPodDescribeDomainList(credential)
-	fmt.Println("end")
-	c.SetJson(0,nil, "")
-	return
-}
-
-
-
-// @Title TenCentCloudDNS Post Created Domain
-// @Description TenCentCloudDNS Post Created Domain
-// @Success 0 {id} int64
-// @Failure 1 添加 TenCentCloudDNS Domain 失败
-// @Failure 2 User not found
-// @router /tenCentDomain [post]
-func (c * DomainExImport)CreateTenCentCloutDomain(){
-
-	credential := common.NewCredential(
-		"AKIDXv50g6GAoDMFsGPKzOXQ3QXOzKPEm46s",
-		"Zty83kBNIxMVO1OWP8crsd8NNI0WqwmN",
-	)
-	TenCentDNS.TenCentDNSPodCreateDomain(credential)
-	fmt.Printf("end")
-	c.SetJson(0,nil, "")
-	return
-}
-
-
-// @Title TenCentCloudDNS Get Domain Details
-// @Description TenCentCloudDNS Get Domain Details
-// @Success 0 {id} int64
-// @Failure 1 获取 TenCentCloudDNS Domain Details 失败
-// @Failure 2 User not found
-// @router /tenCentDomainDescribe [get]
-func (c * DomainExImport)TenCentDescribeDomain(){
-
-	credential := common.NewCredential(
-		"AKIDXv50g6GAoDMFsGPKzOXQ3QXOzKPEm46s",
-		"Zty83kBNIxMVO1OWP8crsd8NNI0WqwmN",
-	)
-/*	domain := c.GetString("domain")
-	domainId, err := c.GetInt("domain_id")
-	if err != nil{
-		return
-	}*/
-
-	//TenCentDNS.DescribeDomain(credential, domain, domainId)
-	TenCentDNS.DescribeDomain(credential, "fengniao668.com", 91281812)
-	fmt.Printf("end")
-	c.SetJson(0,nil, "")
-	return
-}
-
-
-
-
-
 

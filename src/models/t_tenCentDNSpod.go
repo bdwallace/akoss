@@ -5,33 +5,58 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
-type Tencentdnspod struct {
-	Id 				 int			`orm:"column(id);pk;auto"`
-	DomainId         int			`orm:"column(domain_id);size(100)"`
-	Name             string  		`orm:"column(name);size(100)"`
-	Status           string  		`orm:"column(status);size(100)"`
-	TTL              int     		`orm:"column(ttl);size(100)"`
-	CNAMESpeedup     string  		`orm:"column(cname_speedup);size(100)"`
-	DNSStatus        string			`orm:"column(dns_status);size(100)"`
-	Grade            string			`orm:"column(grade);size(100)"`
-	GroupId          int			`orm:"column(group_id);size(100)"`
-	SearchEnginePush string			`orm:"column(search_engine_push);size(100)"`
-	Remark           string			`orm:"column(remark);size(100)"`
-	Punycode         string			`orm:"column(punycode);size(100)"`
-	EffectiveDNS     string			`orm:"column(effective_dns);size(100)"`
-	GradeLevel       int			`orm:"column(grade_level);size(100)"`
-	GradeTitle       string			`orm:"column(grade_title);size(100)"`
-	IsVip            string			`orm:"column(is_vip);size(100)"`
-	VipStartAt       string			`orm:"column(vip_start_at);size(100)"`
-	VipEndAt         string			`orm:"column(vip_end_at);size(100)"`
-	VipAutoRenew     string			`orm:"column(vip_auto_renew);size(100)"`
-	RecordCount      int			`orm:"column(record_count);size(100)"`
-	CreatedOn        string			`orm:"column(created_on);size(100)"`
-	UpdatedOn        string			`orm:"column(updated_on);size(100)"`
-	Owner            string			`orm:"column(owner);size(100)"`
-	DomainDescribe	 string 		`orm:"column(domain_describe);type(text)"`
+
+type TencentDomain struct {
+	Id              	int    		`orm:"column(id);pk;auto"`
+	DomainName      	string 		`orm:"column(domain_name);size(100)"`
+	Dns			       	string 		`orm:"column(dns);size(100)"`
+	DomainSource    	string 		`orm:"column(domain_source);size(100)"`
+	DomainInfo      	string 		`orm:"column(domain_info);type(text)"`			// Tencentdnspod
+	DomainRecord	  	string 		`orm:"column(domain_record);type(text)"`		// DomainDescribe
 }
 
+type Tencentdnspod struct {
+	DomainId         *uint64   `json:"DomainId,omitempty" name:"DomainId"`
+	Name             *string   `json:"Name,omitempty" name:"Name"`
+	Status           *string   `json:"Status,omitempty" name:"Status"`
+	TTL              *uint64   `json:"TTL,omitempty" name:"TTL"`
+	CNAMESpeedup     *string   `json:"CNAMESpeedup,omitempty" name:"CNAMESpeedup"`
+	DNSStatus        *string   `json:"DNSStatus,omitempty" name:"DNSStatus"`
+	Grade            *string   `json:"Grade,omitempty" name:"Grade"`
+	GroupId          *uint64   `json:"GroupId,omitempty" name:"GroupId"`
+	SearchEnginePush *string   `json:"SearchEnginePush,omitempty" name:"SearchEnginePush"`
+	Remark           *string   `json:"Remark,omitempty" name:"Remark"`
+	Punycode         *string   `json:"Punycode,omitempty" name:"Punycode"`
+	EffectiveDNS     []*string `json:"EffectiveDNS,omitempty" name:"EffectiveDNS"`
+	GradeLevel       *uint64   `json:"GradeLevel,omitempty" name:"GradeLevel"`
+	GradeTitle       *string   `json:"GradeTitle,omitempty" name:"GradeTitle"`
+	IsVip            *string   `json:"IsVip,omitempty" name:"IsVip"`
+	VipStartAt       *string   `json:"VipStartAt,omitempty" name:"VipStartAt"`
+	VipEndAt         *string   `json:"VipEndAt,omitempty" name:"VipEndAt"`
+	VipAutoRenew     *string   `json:"VipAutoRenew,omitempty" name:"VipAutoRenew"`
+	RecordCount      *uint64   `json:"RecordCount,omitempty" name:"RecordCount"`
+	CreatedOn        *string   `json:"CreatedOn,omitempty" name:"CreatedOn"`
+	UpdatedOn        *string   `json:"UpdatedOn,omitempty" name:"UpdatedOn"`
+	Owner            *string   `json:"Owner,omitempty" name:"Owner"`
+}
+
+
+type TenCentRecordListItem struct {
+	RecordId      *uint64 `json:"RecordId,omitempty" name:"RecordId"`
+	Value         *string `json:"Value,omitempty" name:"Value"`
+	Status        *string `json:"Status,omitempty" name:"Status"`
+	UpdatedOn     *string `json:"UpdatedOn,omitempty" name:"UpdatedOn"`
+	Name          *string `json:"Name,omitempty" name:"Name"`
+	Line          *string `json:"Line,omitempty" name:"Line"`
+	LineId        *string `json:"LineId,omitempty" name:"LineId"`
+	Type          *string `json:"Type,omitempty" name:"Type"`
+	Weight        *uint64 `json:"Weight,omitempty" name:"Weight"`
+	MonitorStatus *string `json:"MonitorStatus,omitempty" name:"MonitorStatus"`
+	Remark        *string `json:"Remark,omitempty" name:"Remark"`
+	TTL           *uint64 `json:"TTL,omitempty" name:"TTL"`
+	MX            *uint64 `json:"MX,omitempty" name:"MX"`
+}
+/*
 type DomainDescribe struct {
 	DomainId     *uint64   `json:"DomainId,omitempty" name:"DomainId"`
 	Status       *string   `json:"Status,omitempty" name:"Status"`
@@ -56,16 +81,16 @@ type DomainDescribe struct {
 	ActualNsList []*string `json:"ActualNsList,omitempty" name:"ActualNsList"`
 	RecordCount  *uint64   `json:"RecordCount,omitempty" name:"RecordCount"`
 	OwnerNick    *string   `json:"OwnerNick,omitempty" name:"OwnerNick"`
-}
+}*/
 func init() {
-	orm.RegisterModelWithPrefix("t_", new(Tencentdnspod))
+	orm.RegisterModelWithPrefix("t_", new(TencentDomain))
 }
 
-func AddOrUpdateTenCentDNSPod(tenCentDomain *Tencentdnspod) (err error) {
+func AddOrUpdateTenCentDNSPodDomain(tenCentDomain *TencentDomain) (err error) {
 
 	o := orm.NewOrm()
-	r := new(Tencentdnspod)
-	err = o.QueryTable(TenCentDNSPodTableName).Filter("name", tenCentDomain.Name).One(r)
+	r := new(TencentDomain)
+	err = o.QueryTable(TenCentDomainTableName).Filter("domain_name", tenCentDomain.DomainName).One(r)
 
 	if r.Id > 0 {
 		// update
@@ -80,7 +105,7 @@ func AddOrUpdateTenCentDNSPod(tenCentDomain *Tencentdnspod) (err error) {
 			return
 		}
 	} else {
-		err = fmt.Errorf("error:  Add or update TenCentDNSPod is failed!  domian: %s\n", tenCentDomain.Name)
+		err = fmt.Errorf("error:  Add or update TenCentDNSPod is failed!  domian: %s\n", tenCentDomain.DomainName)
 		return
 	}
 
@@ -88,7 +113,7 @@ func AddOrUpdateTenCentDNSPod(tenCentDomain *Tencentdnspod) (err error) {
 }
 
 
-func GetAllTenCentDNSPodDomains() ([]*Tencentdnspod, error) {
+/*func GetAllTenCentDNSPodDomains() ([]*Tencentdnspod, error) {
 	o := orm.NewOrm()
 	TenCentDNSPods := make([]*Tencentdnspod,0)
 	_, err := o.QueryTable(TenCentDNSPodTableName).OrderBy("id").All(&TenCentDNSPods )
@@ -97,15 +122,26 @@ func GetAllTenCentDNSPodDomains() ([]*Tencentdnspod, error) {
 	}
 
 	return TenCentDNSPods , nil
-}
+}*/
 
-func GetTenCentDNSPodDomainsByDomainName(domainName string) ([]*Tencentdnspod, error) {
+func GetTenCentDNSPodDomainsByDomainName(domainName string) ([]*TencentDomain, error) {
 	o := orm.NewOrm()
 
-	r := make([]*Tencentdnspod,0)
-	if _, err := o.QueryTable(TenCentDNSPodTableName).Filter("name__contains", domainName).All(&r); err != nil {
+	r := make([]*TencentDomain,0)
+	_, err := o.QueryTable(TenCentDomainTableName).Filter("domain_name__contains", domainName).All(&r)
+	if err != nil {
 		return nil, err
 	}
 
 	return r, nil
+}
+
+func GetAllTenCentDNSPodDomains(start, length int)([]*TencentDomain, error){
+	o := orm.NewOrm()
+	res := make([]*TencentDomain, 0, 60)
+
+	if _, err := o.QueryTable(TenCentDomainTableName).Limit(length, start).OrderBy("id").All(&res); err != nil {
+		return nil, err
+	}
+	return res, nil
 }
