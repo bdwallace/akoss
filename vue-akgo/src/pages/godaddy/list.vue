@@ -6,21 +6,15 @@
     </div>
 
     <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px">
-      <el-form-item label="godaddy key:" label-width="200px" >
+      <el-form-item label="godaddy key / secret:" label-width="200px" >
         <el-input v-model="Form.GodaddyKey" placeholder="godaddy key" style="width: 400px;"></el-input>
         <el-input v-model="Form.GodaddySecret" placeholder="godaddy secret" style="width: 400px;"></el-input>
       </el-form-item>
-
-<!--      <el-form-item label="目标 access key:" label-width="200px">-->
-<!--        <el-input v-model="Form.ImportAccessKeyId" placeholder="destination access key id" style="width: 400px;"></el-input>-->
-<!--        <el-input v-model="Form.ImportAccessKeySecret" placeholder="destination access key secret" style="width: 400px;"></el-input>-->
-<!--      </el-form-item>-->
 
       <el-form-item label="godaddy 域名搜索:" label-width="200px">
         <el-input v-model="Form.SearchDomain" placeholder="domain name" style="width: 400px;"></el-input>
         <el-button type="info" size="medium" @click="domain_search()"> 查询 </el-button>
       </el-form-item>
-
 
       <div class="panel-body-line" style="clear: both;">
         <el-table
@@ -64,15 +58,6 @@
             align="center">
           </el-table-column>
 
-<!--
-          <el-table-column
-            prop="DomainSource"
-            label="来源"
-            align="center"
-            width="500">
-          </el-table-column>
-
--->
           <el-table-column
             label="操作"
             align="center"
@@ -158,99 +143,12 @@
           })
       },
 
-      domain_backup_all(){
-
-        this.$confirm('此操作将创建新表备份并清空原有数据, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
-          .then(() => {
-            this.load_data = true
-            this.$http.get("/api/domainBackupAll", {
-              params: {
-                // project_id: this.form.Project.Id
-                export_key_id: this.Form.ExportAccessKeyId,
-                export_key_secret: this.Form.ExportAccessKeySecret,
-              }
-            })
-              .then(({data: {data}}) => {
-                this.load_data = true
-                this.BackupRes = data
-                this.load_data = false
-                console.log("backup all return ")
-                this.$message({
-                  message: "备份成功",
-                  type: 'success'
-                })
-              })
-
-              .catch(() => {
-                this.load_data = false
-              })
-          })
-      },
-
-      domain_backup_incr(){
-        this.load_data = true
-        if (this.selection.length == 0){
-          this.$message({
-            message:"请选择增量备份的域名",
-            type: 'warning',
-          })
-          this.load_data = false
-          return
-        }
-        this.$http.post("/api/godaddy", this.selection,{
-          params: {
-            export_key_id: this.Form.ExportAccessKeyId,
-            export_key_secret: this.Form.ExportAccessKeySecret,
-          }
-        })
-          .then(({data: {data}}) => {
-            /* this.load_data = true
-             this.BackupRes = data
-             this.load_data = false*/
-            this.$message({
-              message: data,
-              type: 'success'
-            })
-          })
-          .catch(() => {
-            this.load_data = false
-          })
-      },
-
       get_info(row){
         let router_url = this.$router.resolve({
-          path: "/domainExport/info",
+          path: "/godaddy/save",
           query: row,
         })
         window.open(router_url.href, '_blank');
-      },
-
-      domain_import(){
-        this.load_data = true
-        if (this.selection.length == 0){
-          this.$message({
-            message:"请选择导入的域名",
-            type: 'warning',
-          })
-          this.load_data = false
-          return
-        }
-        this.$http.post("/api/domainImport",this.selection,{
-          params: {
-            dest_key_id: this.Form.ImportAccessKeyId,
-            dest_key_secret: this.Form.ImportAccessKeySecret,
-          }
-        })
-          .then(({data: {data}}) => {
-            this.$message({
-              message: data,
-              type: 'success'
-            })
-          })
       },
 
       expand(row,expanded) {

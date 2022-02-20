@@ -254,6 +254,17 @@ const routes = [{
             auth: true
         }
     }, {
+        path: '/godaddy/save',
+        name: 'gedaddySave',
+        components: {
+            default: require('pages/godaddy/save'),
+            menuView: require('components/leftSlide')
+        },
+        meta: {
+            title: "DNS修改",
+            auth: true
+        }
+    },{
         path: '/domainExport/info',
         name: 'domainExImportInfo',
         components: {

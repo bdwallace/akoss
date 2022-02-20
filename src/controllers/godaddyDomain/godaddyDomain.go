@@ -12,20 +12,6 @@ type GodaddyControllers struct {
 	controllers.BaseController
 }
 
-type GODADDY struct {
-	Key		string
-	Secret 	string
-}
-
-
-func createGodaddyKey()*GODADDY{
-	godaddy := new(GODADDY)
-	//godaddy.Key = beego.AppConfig.String("godaddyKey")
-	//godaddy.Secret = beego.AppConfig.String("godaddySecret")
-	godaddy.Key = "dLDMoq6cDy66_GCUZHGYT7RundKYBy93y9W"
-	godaddy.Secret = "4KymCR6QyLgRxHxjQRH6ZQ"
-	return godaddy
-}
 
 // @Title get all domain from godaddy
 // @Description get all domain from godaddy
@@ -36,7 +22,7 @@ func createGodaddyKey()*GODADDY{
 func (c * GodaddyControllers) GetAllDomain(){
 
 	//godaddy := createGodaddyKey()
-	godaddy := new(GODADDY)
+	godaddy := new(libGodaddy.GoDaddy)
 	var searchDomain string
 	godaddy.Key  = c.GetString("godaddy_key")
 	godaddy.Secret = c.GetString("godaddy_secret")
@@ -62,7 +48,7 @@ func (c * GodaddyControllers) GetAllDomain(){
 		}
 
 		if len(jsonGodaddy) > 0 {
-			_ = libGodaddy.AnalysisGodaddayToDataBase(jsonGodaddy)
+			_ = libGodaddy.AnalysisGodaddayToDataBase(jsonGodaddy,godaddy)
 		}
 		resGodaddy, err = models.GetAllGodaddyDomains()
 		if err != nil{
