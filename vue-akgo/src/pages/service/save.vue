@@ -9,20 +9,20 @@
       <el-row>
         <el-col :span="11">
             <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px">
-              <el-form-item label="服务名称:" prop="Name" label-width="100px">
+              <el-form-item label="服务名称:" prop="Name" label-width="150px">
                 <el-input v-model="form.Name" placeholder="请输入项目名称" style="width: 400px">
                           </el-input>
               </el-form-item>
-              <el-form-item label="别名:" prop="Alias" label-width="100px">
+              <el-form-item label="别名:" prop="Alias" label-width="150px">
                 <el-input v-model="form.Alias" placeholder="请输入项目别名" style="width: 400px">
                 </el-input>
               </el-form-item>
 
-              <el-form-item label="仓库地址:" prop="ImagePath" label-width="100px">
+              <el-form-item label="仓库地址:" prop="ImagePath" label-width="150px">
                 <el-input v-model="form.ImagePath" style="width: 400px;"></el-input>
               </el-form-item>
 
-              <el-form-item label="端口:" prop="Port" label-width="100px">
+              <el-form-item label="端口:" prop="Port" label-width="150px">
                 <el-tooltip class="item" effect="dark"
                             content="192.168.57.0:8080:80,8443:443" placement="top">
                   <el-input v-model="form.Port" placeholder="请输入端口"
@@ -30,7 +30,7 @@
                 </el-tooltip>
               </el-form-item>
 
-              <el-form-item label="容器名:" prop="DockerName" label-width="100px">
+              <el-form-item label="容器名:" prop="DockerName" label-width="150px">
                 <el-tooltip class="item" effect="dark"
                             content="指定容器名，为兼容OSS容器名而设置，默认容器名==项目名" placement="top">
                   <el-input v-model="form.DockerName" placeholder="项目名_系统别名"
@@ -38,7 +38,7 @@
                 </el-tooltip>
               </el-form-item>
 
-              <el-form-item label="日志关键字:" prop="LogKeyword" label-width="100px">
+              <el-form-item label="日志关键字:" prop="LogKeyword" label-width="150px">
                 <el-tooltip class="item" effect="dark"
                             content="如果有关键字，则在第一台目标机docker启动时一直到跟踪检测到有这个关键字为止" placement="top">
                   <el-input v-model="form.LogKeyword" placeholder="Started .* seconds"
@@ -54,7 +54,7 @@
                 </el-tooltip>
               </el-form-item> -->
 
-              <el-form-item label="健康监测:" prop="Health" label-width="100px">
+              <el-form-item label="健康监测:" prop="Health" label-width="150px">
                 <el-tooltip class="item" effect="dark"
                             content="探测应用是否正常的URL" placement="top">
                   <el-input v-model="form.Health" placeholder="${service_name}/actuator/health"
@@ -62,29 +62,8 @@
                 </el-tooltip>
               </el-form-item>
 
-<!--                <el-form-item label="Nacos:" prop="Nacos" label-width="100px">-->
-<!--                  <el-form-item v-for="(item, nacosindex) in form.Nacos " :key="nacosindex" style="margin-top: 5px">-->
-<!--                    <el-button @click.stop="get_itemNacos" size="mini">-->
-<!--                      <i class="fa fa-refresh"></i>-->
-<!--                    </el-button>-->
-<!--                    <el-select v-model="form.Nacos[nacosindex]" placeholder="选择服务所关联的Nacos"-->
-<!--                               filterable-->
-<!--                               clearable-->
-<!--                               style="width: 375px;">-->
-<!--                      <el-option-->
-<!--                        v-for="item in itemNacos"-->
-<!--                        :key="item.value"-->
-<!--                        :label="`${item.name} / ${item.value}`"-->
-<!--                        :value="item">-->
-<!--                      </el-option>-->
-<!--                    </el-select>-->
-<!--                  </el-form-item>-->
-<!--                  </el-form-item>-->
 
-
-
-            <el-form-item label="Nacos:" prop="UseNacos" label-width="100px">
-<!--              <el-form-item v-for="(item, index) in form.UseNacos" :key="index" style="margin-top: 5px">-->
+            <el-form-item label="Nacos:" prop="UseNacos" label-width="150px">
                 <el-select v-model="Nacos" placeholder="请选择"
               clearable
               style="width: 400px;">
@@ -95,8 +74,20 @@
                   :value="item.value">
                 </el-option>
                 </el-select>
-<!--              </el-form-item>-->
             </el-form-item>
+            <el-form-item label="Docker Network:" prop="UseDockerNetwork" label-width="150px">
+              <el-select v-model="selectDockerNetwork" placeholder="请选择"
+                         clearable
+                         style="width: 400px;">
+                <el-option
+                  v-for="item in itemDockerNetwork"
+                  :key="item"
+                  :label="`${item}`"
+                  :value="item">
+                </el-option>
+              </el-select>
+            </el-form-item>
+
             </div>
             <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px">
                   <el-form-item label="上传地址:" prop="ReleaseTo" label-width="100px">
@@ -182,16 +173,7 @@ allow all;"
 
 
         <el-col :span="12" style="margin-left: 10px">
-          <!-- <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px">
-            <el-form-item label="Dockerfile:">
-              <el-input
-                type="textarea"
-                :autosize="{ minRows: 2, maxRows: 100}"
-                placeholder="请输入内容"
-                v-model="form.Dockerfile">
-              </el-input>
-            </el-form-item>
-          </div> -->
+
 
           <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px">
             <el-form-item label="关联公有参数:" v-for="(conf,confindex) in form.Confs" :key="confindex">
@@ -352,6 +334,7 @@ allow all;"
           // IsRegister: 0,
           Health: "",
           DockerName: "",
+          DockerNetwork: "",
           // Upload: "",
           Value: "",
           Hosts: [],
@@ -382,7 +365,11 @@ allow all;"
           "chat-backend",
           "other"
         ],
-
+        selectDockerNetwork: "",
+        itemDockerNetwork: [
+          "--net=host",
+          "--net=bridge",
+        ],
         // valueJson: [{}],
         valueJson:[{
           Value: null,
@@ -689,6 +676,7 @@ allow all;"
             }
 
             this.Nacos = this.form.UseNacos
+            this.selectDockerNetwork = this.form.DockerNetwork
 
             this.valueJson = JSON.parse(this.form.Value)
           })
@@ -722,10 +710,15 @@ allow all;"
 
         if (this.Nacos !== "") {
             this.form.UseNacos = this.Nacos
-          }
-          else {
+          } else {
             this.form.UseNacos = this.itemNacos[0].value
           }
+
+         if (this.selectDockerNetwork !== "")  {
+            this.form.DockerNetwork = this.selectDockerNetwork
+         } else {
+            this.form.DockerNetwork = this.itemDockerNetwork[0]
+         }
           this.$http.post(port_service.saverelated, this.form,this.Nacos)
             .then(({data: {msg}}) => {
               this.$message({

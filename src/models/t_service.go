@@ -23,7 +23,9 @@ type Service struct {
 	LogKeyword    string `orm:"column(log_keyworld);size(100);null"`
 	BlackList     string `orm:"column(black_list);type(text);null"`
 	DenyUserAgent string `orm:"column(deny_user_agent);type(text);null"`
-	UseNacos      string `orm:"column(use_nacos);size(100);"` // 上次服务tag
+	UseNacos      string `orm:"column(use_nacos);size(100);"`
+	DockerNetwork string `orm:"column(docker_network);size(100);"`
+
 
 	CreatedAt       time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
 	UpdatedAt       time.Time `orm:"column(updated_at);type(datetime);auto_now;"`

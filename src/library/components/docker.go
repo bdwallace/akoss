@@ -280,7 +280,7 @@ func (c *BaseDocker) createDockerRun(dockerTag string, host *models.Host, ports 
 	// }else {
 	// 判断如果是java项目则默认使用--net-host模式,并默认添加eureka注册信息
 	if c.BaseComponents.Service.Class == "java" {
-		private = fmt.Sprintf("--net=host -e EUREKA_INSTANCE_IP-ADDRESS=%s %s", host.PrivateIp, private)
+		private = fmt.Sprintf("%s -e EUREKA_INSTANCE_IP-ADDRESS=%s %s", c.BaseComponents.Service.DockerNetwork, host.PrivateIp, private)
 	}
 	cmds = append(cmds, fmt.Sprintf("%s run -itd --name %s %s %s %s %s %s %s", cc, c.BaseComponents.Docker.Name, ports, c.BaseComponents.Docker.Base, private, public, platformParam, dockerTag))
 	// }
