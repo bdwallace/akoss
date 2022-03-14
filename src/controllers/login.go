@@ -89,6 +89,7 @@ func (c *LoginController) Post() {
 		XToken:     user.XToken,
 		RequestUri: c.Controller.Ctx.Input.URL(),
 		Method:     c.Controller.Ctx.Input.Method(),
+		ProjectId: ProjectId,
 	}
 	respAuth, err := c.AkossAuth(reqAuth)
 	if err != nil {

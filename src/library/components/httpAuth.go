@@ -23,6 +23,7 @@ type AuthRequest struct {
 	XToken     string // 认证 token
 	RequestUri string // akoss 鉴权的api
 	Method     string // akoss api 鉴权的method
+	ProjectId	int
 }
 
 type AuthRespones struct {
