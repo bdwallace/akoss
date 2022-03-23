@@ -83,7 +83,6 @@
           }
         })
           .then(({data: {data}}) => {
-            console.log(data.username)
             this.form.register_username=data.username
             this.form.register_realname=data.realname
             this.form.register_email=data.email

@@ -360,7 +360,6 @@
         })
           .then(({data: {data}}) => {
             this.table_data = data
-            console.log("data: ",this.table_data)
             this.initItemClass()
             this.load_data = false
           })

@@ -364,6 +364,19 @@ func GetProjectById(id int) (p *Project, err error) {
 }
 
 /*
+	通过 id  查询 project
+*/
+func GetProjectByName(name string) (p *Project, err error) {
+
+	o := orm.NewOrm()
+	p = &Project{Name: name}
+	if err = o.Read(p,"name"); err == nil {
+		return p, nil
+	}
+	return nil, err
+}
+
+/*
 	通过 alias 查询 project
 */
 func GetProjectByAlias(alias string) (p *Project, err error) {

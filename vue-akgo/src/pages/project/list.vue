@@ -24,28 +24,35 @@
                     :row-class-name="tableRowClassName"
                     style="width: 100%;">
                 <el-table-column
-                        prop="Id"
+                        prop="id"
                         label="id"
-                        width="70">
+                        width="100">
                 </el-table-column>
 
                 <el-table-column
-                        prop="Name"
+                        prop="name"
                         label="项目名称"
-                        width="190">
+                        width="300">
                 </el-table-column>
 
                 <el-table-column
-                        prop="Alias"
+                        prop="alias"
                         label="版本">
                 </el-table-column>
 
                 <el-table-column
-                        prop="CreatedAt"
+                        prop="created_at"
                         label="创建时间"
-                        width="180"
+                        width="480"
                         :formatter="dateFormat">
                 </el-table-column>
+
+              <el-table-column
+                prop="updated_at"
+                label="更新时间"
+                width="480"
+                :formatter="dateFormat">
+              </el-table-column>
 
                 <el-table-column
                         label="操作">
@@ -136,7 +143,7 @@
                 this.load_data = true
                 this.$http.get(port_project.list)
                         .then(({data: {data}}) => {
-                    this.table_data = data
+                    this.table_data = data.project_list
                     this.load_data = false
                 })
             },

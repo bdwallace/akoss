@@ -7,6 +7,7 @@ import (
 	"library/common"
 	"library/components"
 	"models"
+	"models/request"
 	"time"
 )
 
@@ -61,7 +62,8 @@ func (c *LoginController) Post() {
 func (c *LoginController) Post() {
 	//哈希校验成功后 更新 auth_key
 	//beego.Info(string(c.Ctx.Input.RequestBody))
-	postData := map[string]string{"user_password": "", "user_name": "", "ProjectId": "", "ProjectName": ""}
+/*
+	postData := map[string]string{"user_password": "", "user_name": "","Project": ""}
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &postData)
 	if err != nil {
 		c.SetJson(1, nil, "数据格式错误")
@@ -69,27 +71,50 @@ func (c *LoginController) Post() {
 	}
 	password := postData["user_password"]
 	userName := postData["user_name"]
-	ProjectId := common.StrToInt(postData["ProjectId"])
-	ProjectName := postData["ProjectName"]
-	if userName == "" || password == "" {
-		c.SetJson(1, nil, "用户名或密码不存在")
+	projectIdStr := postData["Project"]
+	projectId, err := strconv.Atoi(projectIdStr)
+	if err != nil {
+		c.SetJson(1, nil, "获取项目环境失败，请联系管理员")
+		return
+	}
+*/
+/*
+	userName := c.GetString("user_name")
+	password := c.GetString("user_password")
+	project := new(models.Project)
+	*/
+	loginReq := new(request.LoginRequest)
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &loginReq)
+	if err != nil{
+		c.SetJson(1, nil, "数据格式错误")
+		return
+	}
+
+	if loginReq.UserName == "" || loginReq.Password == "" {
+		c.SetJson(1, nil, "请填写用户名和密码")
 		return
 	}
 
 	var user models.User
 	o := orm.NewOrm()
-	err = o.Raw("SELECT * FROM `user` WHERE username= ?", userName).QueryRow(&user)
+	err = o.Raw("SELECT * FROM `user` WHERE username= ?", loginReq.UserName).QueryRow(&user)
 	if err != nil {
 		c.SetJson(1, nil, "登录失败，没有该用户，请联系管理员")
 		return
 	}
+
+	loginProject, err := models.GetProjectByName(loginReq.ProjectName)
+	if err != nil{
+		c.SetJson(1, nil, "获取项目环境失败，请联系管理员")
+		return
+	}
 	reqAuth := &components.AuthRequest{
-		UserName:   userName,
-		UserPwd:    password,
+		UserName:   loginReq.UserName,
+		UserPwd:    loginReq.Password,
 		XToken:     user.XToken,
 		RequestUri: c.Controller.Ctx.Input.URL(),
 		Method:     c.Controller.Ctx.Input.Method(),
-		ProjectId: ProjectId,
+		ProjectId: loginProject.Id,
 	}
 	respAuth, err := c.AkossAuth(reqAuth)
 	if err != nil {
@@ -112,10 +137,16 @@ func (c *LoginController) Post() {
 		return
 	}
 
+	/*project,err := models.GetProjectById(project.Id)
+	if err != nil {
+		c.SetJson(1, nil, "获取项目环境失败，请联系管理员")
+		return
+	}*/
+
 	userAuth := common.Md5String(user.Username + common.GetString(time.Now().Unix()))
 	user.AuthKey = userAuth
-	user.ProjectId = ProjectId
-	user.ProjectName = ProjectName
+	user.ProjectId = loginProject.Id
+	user.ProjectName = loginProject.Name
 	user.XToken = respAuth.XToken
 	menusBase := respAuth.Menus
 	components.FindDeployList(&menusBase, user)

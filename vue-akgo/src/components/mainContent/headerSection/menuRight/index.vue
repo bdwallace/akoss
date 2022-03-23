@@ -11,7 +11,7 @@
                     <el-dropdown-item v-for="item in project_list" :key="item" class="dropdown-list">
                         <a href="javascript:" class="dropdown-btn" @click="project_change(item)">
                             <i class="icon fa fa-user"></i>
-                            <span>{{ item.Name }}</span>
+                            <span>{{ item.name }}</span>
                         </a>
                     </el-dropdown-item>
                     <el-dropdown-item class="dropdown-list">
@@ -127,15 +127,15 @@
             get_project_list() {
                 this.$http.get(port_project.list)
                         .then(({data: {data}}) => {
-                    this.project_list = data
+                    this.project_list = data.project_list
                 })
             },
 
             project_change(project) {
                 this.$http.get(port_user.projectchange, {
                         params: {
-                            id: project.Id,
-                            name: project.Name
+                            id: project.id,
+                            name: project.name
                         }
                     })
                 .then(({data: {data}}) => {

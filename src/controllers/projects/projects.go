@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"models"
+	"models/response"
 	"strconv"
 )
 
@@ -94,8 +95,27 @@ func (c *ProjectController) GetAllProject() {
 		c.SetJson(1, nil, "获取所有 project 失败")
 		return
 	}
+	projectListResp := new(response.ProjectListForLoginResponse)
+	for _, item := range proRes {
+		tempPro := new(response.Project)
 
-	c.SetJson(0, proRes, "")
+		tempPro.Id = item.Id
+		tempPro.Name = item.Name
+		tempPro.Alias = item.Alias
+		tempPro.Nacos1 = item.Nacos1
+		tempPro.Nacos2 = item.Nacos2
+		tempPro.Nacos3 = item.Nacos3
+		tempPro.AwsKeyId = item.AwsKeyId
+		tempPro.AwsKeySecret = item.AwsKeySecret
+		tempPro.AwsRegion = item.AwsRegion
+		tempPro.CreatedAt = item.CreatedAt
+		tempPro.UpdatedAt = item.UpdatedAt
+
+		projectListResp.ProjectList = append(projectListResp.ProjectList, tempPro)
+		projectListResp.ProjectNameList = append(projectListResp.ProjectNameList, item.Name)
+	}
+
+	c.SetJson(0, projectListResp, "")
 	return
 
 }

@@ -18,17 +18,35 @@
                                   class="form-input"></el-input>
                     </el-form-item>
 
+<!--
                     <el-radio-group v-model="project">
                     <el-radio v-for="item in project_list" :key="item" :label="item">{{item.Name}}</el-radio>
                     </el-radio-group>
+-->
+
+                  <el-select v-model="project" clearable placeholder="请选择">
+                    <el-option
+                      v-for="item in project_name_list"
+                      :key="item"
+                      :label="item"
+                      :value="item">
+                    </el-option>
+                  </el-select>
+
+<!--                  <el-select v-model="value" clearable placeholder="请选择">
+                    <el-option
+                      v-for="item in options"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                  -->
 
                     <el-form-item></el-form-item>
 
                     <el-form-item class="login-item">
                         <el-button size="large"  class="form-submit" @click="submit_form">登录</el-button>
-                    </el-form-item>
-                    <el-form-item class="login-item">
-                        <el-button size="large"  class="form-submit" @click="to_tasklist">上线单查询</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -43,13 +61,14 @@
     export default{
         data(){
             return {
-                project: null,
-                project_list: [],
-                form: {
+              project_resp: null,
+              project:"",
+              project_list:[],
+              project_name_list:[],
+              form: {
                     user_name: "",
                     user_password: "",
-                    ProjectId: "",
-                    ProjectName: ""
+                    project_name: "",
                 },
                 rules: {
                     user_name: [{required: true, message: '请输入账户名！', trigger: 'blur'}],
@@ -73,7 +92,9 @@
                 this.load_data = true
                 this.$http.get(port_project.list)
                         .then(({data: {data}}) => {
-                    this.project_list = data
+                    this.project_resp = data
+                    this.project_list = data.project_list
+                    this.project_name_list = data.project_name_list
                     this.load_data = false
                 })
             },
@@ -84,11 +105,14 @@
                 if (valid) {
                     this.load_data = true
 
-                    if (this.project_list.length == 0) {
-                        this.form.ProjectId = "0"
-                        this.form.ProjectName = ""
+                  if (this.project_list.length === 0) {
+                      this.$message({
+                        message: "获取系统环境失败",
+                        type: 'warning'
+                      });
                     } else {
-                        if (this.project == null) {
+                      this.form.project_name = this.project
+                      if (this.project === "") {
                             this.$message({
                             message: "请选择环境",
                             type: 'warning'
@@ -96,10 +120,7 @@
                             this.load_data = false
                             return
                         }
-                        this.form.ProjectId = this.project.Id.toString()
-                        this.form.ProjectName = this.project.Name
                     }
-
                     //登录提交
                     this.$http.post(port_user.login, this.form)
                             .then(({data: {data, msg}}) => {
