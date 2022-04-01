@@ -37,25 +37,26 @@
 
                 <el-table-column
                         prop="alias"
-                        label="版本">
+                        label="别名">
                 </el-table-column>
 
                 <el-table-column
                         prop="created_at"
                         label="创建时间"
-                        width="480"
+                        width="400"
                         :formatter="dateFormat">
                 </el-table-column>
 
               <el-table-column
                 prop="updated_at"
                 label="更新时间"
-                width="480"
+                width="400"
                 :formatter="dateFormat">
               </el-table-column>
 
                 <el-table-column
-                        label="操作">
+                        label="操作"
+                        width="250">
                 <template scope="props">
                         <!-- <el-button type="info" v-popover:popover4 size="small" icon="search" @click="open(props.row.Id)">查看
                         </el-button> -->

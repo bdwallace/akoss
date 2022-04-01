@@ -53,7 +53,7 @@
                         prop="Name"
                         label="名称"
                         sortable
-                        width="160">
+                        width="250">
                 </el-table-column>
 
                 <el-table-column
