@@ -12,16 +12,16 @@
           <el-form ref="form" :model="form" :rules="rules">
             <el-form-item label="" label-width="120px">
               <el-radio-group style="float: left;margin-top: 15px" v-model="ProjectId" @change="get_table_data()">
-              <el-radio v-for="item in project_list" :key="item.Id" :label="item.Id">{{item.Name}}</el-radio>
+              <el-radio v-for="item in project_list" :key="item.id" :label="item.id">{{item.name}}</el-radio>
               </el-radio-group>
             </el-form-item>
 
             <el-form-item label="安全组:" prop="GroupIds" label-width="120px">
-              <el-select v-model="form.GroupIds[0]" placeholder="选择安全组" 
+              <el-select v-model="form.GroupIds[0]" placeholder="选择安全组"
                           filterable
                           style="width: 400px;">
                           <!-- @change="itemGroups_change(form.GroupIds[0])"> -->
-                <el-option   
+                <el-option
                   v-for="item in itemGroups"
                   :key="item.Id"
                   :label="item.Name"
@@ -31,10 +31,10 @@
             </el-form-item>
 
             <el-form-item label="访问端口:" prop="ToPort" label-width="120px">
-              <el-select v-model="form.ToPort" placeholder="选择端口" 
+              <el-select v-model="form.ToPort" placeholder="选择端口"
                           filterable
                           style="width: 100px;">
-                <el-option   
+                <el-option
                   v-for="item in itemPort"
                   :key="item"
                   :label="item"
@@ -76,7 +76,7 @@
     data() {
       return {
         project_list: [],
-        // ProjectId: store.state.user_info.user.ProjectId, 
+        // ProjectId: store.state.user_info.user.ProjectId,
         ProjectId: null,
         form: {
           GroupIds: [],
@@ -107,12 +107,13 @@
       on_refresh(){
           this.get_table_data()
       },
-      
+
       get_project_list() {
           this.load_data = true
           this.$http.get(port_project.list)
                   .then(({data: {data}}) => {
-              this.project_list = data
+              this.project_list = data.project_list
+                    console.log("project_list: ", this.project_list)
               this.load_data = false
           })
       },

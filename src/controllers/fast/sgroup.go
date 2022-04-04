@@ -64,7 +64,7 @@ func (c *SgroupController) SetSgroup() {
 	var myAws aws.BaseAws
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &myAws)
 	if err != nil {
-		c.SetJson(1, nil, "数据格式错误1")
+		c.SetJson(1, nil, "数据格式错误")
 		return
 	}
 
