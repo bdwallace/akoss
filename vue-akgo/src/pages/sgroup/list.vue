@@ -5,7 +5,7 @@
         <!-- <panel-title :title="$route.meta.title"> -->
         <panel-title style="margin-top: -25px">
             <el-radio-group style="float: left;margin-right: 100px;margin-top: 15px" v-model="ProjectId" @change="get_table_data()">
-            <el-radio v-for="item in project_list" :key="item.Id" :label="item.Id">{{item.Name}}</el-radio>
+            <el-radio v-for="item in project_list" :key="item.id" :label="item.id">{{item.name}}</el-radio>
             </el-radio-group>
 
             <el-button @click.stop="on_refresh" size="small">
@@ -89,7 +89,7 @@
                 this.load_data = true
                 this.$http.get(port_project.list)
                         .then(({data: {data}}) => {
-                    this.project_list = data
+                    this.project_list = data.project_list
                     this.load_data = false
                 })
             },
