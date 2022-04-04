@@ -143,6 +143,9 @@ func (c *BaseAws) IngressSgroup() (result *ec2.AuthorizeSecurityGroupIngressOutp
 		if strings.Index(err.Error(),"The maximum number of rules") > 0{
 			fmt.Printf("error: IngressSgroup.Ec2.AuthorizeSecurityGroupIngress  ::  %s\n",err.Error())
 			err = fmt.Errorf( "安全组规则数量达到上限,删除部分规则再添加新规则")
+		} else if strings.Index(err.Error(),"already exists") > 0 {
+			fmt.Printf("error: IngressSgroup.Ec2.AuthorizeSecurityGroupIngress  ::  %s\n",err.Error())
+			err = fmt.Errorf( "该安全组规则已存在")
 		}else{
 			fmt.Printf("error: IngressSgroup.Ec2.AuthorizeSecurityGroupIngress  ::  %s\n",err.Error())
 			err = fmt.Errorf( "添加安全组失败")
