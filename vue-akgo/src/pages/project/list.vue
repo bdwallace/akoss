@@ -63,7 +63,7 @@
                         <!-- <router-link :to="{name: 'confDetection', params: {id: props.row.Id}}" tag="span">
                             <el-button type="success" size="small" icon="setting">检测</el-button>
                         </router-link> -->
-                        <router-link :to="{name: 'projectUpdate', params: {id: props.row.Id}}" tag="span">
+                        <router-link :to="{name: 'projectUpdate', params: {id: props.row.id}}" tag="span">
                             <el-button type="info" size="small" icon="edit">修改</el-button>
                         </router-link>
                         <!-- <el-button type="warning" size="small" icon="document" @click="copy_data(props.row.id)">复制
