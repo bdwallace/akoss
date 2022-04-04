@@ -78,7 +78,7 @@ func (c *SgroupController) SetSgroup() {
 	data, err := myAws.IngressSgroup()
 	if err != nil {
 		beego.Error(err)
-		c.SetJson(1, nil, "保存安全组失败")
+		c.SetJson(1, nil, err.Error())
 		return
 	}
 	c.SetJson(0, data, "")
