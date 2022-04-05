@@ -80,35 +80,7 @@
 
             </el-table>
 
-            <!-- <el-table :data="table_platform_data[index]"
-                    border
-                    v-loading="load_data"
-                    style="width: 100%;margin-top:5px">
-                <el-table-column
-                    key="name"
-                    label="平台"
-                    prop="name"
-                    width="120px">
-                </el-table-column>
-                <el-table-column
-                        :key="col"
-                        :label="col"
-                        :prop="col"
-                        v-for="col in itemClass">
-                    <template scope="props">
-                        <div  v-if="props.row[props.column.label]" >
-                        <p v-for="item in props.row[props.column.label]" :key="item">
-                            <a target="_blank" :href="item.Link">{{item.Link}}</a>
 
-                            <el-button type="text" size="mini" @click="on_dialog_save(item.Id)">修改
-                            </el-button>
-
-                            <el-button size="mini" type="text" @click="delete_data(item.Id)">删除</el-button>
-                        </p>
-                        </div>
-                    </template>
-                </el-table-column>
-            </el-table>  -->
         </div>
         <el-dialog :title="title"
             :visible.sync="is_saveDialog"
@@ -139,37 +111,10 @@
                 <el-form-item label="选择环境:" prop="Projects" label-width="120px">
                     <el-radio-group v-model="form.Projects[0].Id" :max="1">
                         <!-- @change="get_itemPlatform()"> -->
-                        <el-radio v-for="item in itemProject" :key="item.Id" :label="item.Id">{{item.Name}}</el-radio>
+                        <el-radio v-for="item in itemProject" :key="item.id" :label="item.id">{{item.name}}</el-radio>
                     </el-radio-group>
                 </el-form-item>
 
-                <!-- <el-form-item v-if="form.Projects[0].Id" label="选择平台:" prop="Project" label-width="120px">
-                    <el-select
-                        v-model="form.Platforms[0]"
-                        clearable
-                        value-key="Id"
-                        placeholder="请选择"
-                        @change="change_itemPlatform()">
-                        <el-option
-                        v-for="item in itemPlatform"
-                        :key="item"
-                        :label="item.Name"
-                        :value="item">
-                        </el-option>
-                    </el-select>
-                    <el-select
-                        v-if="form.Platforms[0].Id"
-                        v-model="form.Class"
-                        clearable
-                        placeholder="请选择">
-                        <el-option
-                        v-for="item in itemClass"
-                        :key="item"
-                        :label="item"
-                        :value="item">
-                        </el-option>
-                    </el-select>
-                </el-form-item> -->
 
                 <el-form-item>
                 <el-button type="primary" @click="on_submit_form" :loading="on_submit_loading">立即提交</el-button>
@@ -178,11 +123,6 @@
 
             </el-form>
 
-            <!-- <div slot="footer" class="dialog-footer">
-                <el-button @click="close_dialog(is_saveDialog=false)">取 消</el-button>
-                <el-button type="primary" @click="on_submit_form" :loading="on_submit_loading">立即提交
-                </el-button>
-            </div> -->
         </el-dialog>
     </div>
 </template>
@@ -217,16 +157,7 @@
                     "customer",
                     "chat-backend",
                 ],
-                // cols: [
-                //     {label:"h5", prop: "h5"},
-                //     {label:"merchant", prop: "merchant"},
-                //     {label:"download", prop: "download"},
-                //     {label:"download-share", prop: "download-share"},
-                //     {label:"agent", prop: "agent"},
-                //     {label:"share-agent", prop: "share-agent"},
-                //     {label:"customer", prop: "customer"},
-                //     {label:"chat-backend", prop: "chat-backend"},
-                // ],
+
                 is_saveDialog: false,
                 title: "",
 
@@ -300,7 +231,6 @@
                         if (data[i].Projects.length == 0) {
                             this.table_public.data.push(data[i])
                         } else {
-                            // console.log("---p0---", data[i])
                             let table_project_index_item = data[i].Projects[0].Id + "_" + data[i].Projects[0].Alias
                             let index = this.table_project_index.indexOf(table_project_index_item)
 
@@ -310,62 +240,6 @@
                             } else {
                                 this.table_project_data[index].push(data[i])
                             }
-                            // if (data[i].Platforms.length == 0) {
-                            //     if (index < 0) {
-                            //         this.table_project_index.push(table_project_index_item)
-                            //         this.table_project_data.push([data[i]])
-                            //     } else {
-                            //         this.table_project_data[index].push(data[i])
-                            //     }
-                            // } else if(data[i].Class == "") {
-                            //     if (index < 0) {
-                            //         this.table_project_index.push(table_project_index_item)
-                            //         this.table_project_data.push([data[i]])
-                            //     } else {
-                            //         this.table_project_data[index].push(data[i])
-                            //     }
-
-                            // }else {
-                            //     let platform_index_item = data[i].Platforms[0].Name
-                            //     if (index < 0) {
-                            //         this.table_project_index.push(table_project_index_item)
-                            //         this.table_project_data.push([])
-
-                            //         this.table_platform_index.push([platform_index_item])
-                            //         let platform_data = {name: platform_index_item}
-                            //         this.$set(platform_data, data[i].Class, [data[i]])
-                            //         this.table_platform_data.push([platform_data])
-                            //     } else {
-                            //         let platform_index
-                            //         if(this.table_platform_index[index] == undefined) {
-                            //             platform_index = -1
-                            //             this.table_platform_index[index] = []
-                            //             this.table_platform_data[index] = []
-                            //         } else {
-                            //             platform_index = this.table_platform_index[index].indexOf(platform_index_item)
-
-                            //         }
-
-                            //         if (platform_index < 0) {
-                            //             this.table_platform_index[index].push(platform_index_item)
-                            //             let platform_data = {name: platform_index_item}
-                            //             this.$set(platform_data, data[i].Class, [data[i]])
-                            //             this.table_platform_data[index].push(platform_data)
-                            //         } else {
-                            //             if(data[i].Class in this.table_platform_data[index][platform_index]) {
-                            //                 this.table_platform_data[index][platform_index][data[i].Class].push(data[i])
-                            //             } else {
-                            //                 this.$set(this.table_platform_data[index][platform_index], data[i].Class, [data[i]])
-                            //             }
-
-                            //         }
-
-                            //     }
-                                // if (this.cols.indexOf(data[i].Class) < 0) {
-                                //     this.cols.push(data[i].Class)
-                                // }
-                            // }
-
                         }
                     }
 
@@ -383,7 +257,6 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    // this.load_data = true
                     this.$http.delete(port_link.id, {
                                 params: {
                                     id: id,
@@ -431,8 +304,8 @@
             get_itemProject() {
                 this.$http.get(port_project.list)
                         .then(({data: {data}}) => {
-                    this.itemProject = data
-                    this.itemProject.unshift({Id: null, Name: "共同环境"})
+                    this.itemProject = data.project_list
+                    this.itemProject.unshift({id: null, name: "共同环境"})
                     this.$forceUpdate();
                 })
             },

@@ -13,29 +13,18 @@
                         style="width: 600px;"></el-input>
             </el-form-item>
 
-            <!-- <el-form-item label="说明:" prop="Direction" label-width="120px">
-              <el-input v-model="form.Direction" placeholder="请输入链接说明，非必填"
-                        style="width: 600px;"></el-input>
-            </el-form-item> -->
-
             <el-form-item label="地址:" prop="Link" label-width="120px">
               <el-input v-model="form.Link" placeholder="请输入链接地址，如：www.baidu.com"
                         style="width: 600px;"></el-input>
             </el-form-item>
 
-            <!-- <el-form-item label="选择环境:" prop="Projects" label-width="120px">
-              <el-checkbox-group v-model="form.Projects" :max="1">
-              <el-checkbox v-for="item in itemProject" :key="item.Id" :label="item">{{item.Name}}</el-checkbox>
-              </el-checkbox-group>
-            </el-form-item> -->
-
             <el-form-item label="选择环境:" prop="Projects" label-width="120px">
-              <el-radio-group v-model="form.Projects[0].Id" :max="1" @change="get_itemPlatform()">
-              <el-radio v-for="item in itemProject" :key="item.Id" :label="item.Id">{{item.Name}}</el-radio>
+              <el-radio-group v-model="form.Projects[0].id" :max="1" @change="get_itemPlatform()">
+              <el-radio v-for="item in itemProject" :key="item.id" :label="item.id">{{item.name}}</el-radio>
               </el-radio-group>
             </el-form-item>
 
-            <el-form-item v-if="form.Projects[0] && form.Projects[0].Id != null" label="选择平台:" prop="Project" label-width="120px">
+            <el-form-item v-if="form.Projects[0] && form.Projects[0].id != null" label="选择平台:" prop="Project" label-width="120px">
               <el-select
                   v-if="form.Platforms[0]"
                   v-model="form.Platforms[0].Id"
@@ -61,11 +50,6 @@
                 </el-option>
               </el-select>
             </el-form-item>
-
-            <!-- <el-radio-group v-model="form.Platforms[0].Id" :max="1">
-            <el-radio v-for="item in itemPlatform" :key="item.Id" :label="item.Id">{{item.Name}}</el-radio>
-            </el-radio-group> -->
-
 
             <el-form-item>
               <el-button type="primary" @click="on_submit_form" :loading="on_submit_loading">立即提交
@@ -95,7 +79,6 @@
             Class: null,
             Projects: [{Id:null}],
             Platforms: [{Id:null}]
-            // Projects: []
         },
         itemProject: [],
         itemPlatform: [],
@@ -115,9 +98,7 @@
         load_data: false,
         on_submit_loading: false,
         rules: {
-          // Name: [{required: true, message: '链接名称不能为空', trigger: 'blur'}],
           Link: [{required: true, message: '链接地址不能为空', trigger: 'blur'}],
-          // Direction: [{required: true, message: '链接说明不能为空', trigger: 'blur'}],
         }
       }
     },
@@ -132,8 +113,8 @@
         get_itemProject() {
             this.$http.get(port_project.list)
                     .then(({data: {data}}) => {
-                this.itemProject = data
-                this.itemProject.unshift({Id: null, Name: "共同环境"})
+                this.itemProject = data.project_list;
+                this.itemProject.unshift({id: null, name: "共同环境"});
             })
         },
 
@@ -153,7 +134,6 @@
             .then(({data: {data}}) => {
               this.itemPlatform = data
               this.form.Platforms[0].Id = this.itemPlatform[0].Id
-              // this.$set(this.form.Platforms[0], "Id", this.itemPlatform[0].Id)
               this.load_data = false
             })
             .catch(() => {
@@ -199,9 +179,6 @@
                   message: msg,
                   type: 'success'
               })
-              // setTimeout(() => {
-              //   this.$router.back()
-              // }, 500)
             })
             .catch(() => {
               this.on_submit_loading = false
