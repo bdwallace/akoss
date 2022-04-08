@@ -39,39 +39,33 @@
                     @selection-change="handleSelectionChange"
                     ref="multipleTable">
                 <el-table-column
-                    type="selection"
-                    width="40">
+                    type="selection">
                 </el-table-column>
 
                 <el-table-column
                         prop="Id"
                         sortable
-                        width="50">
+                        min-width="2%">
                 </el-table-column>
 
                 <el-table-column
                         prop="Name"
                         label="名称"
                         sortable
-                        width="250">
+                        min-width="15%">
                 </el-table-column>
 
                 <el-table-column
                         prop="Tag"
                         sortable
-                        label="最新版本">
+                        label="最新版本"
+                        min-width="18%">
                 </el-table-column>
-
-                <!-- <el-table-column
-                        prop="updated_at"
-                        label="版本更新时间"
-                        width="170">
-                </el-table-column> -->
 
                 <el-table-column
                         prop="Port"
                         label="端口"
-                        width="90">
+                        min-width="5%">
                     <template scope="props">
                         <font style="display: flex" v-for="item in props.row.Port.split(',')" :key="item">{{item}}</font>
                     </template>
@@ -81,7 +75,7 @@
                     prop="service_data"
                     label="主机"
                     fit=true
-                    width="735">
+                    min-width="43%">
                     <template scope="props">
                         <div style="clear: both;margin-bottom: 10px;"> <span></span> </div>
                         <div v-for="(item, index) in props.row.service_data" :key="item"  style="clear:both">
@@ -128,7 +122,8 @@
                 <el-table-column
                     label="上下线"
                     fit=true
-                    width="80">
+                    min-width="5%">
+                  <!--                    width="80">-->
                     <template scope="props">
                         <div v-for="item in props.row.service_data" :key="item"  style="clear:both">
                             <el-switch v-model="item.line" v-if="props.row.Class == 'java'" size="mini"
@@ -144,22 +139,9 @@
                     </template>
                 </el-table-column>
 
-                <!-- <el-table-column
-                    label="检测"
-                    fit=true
-                    width="60">
-                    <template scope="props">
-                        <div v-for="item in props.row.service_data" :key="item"  style="clear:both">
-                            <el-button v-if="item.health=='200'" size="mini" type="primary">健康</el-button>
-                            <el-tag v-else-if="item.health=='404' ||item.health=='401' " size="mini" type="warning">异常</el-tag>
-                            <el-tag v-else size="mini" type="danger">异常</el-tag>
-                        </div>
-                    </template>
-                </el-table-column> -->
-
                 <el-table-column
                         label="操作"
-                         width="185">
+                        min-width="15%">
                 <template scope="props">
                         <router-link :to="{name: 'serviceUpdate', params: {id: props.row.Id}}" tag="span">
                             <el-button type="info" size="mini" icon="edit">修改</el-button>
@@ -173,18 +155,6 @@
                     </template>
                 </el-table-column>
             </el-table>
-
-            <!-- <bottom-tool-bar>
-                <div slot="page">
-                    <el-pagination
-                            @current-change="handleCurrentChange"
-                            :current-page="currentPage"
-                            :page-size="10"
-                            layout="total, prev, pager, next"
-                            :total="total">
-                    </el-pagination>
-                </div>
-            </bottom-tool-bar> -->
         </div>
     </div>
 </template>
@@ -261,16 +231,6 @@
                 this.get_table_data()
             },
 
-            // toggleSelection(rows) {
-            //     if (rows) {
-            //         rows.forEach(row => {
-            //             this.$refs.multipleTable.toggleRowSelection(row);
-            //         });
-            //     } else {
-            //         this.$refs.multipleTable.clearSelection();
-            //     }
-            // },
-
             handleSelectionChange(val) {
                 this.form = val;
             },
@@ -296,7 +256,6 @@
             get_service_status_all() {
                 this.load_data = true
                 for(var i in this.table_data) {
-                    // this.table_data[i].service_data = []
                     this.get_service_status(i)
                 }
                 this.load_data = false
@@ -312,7 +271,6 @@
                         })
                 .then(({data: {data}}) => {
                     this.$set(this.table_data[index], "service_data", data)
-                    // this.table_data[index].service_data = data
                     this.load_data = false
                 })
                 this.load_data = false
@@ -357,10 +315,7 @@
                 }
                 this.$http.post(port_deploy.save, this.form)
                 .then(({data: {data}}) => {
-                    // this.$message({
-                    //     message: msg,
-                    //     type: 'success'
-                    // })
+
                     setTimeout(() => {
                         let routeData = this.$router.resolve({
                             name: "deployRelease",
@@ -388,8 +343,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    // this.on_submit_loading = true
-                    // this.load_data = true
+
                     let walle_form = {
                         User: store.state.user_info.user,
                         Service: service,
@@ -420,8 +374,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    // this.on_submit_loading = true
-                    // this.load_data = true
+
                     let walle_form = {
                         User: store.state.user_info.user,
                         Service: service,

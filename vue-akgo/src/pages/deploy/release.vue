@@ -30,36 +30,31 @@
                     element-loading-text="拼命加载中"
                     border
                     style="width: 100%;">
-                <!-- <el-table-column
-                        prop="Id"
-                        label="id"
-                        width="80">
-                </el-table-column> -->
 
                 <el-table-column
                     type="index"
-                    width="40">
+                  min-width="2%">
                 </el-table-column>
 
                 <el-table-column
                         prop="Service.Name"
                         label="项目名称"
-                        width="170">
+                        min-width="15%">
+                        min-width="5%">
                 </el-table-column>
 
                 <el-table-column
                         prop="Service.Port"
                         label="端口"
-                        width="90">
+                        min-width="5%">
                     <template scope="props">
                         <font style="display: flex" v-for="item in props.row.Service.Port.split(',')" :key="item">{{item}}</font>
                     </template>
                 </el-table-column>
 
-                        <!-- :render-header="renderHeaderTag" -->
                 <el-table-column
                         label="发布版本"
-                        width="390">
+                        min-width="18%">
                     <template scope="props">
                         <el-tag v-if="check_data[props.$index]" style="margin-left: -5px" type="success">
                             <i class="el-icon-circle-check"></i>
@@ -103,7 +98,7 @@
                 <el-table-column
                     label="检测"
                     :render-header="renderHeaderStatus"
-                    width="55">
+                    min-width="3%">
                     <template scope="props">
                         <el-button type="success" size="mini" @click="get_service_status(props.$index)">检测</el-button>
                     </template>
@@ -112,8 +107,9 @@
                 <el-table-column
                     label="主机"
                     prop="ProjectStatus"
-                    fit=true>
-                    <template scope="props">
+                    fit=true
+                    min-width="45%">
+                  <template scope="props">
                         <div style="clear: both;margin-bottom: 10px;"> <span></span> </div>
                         <div v-for="(item, host_index) in service_data[props.$index]" :key="item"  style="clear:both">
                             <!-- <el-checkbox v-model="item.deploy">发布</el-checkbox> -->
@@ -141,17 +137,12 @@
                                 <el-input readonly style="width: 120px" size="mini" v-model="item.ip" >
                                 </el-input>
                             </div>
-                            <!-- <el-input readonly style="width: 140px" size="mini" v-model="item.ip_show" >
-                            </el-input> -->
-                            <!-- <el-input readonly style="width: 110px" size="mini" v-model="item.ps_status">
-                            </el-input> -->
 
                             <el-input v-if="item.ps_status.substr(0, 2) != 'Up'" class="input_red" readonly style="width: 100px" size="mini" v-model="item.ps_status">
                             </el-input>
                             <el-input v-else readonly style="width: 100px" size="mini" v-model="item.ps_status">
                             </el-input>
-                            <!-- <el-input readonly style="width: 150px" size="mini" v-model="item.ps_created_at">
-                            </el-input> -->
+
                             <el-input readonly style="width: 250px" size="mini" v-model="item.ps_image">
                             </el-input>
 
@@ -178,7 +169,7 @@
                 <el-table-column
                         prop="Cmd"
                         label="命令"
-                        width="50">
+                        min-width="5%">
                     <template scope="props">
                         <el-popover
                             ref="cmd"
@@ -226,13 +217,7 @@
                 :modal="true"
                 :show-close="false"
                 :modal-append-to-body="false">
-                <!-- <div  v-for="(item, index) in dialogForm" :key="item" style="width: 200px;display: inline-block;">
-                    <el-tag :closable="true" type="primary"
-                        @close="dialogForm.splice(index, 1)"
-                        style="align:online">
-                        {{item.Name}}
-                    </el-tag>
-                </div> -->
+
                 <el-checkbox-group v-if="form != null" v-model="dialogForm">
                     <el-checkbox v-for="item in form.Tasks" :label="item.Service" :key="item.Service">{{item.Service.Name}}</el-checkbox>
                 </el-checkbox-group>
@@ -333,14 +318,7 @@
             if (this.route_id) {
                 this.get_form()
                 this.get_itemCount()
-                // this.get_record()
-                // this.set_interval_1()
-                // var _this = this;
-                // this.intervalid1 = setInterval(function () {
-                //     if (_this.count != 0) {
-                //         _this.get_record()
-                //     }
-                // }, 2000)
+
             } else {
                 this.$message({
                     message: "任务id不存在",
@@ -374,7 +352,6 @@
             },
 
             clear_interval_1() {
-                // setTimeout( () => clearInterval(this.intervalid1), 5000)
                 clearInterval(this.intervalid1)
             },
 
@@ -387,7 +364,6 @@
             },
 
             clear_interval_2() {
-                // setTimeout( () => clearInterval(this.intervalid1), 5000)
                 clearInterval(this.intervalid2)
             },
 
@@ -404,9 +380,7 @@
                     var failure_service = ""
                     this.showText = [];
                     for (var i = 0; i < data.length; i++) {
-                        // console.log("-----", data[i])
-                        //var text=data[i].command+"<br>"+data[i].memo
-                        // var color = "#00ff00"
+
                         var color = "#00ff00"
                         if (data[i].Status == 0) {
                             color = "red"
@@ -436,16 +410,12 @@
                                 }catch (e){
                                 }
                             }
-                            // 打所有信息
-                            //this.showText.unshift({text: this.formatJson(text), "color": color})
                         }else{
                             this.showText.unshift({text: "\t执行结果:\n"+text.Result, "color": color})
                             if(text.ErrorInfo){
                                 this.showText.unshift({text: "\t错误:"+text.ErrorInfo, "color": color})
                             }
                             this.showText.unshift({text: "=============", "color": "#FDFEFE"})
-                            // 打所有信息
-                            // this.showText.unshift({text: this.formatJson(text), "color": color})
                         }
 
                         if (data[i].Action == 100) {
@@ -570,18 +540,6 @@
                 }
             },
 
-            // renderHeaderTag(h) {
-            //     return (
-            //         <div>
-            //             <el-button type="success" size="small"
-            //             onClick={this.post_tag}>确定版本
-            //             </el-button>
-            //         </div>
-            //     )
-            // },
-
-            // v-if并没有起作用
-            //  <el-button v-if={ ! this.tag_post } type="success" size="small" style="float: right"
             renderHeaderTag(h) {
                 return (
                     <div>
@@ -602,7 +560,6 @@
                 }
                 for(var i in this.form.Tasks) {
                     this.form.Tasks[i].Tag = this.form.Tasks[i].Service.LastTag
-                    // this.$set(this.form.Tasks[i], "Tag", this.form.Tasks[i].LastTag)
                 }
                 this.$forceUpdate();
                 this.load_data = false
@@ -762,17 +719,11 @@
                     this.form.Count = newCount
                     this.$http.post(port_deploy.deploy, this.form)
                     .then(({data: {msg}}) => {
-                        // this.$message({
-                        //     message: "已经开始发布!",
-                        //     type: "success"
-                        // })
+
                         this.on_submit_loading = false
                     })
                     .catch(() => {
-                        // this.$message({
-                        //     message: "修改发单失败!",
-                        //     type: "error"
-                        // })
+
                         this.on_submit_loading = false
                     })
                 })
@@ -787,10 +738,6 @@
                 }
             },
 
-            // set_rollback() {
-            //     for
-
-            // },
 
             //提交
             on_submit_form_rollback(deployform) {

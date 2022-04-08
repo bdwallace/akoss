@@ -1,12 +1,6 @@
 <template>
   <div class="panel">
     <panel-title :title="$route.meta.title">
-      <!-- <div style="float: left;margin-right: 10px;margin-top: 5px">
-          <search @search="submit_search"></search>
-      </div>
-      <el-button @click.stop="on_refresh" size="small">
-          <i class="fa fa-refresh"></i>
-      </el-button> -->
       <div style="float: left;margin-right: 10px;margin-top: 5px">
         <el-button plain size="small">全部&nbsp;{{table_data.length}}&nbsp;个平台</el-button>
       </div>
@@ -58,8 +52,6 @@
         <el-table-column type="expand">
           <template scope="props">
 
-            <!-- @select="select"
-            @select-all="select_all(props.$index)" -->
             <el-table
               :data="props.row.Services"
               v-loading="load_data"
@@ -76,32 +68,28 @@
               <el-table-column
                 prop="Id"
                 sortable
-                width="50">
+                min-width="5%">
+
               </el-table-column>
 
               <el-table-column
                 prop="Alias"
                 label="别名"
                 sortable
-                width="150">
+                min-width="15%">
               </el-table-column>
-
-              <!-- <el-table-column
-                      prop="Tag"
-                      label="最后发布版本"
-                      width="170">
-              </el-table-column> -->
 
               <el-table-column
                 prop="Tag"
                 sortable
-                label="最新版本">
+                label="最新版本"
+                min-width="18%">
               </el-table-column>
 
               <el-table-column
                 prop="Port"
                 label="端口"
-                width="115">
+                min-width="5%">
                 <template scope="service_props">
                   <font style="display: flex" v-for="item in service_props.row.Port.split(',')" :key="item">{{item}}</font>
                 </template>
@@ -111,7 +99,7 @@
                 prop="service_data"
                 label="主机"
                 fit=true
-                width="740">
+                min-width="43%">
                 <template scope="service_props">
                   <div style="margin-top: -15px"> <span></span> </div>
                   <!-- <div v-for="(item, index) in table_data[props.$index].Services[service_props.$index].service_data" :key="index"> -->
@@ -160,9 +148,9 @@
               </el-table-column>
 
               <el-table-column
-                label=""
+                label="上传"
                 fit=true
-                width="55">
+                min-width="4%">
                 <template scope="service_props">
                   <router-link v-if="service_props.row.ReleaseTo" :to="{name: 'serviceUpload', params: {id: service_props.row.Id}}" tag="span">
                     <el-button  type="primary" size="mini" >上传</el-button>
@@ -172,7 +160,7 @@
 
               <el-table-column
                 label="操作"
-                width="185">
+                min-width="10%">
                 <template scope="service_props">
                   <router-link :to="{name: 'serviceUpdate', params: {id: service_props.row.Id}}" tag="span">
                     <el-button type="info" size="mini" icon="edit">修改</el-button>
@@ -193,13 +181,13 @@
           prop="ChannelId"
           sortable
           label="平台id"
-          width="100">
+          min-width="5%">
         </el-table-column>
 
         <el-table-column
           prop="Name"
           label="平台名称"
-          width="190">
+          min-width="15%">
         </el-table-column>
 
         <el-table-column label="">
@@ -207,53 +195,24 @@
             <el-button plain size="small" v-if="props.row.Services != null">全部&nbsp;{{props.row.Services.length}}&nbsp;个服务</el-button>
           </template>
         </el-table-column>
-        <!-- <el-table-column
-                prop="Value"
-                label="平台参数">
-            <template scope="props">
-                <el-button readonly size="mini" v-for="(item, index) in JSON.parse(props.row.Value)" :key="index" style="margin-right: 5px">{{item.Key}}={{item.Value}}</el-button>
-            </template>
-        </el-table-column> -->
-
-        <!-- <el-table-column
-                label="服务操作"
-                width="250">
-            <template scope="props">
-                <el-button type="info" size="small" icon="setting" @click="get_platform_status(props.$index)" :loading="on_submit_loading">全部检测</el-button>
-            </template>
-        </el-table-column> -->
-
         <el-table-column
           label="平台操作"
-          width="185">
+          min-width="15%">
           <template scope="props">
             <router-link :to="{name: 'platformUpdate', params: {id: props.row.Id}}" tag="span">
               <el-button type="info" size="small" icon="edit">修改</el-button>
             </router-link>
-            <!-- <el-button type="warning" size="small" icon="document" @click="copy_data(props.row.id)">复制
-            </el-button> -->
             <el-button style="margin-left:0px" type="danger" size="small" icon="delete" @click="delete_check(props.row.Id)">删除
             </el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <!-- :close-on-press-escape="true"
-    @update:visible="close_dialog()"
-    @close="close_dialog()"
-    :close-on-click-modal="true" -->
     <el-dialog title="确认发布以下服务"
                :visible.sync="is_classDialog"
                :modal="true"
                :show-close="false"
                :modal-append-to-body="false">
-      <!-- <div  v-for="(item, index) in dialogForm" :key="item" style="width: 200px;display: inline-block;">
-          <el-tag :closable="true" type="primary"
-              @close="dialogForm.splice(index, 1)"
-              style="align:online">
-              {{item.Name}}
-          </el-tag>
-      </div> -->
       <el-checkbox-group v-model="dialogForm">
         <el-checkbox v-for="item in dialogFormAll" :label="item" :key="item">{{item.Name}}</el-checkbox>
       </el-checkbox-group>
@@ -352,7 +311,6 @@
     methods: {
       get_table_data() {
         this.load_data = true
-        // this.$http.get(port_platform.list,  {
         this.$http.get(port_platform.project,  {
           params: {
             project_id: this.ProjectId,
@@ -390,22 +348,13 @@
       },
 
       select(val, row) {
-        // this.form = val;
-        // console.log("---val---", val)
-        // console.log("---row---", row)
-        // let v = val.indexOf(row)
-        // if (v == -1) {
-        //     this.form.splice(v)
-        // } else {
-        //     this.form.push(row)
-        // }
+
         let v = this.form.indexOf(row)
         if (v == -1) {
           this.form.push(row)
         } else {
           this.form.splice(v)
         }
-        // console.log("---form---", this.form)
       },
 
       select_change(selection, index) {
@@ -413,7 +362,6 @@
       },
 
       select_all(index) {
-        // console.log("---i---", index)
         if(val.length == 0) {
           this.form = []
         } else {
@@ -428,7 +376,6 @@
       expand(row, expanded) {
         let index = this.table_data.indexOf(row)
         if (expanded) {
-          // this.get_platform_service(index)
           this.get_platform_status(index)
         } else {
           let expands_index = this.expands.indexOf(row.Id)
@@ -612,10 +559,7 @@
         }
         this.$http.post(port_deploy.save, deployform)
           .then(({data: {data}}) => {
-            // this.$message({
-            //     message: msg,
-            //     type: 'success'
-            // })
+
             setTimeout(() => {
               let routeData = this.$router.resolve({
                 name: "deployRelease",
@@ -649,10 +593,7 @@
         this.$http.post(port_walle.download, walle_form)
           .then(({data: {data}}) => {
             window.location.href = data
-            // this.$message({
-            //    message: "发送关闭成功",
-            //     type: 'success'
-            // })
+
             this.on_submit_loading = false
             this.load_data = false
           }).catch(() => {
@@ -733,14 +674,7 @@
 
       //根据id删除数据
       delete_check(id){
-        // this.$confirm('此操作将删除该数据, 是否继续?', '提示', {
-        //     confirmButtonText: '确定',
-        //     cancelButtonText: '取消',
-        //     type: 'warning'
-        // })
-        // .then(() => {
-        // this.load_data = true
-        // this.$http.delete(port_platform.id, {
+
         this.$http.get(port_platform.relatedcheck, {
           params: {
             id: id,
@@ -758,10 +692,7 @@
           .catch(({msg: {msg}}) => {
             this.load_data = false
           })
-        // })
-        // .catch(() => {
-        //     this.load_data = false
-        // })
+
       },
 
       //根据id删除数据
