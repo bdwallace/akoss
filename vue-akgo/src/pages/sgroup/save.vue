@@ -80,14 +80,14 @@
         ProjectId: null,
         form: {
           GroupIds: [],
-          ToPort: 8081,
+          ToPort: [8081,9000],
           Project: null,
           CidrIp: null,
           Description: null
         },
         table_data: [],
         itemGroups: [],
-        itemPort: [],
+        itemPort: [8081,9000],
         mask: 32,
         port: this.$route.params.port,
         load_data: false,

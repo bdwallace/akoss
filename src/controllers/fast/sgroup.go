@@ -80,7 +80,11 @@ func (c *SgroupController) SetSgroup() {
 	}
 
 	project, _ := models.GetProjectById(myAws.Project)
-	myAws.Region = project.AwsRegion
+	if myAws.ToPort == 9000 {
+		myAws.Region = "ap-southeast-1"
+	} else {
+		myAws.Region = project.AwsRegion
+	}
 	myAws.Alias = project.Alias
 
 	_ = myAws.InitSession()
@@ -114,20 +118,26 @@ func (c *SgroupController) DeleteSgroup() {
 
 	var myAws aws.BaseAws
 	project, _ := models.GetProjectById(sgroup.ProjectId)
-	myAws.Region = project.AwsRegion
-	myAws.Alias = project.Alias
 
-	_ = myAws.InitSession()
-	myAws.SourceInstance.Ec2 = ec2.New(myAws.Session)
+	regionList := make([]string,0)
+	regionList = append(regionList, "ap-east-1","ap-southeast-1")
+	for i, region := range regionList {
+		myAws.Region = region
+		myAws.Alias = project.Alias
 
-	myAws.GroupIds = []string{*sgroup.Data.GroupId}
-	iprangstr := sgroup.Data.IpPermissions
+		_ = myAws.InitSession()
+		myAws.SourceInstance.Ec2 = ec2.New(myAws.Session)
 
-	data, err := myAws.DeleteSgroup(iprangstr)
-	if err != nil {
-		c.SetJson(1, nil, "删除安全组失败")
-		return
+		myAws.GroupIds = []string{*sgroup.Data.GroupId}
+		iprangstr := sgroup.Data.IpPermissions
+
+		_, err := myAws.DeleteSgroup(iprangstr)
+		if err != nil && i == 1 {
+			c.SetJson(1, nil, "删除安全组失败")
+			return
+		}
+
 	}
-	c.SetJson(0, data, "")
+	c.SetJson(0, nil, "")
 	return
 }
