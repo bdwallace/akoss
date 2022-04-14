@@ -45,7 +45,7 @@
                 <el-table-column
                         prop="Id"
                         sortable
-                        min-width="2%">
+                        min-width="3%">
                 </el-table-column>
 
                 <el-table-column
@@ -59,7 +59,7 @@
                         prop="Tag"
                         sortable
                         label="最新版本"
-                        min-width="18%">
+                        min-width="17%">
                 </el-table-column>
 
                 <el-table-column

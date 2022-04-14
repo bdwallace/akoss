@@ -43,12 +43,23 @@ func (c *SgroupController) GetSgroup() {
 	_ = myAws.InitSession()
 	myAws.SourceInstance.Ec2 = ec2.New(myAws.Session)
 
-	data, err := myAws.GetAllSgroupForMerchant()
+	merchantSgroup, err := myAws.GetAllSgroupForMerchant()
 	if err != nil {
 		beego.Error(err)
-		c.SetJson(1, nil, "获取安全组失败")
+		c.SetJson(1, nil, "获取merchant安全组失败")
 		return
 	}
+	graylogSgroup, err := myAws.GetAllSgroupForGraylog()
+	if err != nil{
+		beego.Error(err)
+		c.SetJson(1, nil, "获取graylog安全组失败")
+		return
+	}
+
+	data := new(ec2.DescribeSecurityGroupsOutput)
+	data.SecurityGroups = append(data.SecurityGroups, merchantSgroup.SecurityGroups...)
+	data.SecurityGroups = append(data.SecurityGroups, graylogSgroup.SecurityGroups...)
+
 	c.SetJson(0, data, "")
 	return
 }

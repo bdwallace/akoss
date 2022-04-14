@@ -76,13 +76,49 @@ func (c *BaseAws) GetAllSgroupForMerchant() (result ec2.DescribeSecurityGroupsOu
 
 	// 获取所有安全组
 	groups, err := c.SourceInstance.Ec2.DescribeSecurityGroups(nil)
+	if err != nil{
+		return result, err
+	}
 
 	for _, group := range groups.SecurityGroups {
-		groupname := *group.GroupName
+		groupName := *group.GroupName
 
 		//  添加过滤 只追加 merchant 安全组
-		if strings.Index(groupname, "merchant") >= 0 {
+		if strings.Index(groupName, "merchant") >= 0 {
 			result.SecurityGroups = append(result.SecurityGroups, group)
+		}
+	}
+
+	return
+}
+
+
+func (c *BaseAws) GetAllSgroupForGraylog() (result ec2.DescribeSecurityGroupsOutput, err error) {
+
+	regions, err := c.GetAllRegion()
+	if err != nil {
+		beego.Error(fmt.Sprintf("error:  GetAllSgroupForGraylog.GetAllRegion err  ::  %s\n",err.Error()))
+		err = fmt.Errorf("error:  GetAllSgroupForGraylog.GetAllRegion err  ::  %s\n",err.Error())
+		return
+	}
+
+	for _, region := range regions{
+		c.Region = region
+		_ = c.InitSession()
+		c.SourceInstance.Ec2 = ec2.New(c.Session)
+		// 获取所有安全组
+		groups, err := c.SourceInstance.Ec2.DescribeSecurityGroups(nil)
+		if err != nil{
+			return result, err
+		}
+
+		for _, group := range groups.SecurityGroups {
+			groupName := *group.GroupName
+
+			//  添加过滤 只追加 merchant 安全组
+			if strings.Index(groupName, "Graylog") >= 0 || strings.Index(groupName, "graylog") >= 0{
+				result.SecurityGroups = append(result.SecurityGroups, group)
+			}
 		}
 	}
 
