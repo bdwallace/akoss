@@ -39,8 +39,7 @@
                 <el-table-column
                         prop="Service.Name"
                         label="项目名称"
-                        min-width="15%">
-                        min-width="5%">
+                        min-width="12%">
                 </el-table-column>
 
                 <el-table-column
@@ -54,7 +53,7 @@
 
                 <el-table-column
                         label="发布版本"
-                        min-width="18%">
+                        min-width="22%">
                     <template scope="props">
                         <el-tag v-if="check_data[props.$index]" style="margin-left: -5px" type="success">
                             <i class="el-icon-circle-check"></i>
@@ -84,7 +83,6 @@
                         <el-popover
                             ref="tag"
                             placement="bottom"
-                            width="80"
                             trigger="hover">
                             <span style="color:teal;white-space: pre-wrap;">
                                 <font>{{props.row.Service.LastTag}}</font>
@@ -108,7 +106,7 @@
                     label="主机"
                     prop="ProjectStatus"
                     fit=true
-                    min-width="45%">
+                    min-width="46%">
                   <template scope="props">
                         <div style="clear: both;margin-bottom: 10px;"> <span></span> </div>
                         <div v-for="(item, host_index) in service_data[props.$index]" :key="item"  style="clear:both">
@@ -169,7 +167,7 @@
                 <el-table-column
                         prop="Cmd"
                         label="命令"
-                        min-width="5%">
+                        min-width="3%">
                     <template scope="props">
                         <el-popover
                             ref="cmd"
