@@ -65,7 +65,7 @@
                 <el-table-column
                         prop="Port"
                         label="端口"
-                        min-width="5%">
+                        min-width="4%">
                     <template scope="props">
                         <font style="display: flex" v-for="item in props.row.Port.split(',')" :key="item">{{item}}</font>
                     </template>
@@ -75,7 +75,7 @@
                     prop="service_data"
                     label="主机"
                     fit=true
-                    min-width="43%">
+                    min-width="46%">
                     <template scope="props">
                         <div style="clear: both;margin-bottom: 10px;"> <span></span> </div>
                         <div v-for="(item, index) in props.row.service_data" :key="item"  style="clear:both">
@@ -141,7 +141,7 @@
 
                 <el-table-column
                         label="操作"
-                        min-width="15%">
+                        min-width="12%">
                 <template scope="props">
                         <router-link :to="{name: 'serviceUpdate', params: {id: props.row.Id}}" tag="span">
                             <el-button type="info" size="mini" icon="edit">修改</el-button>

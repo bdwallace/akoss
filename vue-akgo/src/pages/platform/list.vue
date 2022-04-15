@@ -68,7 +68,7 @@
               <el-table-column
                 prop="Id"
                 sortable
-                min-width="5%">
+                min-width="3%">
 
               </el-table-column>
 
@@ -76,14 +76,14 @@
                 prop="Alias"
                 label="别名"
                 sortable
-                min-width="15%">
+                min-width="11%">
               </el-table-column>
 
               <el-table-column
                 prop="Tag"
                 sortable
                 label="最新版本"
-                min-width="18%">
+                min-width="17%">
               </el-table-column>
 
               <el-table-column
@@ -99,7 +99,7 @@
                 prop="service_data"
                 label="主机"
                 fit=true
-                min-width="43%">
+                min-width="46%">
                 <template scope="service_props">
                   <div style="margin-top: -15px"> <span></span> </div>
                   <!-- <div v-for="(item, index) in table_data[props.$index].Services[service_props.$index].service_data" :key="index"> -->
@@ -148,9 +148,9 @@
               </el-table-column>
 
               <el-table-column
-                label="上传"
+                label=""
                 fit=true
-                min-width="4%">
+                min-width="3%">
                 <template scope="service_props">
                   <router-link v-if="service_props.row.ReleaseTo" :to="{name: 'serviceUpload', params: {id: service_props.row.Id}}" tag="span">
                     <el-button  type="primary" size="mini" >上传</el-button>
@@ -160,7 +160,7 @@
 
               <el-table-column
                 label="操作"
-                min-width="10%">
+                min-width="12%">
                 <template scope="service_props">
                   <router-link :to="{name: 'serviceUpdate', params: {id: service_props.row.Id}}" tag="span">
                     <el-button type="info" size="mini" icon="edit">修改</el-button>
