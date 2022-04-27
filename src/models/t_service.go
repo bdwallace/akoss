@@ -339,9 +339,9 @@ func GetServiceById(id int) (s *Service, err error) {
 }
 
 /*
-	通过 project_id  查询 service
+	通过 project_id  获取后端 service
 */
-func GetServiceByProjectIdAndClass(projectId int) (s []*Service, err error) {
+func GetServiceClassOfJavaByProjectId(projectId int) (s []*Service, err error) {
 
 	o := orm.NewOrm()
 	_, err = o.QueryTable(serviceTableName).Filter("project_id", projectId).Filter("class", "java").Filter("is_del", 0).RelatedSel().All(&s)
@@ -354,7 +354,6 @@ func GetServiceByProjectIdAndClass(projectId int) (s []*Service, err error) {
 func GetServiceByProjectNotJavaForName(projectId int) (list *orm.ParamsList, err error) {
 	list = new(orm.ParamsList)
 	o := orm.NewOrm()
-	// _ ,err = o.QueryTable(serviceTableName).Filter("project_id",projectId).Exclude("class", "java").GroupBy("name").OrderBy("name").ValuesFlat(list, "name")
 	sql := fmt.Sprintf("SELECT `t_service`.name FROM `%s` `t_service` INNER JOIN `%s` `t_service_t_domain` ON `t_service`.`id`=`t_service_t_domain`.`%s`", serviceTableName, serviceDomainTableName, serviceDomainForServiceId)
 	_, err = o.Raw(sql).ValuesFlat(list, "name")
 	return

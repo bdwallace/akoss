@@ -234,7 +234,7 @@ func (c *BaseDocker) DockerPs(lineData string) (res []map[string]string, err err
 		p, have443 := c.GetPortForDockerServiceHealth()
 		health, url := c.DockerServiceHealth(host, p, have443)
 
-		res = append(res, map[string]string{"host_id": common.IntToStr(host.Id), "ip": host.PrivateIp, "ip_pub": host.PublicIp, "ip_show": host.UseIp, "ps_status": PsStatus, "ps_created_at": PsCreatedAt, "ps_image": PsImage, "line": Line, "health": health, "url": url, "service_id": strconv.Itoa(c.BaseComponents.Service.Id)})
+		res = append(res, map[string]string{"project_name:":c.BaseComponents.Project.Name, "host_id": common.IntToStr(host.Id), "ip": host.PrivateIp, "ip_pub": host.PublicIp, "ip_show": host.UseIp, "ps_status": PsStatus, "ps_created_at": PsCreatedAt, "ps_image": PsImage, "line": Line, "health": health, "url": url, "service_id": strconv.Itoa(c.BaseComponents.Service.Id), "service_name": c.BaseComponents.Service.Name})
 
 	}
 	return res, err

@@ -195,10 +195,6 @@
         crtFileName: null,
         keyFileNmae: null,
         addProject: [],
-        // addProject: [{
-        //   platform_id: null,
-        //   project_id: null
-        // }],
         itemPlatform: [],
         itemService: [],
         itemDomain: [],
@@ -306,63 +302,6 @@
           this.$forceUpdate()
         },
 
-        // get_itemproject(platform_id, index) {
-        //   this.load_data = true
-
-        //   this.$http.get(port_conf.listplatform, {
-        //                       params: {
-        //                           // level: this.form.Level,
-        //                           // type: "channel"
-        //                           platformId: platform_id
-        //                       }
-        //                   })
-        //     .then(({data: {data}}) => {
-        //       this.$set(this.itemService, index, data)
-        //       this.load_data = false
-        //     })
-        //     .
-        //     catch(() => {
-        //       this.load_data = false
-        //     })
-        // },
-
-        // get_addProject(domain_id) {
-        //   this.load_data = true
-        //   this.$http.get(port_conf.listdomain, {
-        //               params: {
-        //                 domainId: domain_id
-        //               }
-        //             })
-        //     .then(({data: {data}}) => {
-        //       this.itemDomain = data
-        //       this.addProject = []
-        //       for(var i in data) {
-        //         let addProject = {}
-        //         if (data[i].platform_id == "") {
-        //           addProject = {
-        //             platform_id: null,
-        //             project_id: data[i].id
-        //           }
-        //         } else {
-        //           addProject = {
-        //             platform_id: Number(data[i].platform_id),
-        //             project_id: data[i].id
-        //           }
-        //         }
-        //         this.get_itemproject(addProject.platform_id, i)
-        //         // this.$set(this.addProject, i, addProject)
-        //         this.addProject.push(addProject)
-
-        //       }
-        //       this.load_data = false
-
-        //     })
-        //     .
-        //     catch(() => {
-        //       this.load_data = false
-        //     })
-
-        // },
 
         //下拉框获取已有类型
         get_itemplatform(){

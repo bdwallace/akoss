@@ -4,7 +4,9 @@ import (
 	"controllers"
 	"encoding/json"
 	"fmt"
+	"library/alertEmail"
 	"library/blacklist"
+	"library/components"
 	"models"
 )
 
@@ -220,7 +222,7 @@ func (c *ServiceController) GetServiceAllRelatedByProjectId() {
 	resServices := make([]*models.Service, 0)
 
 	if searchText == "" {
-		resServices, err = models.GetServiceByProjectIdAndClass(projectId)
+		resServices, err = models.GetServiceClassOfJavaByProjectId(projectId)
 		if err != nil {
 			c.SetJson(1, err, "获取 services by project id and class 失败")
 			return
@@ -448,6 +450,77 @@ func (c *ServiceController) DeleteServiceAndAllRelatedByServiceId() {
 	_, err = models.UpdateServiceById(service)
 	if err != nil {
 		c.SetJson(1, err, "删除 service 失败")
+		return
+	}
+
+	c.SetJson(0, nil, "")
+	return
+}
+
+
+// @Title  service by project_id
+// @Description service by project_id for name
+// @Param   project_id      query     int   		true         "project id"
+// @Success 0 {ok} bool
+// @Failure 1 查询每套环境里service的name
+// @Failure 2 User not found
+// @router /service/backendHealth [get]
+func (c *ServiceController) GetBackendServiceHealth() {
+
+	projectId, err := c.GetInt("project_id")
+	if err != nil {
+		c.SetJson(1, err, "获取project_id 失败")
+		return
+	}
+
+	// get backend service by project id
+	services, err := models.GetServiceClassOfJavaByProjectId(projectId)
+	if err != nil{
+		c.SetJson(1, err, "获取 service 失败")
+		return
+	}
+
+	unhealthyServices := make([]map[string]string,0)
+	// check service health
+	for _, s := range services {
+		service, err := models.GetServiceById(s.Id)
+		if err != nil {
+			c.SetJson(1, err, "获取 service host conf by id失败")
+			return
+		}
+
+		_, err = models.GetServiceAllRelated(service)
+		if err != nil {
+			c.SetJson(1, err, "获取 service host conf by id失败")
+			return
+		}
+
+		s := components.BaseComponents{}
+		s.SetProject(service.Project)
+		s.SetService(service)
+		s.SetUser(s.User)
+		s.SetTask(s.Task)
+
+		if service.Hosts == nil || len(service.Hosts) == 0 {
+			continue
+		}
+		s.SetHost(service.Hosts)
+		d := components.BaseDocker{}
+		d.SetBaseComponents(s)
+
+		res, _ := d.DockerPs("")
+		for _, item := range res{
+			if item["health"] != "200"{
+				unhealthyServices = append(unhealthyServices, item)
+			}
+		}
+	}
+
+	// if the service is unhealthy, email to the op group
+	emailInfo := alertEmail.EmailInfoOfBackendService(unhealthyServices)
+	err = alertEmail.SendEmail(emailInfo)
+	if err != nil{
+		c.SetJson(1, err, "服务告警邮件发送失败")
 		return
 	}
 
