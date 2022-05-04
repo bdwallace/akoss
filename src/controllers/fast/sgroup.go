@@ -121,7 +121,8 @@ func (c *SgroupController) DeleteSgroup() {
 
 	regionList := make([]string,0)
 	regionList = append(regionList, "ap-east-1","ap-southeast-1")
-	for i, region := range regionList {
+	errCount := 0
+	for _, region := range regionList {
 		myAws.Region = region
 		myAws.Alias = project.Alias
 
@@ -129,15 +130,19 @@ func (c *SgroupController) DeleteSgroup() {
 		myAws.SourceInstance.Ec2 = ec2.New(myAws.Session)
 
 		myAws.GroupIds = []string{*sgroup.Data.GroupId}
-		iprangstr := sgroup.Data.IpPermissions
+		ipRangStr := sgroup.Data.IpPermissions
 
-		_, err := myAws.DeleteSgroup(iprangstr)
-		if err != nil && i == 1 {
-			c.SetJson(1, nil, "删除安全组失败")
-			return
+		_, err := myAws.DeleteSgroup(ipRangStr)
+
+		if err != nil{
+			errCount++
 		}
-
 	}
-	c.SetJson(0, nil, "")
-	return
+	if errCount < 1 {
+		c.SetJson(1, nil, "删除安全组失败")
+		return
+	}else {
+		c.SetJson(0, nil, "")
+		return
+	}
 }
