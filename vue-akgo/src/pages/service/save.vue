@@ -96,7 +96,7 @@
               <el-form-item label="Docker TLS path:" prop="DockerTlsPath" label-width="150px">
                 <el-tooltip class="item" effect="dark"
                             content="/etc/openssl/" placement="top">
-                  <el-input v-model="form.DockerTLSPath" placeholder="/etc/openssl/"
+                  <el-input v-model="form.DockerTlsPath" placeholder="/etc/openssl/"
                             style="width: 400px;"></el-input>
                 </el-tooltip>
               </el-form-item>
@@ -357,7 +357,7 @@ allow all;"
           DockerName: "",
           DockerNetwork: "",
           DockerPort: "",
-          DockerTLSPath: "",
+          DockerTlsPath: "",
           // Upload: "",
           Value: "",
           Hosts: [],
