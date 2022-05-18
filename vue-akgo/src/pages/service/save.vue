@@ -22,7 +22,7 @@
                 <el-input v-model="form.ImagePath" style="width: 400px;"></el-input>
               </el-form-item>
 
-              <el-form-item label="端口:" prop="Port" label-width="150px">
+              <el-form-item label="服务端口:" prop="Port" label-width="150px">
                 <el-tooltip class="item" effect="dark"
                             content="192.168.57.0:8080:80,8443:443" placement="top">
                   <el-input v-model="form.Port" placeholder="请输入端口"
@@ -45,14 +45,6 @@
                             style="width: 400px;"></el-input>
                 </el-tooltip>
               </el-form-item>
-
-              <!-- <el-form-item label="强制关闭时间:" prop="KillTime" label-width="100px">
-                <el-tooltip class="item" effect="dark"
-                            content="指定容器的强制关闭时间，docker默认是10秒" placement="top">
-                  <el-input v-model="form.KillTime" placeholder="默认不指定，10秒"
-                            style="width: 400px;"></el-input>
-                </el-tooltip>
-              </el-form-item> -->
 
               <el-form-item label="健康监测:" prop="Health" label-width="150px">
                 <el-tooltip class="item" effect="dark"
@@ -87,6 +79,35 @@
                 </el-option>
               </el-select>
             </el-form-item>
+
+              <el-form-item label="Docker Port:" prop="UseDockerPort" label-width="150px">
+                <el-select v-model="selectDockerPort" placeholder="请选择"
+                           clearable
+                           style="width: 400px;">
+                  <el-option
+                    v-for="item in itemDockerPort"
+                    :key="item"
+                    :label="`${item}`"
+                    :value="item">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+
+              <el-form-item label="Docker TLS path:" prop="DockerTlsPath" label-width="150px">
+                <el-tooltip class="item" effect="dark"
+                            content="/etc/openssl/" placement="top">
+                  <el-input v-model="form.DockerTLSPath" placeholder="/etc/openssl/"
+                            style="width: 400px;"></el-input>
+                </el-tooltip>
+              </el-form-item>
+
+<!--
+
+
+              <el-form-item label="Docker TLS path:" prop="DockerTlsPath" label-width="150px">
+                <el-input v-model="form.DockerTLSPath" style="width: 400px;"></el-input>
+              </el-form-item>
+-->
 
             </div>
             <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px">
@@ -335,6 +356,8 @@ allow all;"
           Health: "",
           DockerName: "",
           DockerNetwork: "",
+          DockerPort: "",
+          DockerTLSPath: "",
           // Upload: "",
           Value: "",
           Hosts: [],
@@ -366,25 +389,26 @@ allow all;"
           "other"
         ],
         selectDockerNetwork: "",
+        selectDockerPort: "",
         itemDockerNetwork: [
           "--net=host",
           "--net=bridge",
+        ],
+        itemDockerPort: [
+          "2375",
+          "32375",
         ],
         // valueJson: [{}],
         valueJson:[{
           Value: null,
           HostId: null
         }],
-
         itemHost: [],
-
         // addPlatform:[null],
         itemPlatform: [],
         // addDomain:[null],
         itemDomain: [],
-
         noQuickenDomain: [],
-
         route_id: this.$route.params.id,
         load_data: false,
         on_submit_loading: false,
@@ -633,10 +657,6 @@ allow all;"
         })
           .then(({data: {data}}) => {
             this.itemConf = data
-            // for(var i in this.itemConf) {
-            //     // this.item[i].json = JSON.parse(this.itemConf[i].Value);
-            //     this.$set(this.itemConf[i], "json", JSON.parse(this.itemConf[i].Value))
-            // }
             this.load_data = false
           })
           .
@@ -677,6 +697,7 @@ allow all;"
 
             this.Nacos = this.form.UseNacos
             this.selectDockerNetwork = this.form.DockerNetwork
+            this.selectDockerPort = this.form.DockerPort
 
             this.valueJson = JSON.parse(this.form.Value)
           })
@@ -719,6 +740,12 @@ allow all;"
          } else {
             this.form.DockerNetwork = this.itemDockerNetwork[0]
          }
+         if (this.selectDockerPort !== "") {
+            this.form.DockerPort = this.selectDockerPort
+         } else {
+            this.form.DockerPort = this.itemDockerPort[0]
+         }
+
           this.$http.post(port_service.saverelated, this.form,this.Nacos)
             .then(({data: {msg}}) => {
               this.$message({
