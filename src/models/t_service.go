@@ -25,11 +25,12 @@ type Service struct {
 	DenyUserAgent string `orm:"column(deny_user_agent);type(text);null"`
 	UseNacos      string `orm:"column(use_nacos);size(100);"`
 	DockerNetwork string `orm:"column(docker_network);size(100);"`
-
+	DockerPort	  string `orm:"column(docker_port);size(100)"`
+	DockerTlsPath string `orm:"column(docker_tls_path);size(100);null;"`
 
 	CreatedAt       time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
 	UpdatedAt       time.Time `orm:"column(updated_at);type(datetime);auto_now;"`
-	LastTagUpdateAt time.Time `orm:"column(last_tag_update_at);type(datetime);null"`
+	LastTagUpdateAt time.Time `orm:"column(last_tag_update_at);type(datetime);null;"`
 
 	DockerName string `orm:"column(docker_name);size(100);null"`
 	Class      string `orm:"column(class)"`

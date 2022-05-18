@@ -21,9 +21,15 @@ func BlackListAndDenyUserAgentCP(service *models.Service, blackList bool, denyUs
 		baseDocker := new(components.BaseDocker)
 		baseDocker.SetBaseComponents(baseCom)
 
+		cmdTls := ""
+		dockerTlsPath := service.DockerTlsPath
+		if dockerTlsPath != ""{
+			cmdTls = fmt.Sprintf( " --tls --tlscacert %s/cacert.pem --tlscert %s/certs/dk.crt  --tlskey %s/private/dk.key ",dockerTlsPath,dockerTlsPath,dockerTlsPath)
+		}
+
 		allCmds := make([]string, 0)
 		//docker cp 命令
-		cc := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s ", host.UseIp, "2375")
+		cc := fmt.Sprintf("/usr/bin/env docker %s -H tcp://%s:%s ",cmdTls, host.UseIp, service.DockerPort)
 
 		if blackList {
 			blackListDir := fmt.Sprintf("black_list/%s/%s", service.Project.Alias, service.Name)

@@ -78,10 +78,10 @@ func GetConfAndCpToLocal(confRelation *response.ConfRelation, docker *components
 	}
 
 	openresyCmd := make([]string, 0)
-	NGCPCmd := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:2375 cp %s %s", confRelation.HostUseIp, cpSrcDir, cpDesDir)
-	OpenrestyNGConfCPCmd := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:2375 cp %s%s %s", confRelation.HostUseIp, cpOpenrestyConfDir, OPNGCONF, openrestyLocalConfDir)
-	OpenrestyWafConfCPCmd := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:2375 cp %s%s %s", confRelation.HostUseIp, cpOpenrestyConfDir, WAFCONF, openrestyLocalWafDir)
-	OpenrestyLuaCPCmd := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:2375 cp %s%s %s", confRelation.HostUseIp, cpOpenrestyLuaDir, ACCRDSLUA, openrestyLocalLuaDir)
+	NGCPCmd := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s cp %s %s", confRelation.HostUseIp, docker.BaseComponents.Service.DockerPort, cpSrcDir, cpDesDir)
+	OpenrestyNGConfCPCmd := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s cp %s%s %s", confRelation.HostUseIp, docker.BaseComponents.Service.DockerPort, cpOpenrestyConfDir, OPNGCONF, openrestyLocalConfDir)
+	OpenrestyWafConfCPCmd := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s cp %s%s %s", confRelation.HostUseIp, docker.BaseComponents.Service.DockerPort, cpOpenrestyConfDir, WAFCONF, openrestyLocalWafDir)
+	OpenrestyLuaCPCmd := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s cp %s%s %s", confRelation.HostUseIp, docker.BaseComponents.Service.DockerPort, cpOpenrestyLuaDir, ACCRDSLUA, openrestyLocalLuaDir)
 	openresyCmd = append(openresyCmd, OpenrestyNGConfCPCmd, OpenrestyWafConfCPCmd, OpenrestyLuaCPCmd)
 
 	s, cmdErr := gopubssh.CommandLocal(NGCPCmd, components.SSHTIMEOUT)
@@ -301,7 +301,7 @@ func DockerCPConfFileToContainer(confEdit *models.ConfEdit) (err error) {
 		)
 	}
 
-	dockerCPCmd := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:2375 cp %s %s", confEdit.IP, confEdit.Path, cpDesPath)
+	dockerCPCmd := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s cp %s %s", confEdit.IP, docker.BaseComponents.Service.DockerPort, confEdit.Path, cpDesPath)
 
 	s, cmdErr := gopubssh.CommandLocal(dockerCPCmd, components.SSHTIMEOUT)
 	if cmdErr != nil {

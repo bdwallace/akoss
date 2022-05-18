@@ -206,8 +206,14 @@ func (c *BaseDocker) DockerPs(lineData string) (res []map[string]string, err err
 				Line = "on"
 			}
 		}
+		cmdTls := ""
+		dockerTlsPath := c.BaseComponents.Service.DockerTlsPath
+		if dockerTlsPath != ""{
+			cmdTls = fmt.Sprintf( " --tls --tlscacert %s/cacert.pem --tlscert %s/certs/dk.crt  --tlskey %s/private/dk.key ",dockerTlsPath,dockerTlsPath,dockerTlsPath)
+		}
 
-		cmd := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s ps -a -f name='^%s$' --format {{.Status}}#{{.CreatedAt}}#{{.Image}}", host.UseIp, c.BaseComponents.Docker.Port, c.BaseComponents.Docker.Name)
+
+		cmd := fmt.Sprintf("/usr/bin/env docker %s -H tcp://%s:%s ps -a -f name='^%s$' --format {{.Status}}#{{.CreatedAt}}#{{.Image}}",cmdTls, host.UseIp, c.BaseComponents.Service.DockerPort, c.BaseComponents.Docker.Name)
 		//beego.Info(cmd)
 
 		s, err := c.BaseComponents.RunDockerPs(cmd, 3, host.UseIp)
@@ -245,7 +251,13 @@ func (c *BaseDocker) DockerPs(lineData string) (res []map[string]string, err err
 
 func (c *BaseDocker) createDockerPull(dockerTag string, host *models.Host) (cmdPull string, err error) {
 
-	cc := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s ", host.UseIp, c.BaseComponents.Docker.Port)
+	cmdTls := ""
+	dockerTlsPath := c.BaseComponents.Service.DockerTlsPath
+	if dockerTlsPath != ""{
+		cmdTls = fmt.Sprintf( " --tls --tlscacert %s/cacert.pem --tlscert %s/certs/dk.crt  --tlskey %s/private/dk.key ",dockerTlsPath,dockerTlsPath,dockerTlsPath)
+	}
+
+	cc := fmt.Sprintf("/usr/bin/env docker %s -H tcp://%s:%s ",cmdTls, host.UseIp, c.BaseComponents.Service.DockerPort)
 	cmds := []string{}
 	cmds = append(cmds, "date +%Y%m%d-%H%M%S-%s")
 	cmds = append(cmds, fmt.Sprintf("%s login -u %s -p %s %s", cc, c.BaseComponents.Repo.User, c.BaseComponents.Repo.Pass, c.BaseComponents.Repo.AddressImage))
@@ -267,9 +279,14 @@ func (c *BaseDocker) createDockerRun(dockerTag string, host *models.Host, ports 
 	if err != nil {
 		return "", err
 	}
+	cmdTls := ""
+	dockerTlsPath := c.BaseComponents.Service.DockerTlsPath
+	if dockerTlsPath != ""{
+		cmdTls = fmt.Sprintf( " --tls --tlscacert %s/cacert.pem --tlscert %s/certs/dk.crt  --tlskey %s/private/dk.key ",dockerTlsPath,dockerTlsPath,dockerTlsPath)
+	}
 
 	var cmds []string
-	cc := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s ", host.UseIp, c.BaseComponents.Docker.Port)
+	cc := fmt.Sprintf("/usr/bin/env docker %s -H tcp://%s:%s ",cmdTls, host.UseIp, c.BaseComponents.Service.DockerPort)
 	cmds = append(cmds, "date +%Y%m%d-%H%M%S-%s")
 
 	cmds = append(cmds, fmt.Sprintf("%s stop %s ", cc, c.BaseComponents.Docker.Name))
@@ -338,7 +355,13 @@ func (c *BaseDocker) CreateDomainDockerCmd(host *models.Host) (cmd string, err e
 	}
 	// c.BaseComponents.Service.Domains = append(c.BaseComponents.Service.Domains,resDomains...)
 
-	cc := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s ", host.UseIp, c.BaseComponents.Docker.Port)
+	cmdTls := ""
+	dockerTlsPath := c.BaseComponents.Service.DockerTlsPath
+	if dockerTlsPath != ""{
+		cmdTls = fmt.Sprintf( " --tls --tlscacert %s/cacert.pem --tlscert %s/certs/dk.crt  --tlskey %s/private/dk.key ",dockerTlsPath,dockerTlsPath,dockerTlsPath)
+	}
+
+	cc := fmt.Sprintf("/usr/bin/env docker %s -H tcp://%s:%s ",cmdTls, host.UseIp, c.BaseComponents.Service.DockerPort)
 
 	cpCmds := make([]string, 0)
 	// 拼接 命令
@@ -452,10 +475,16 @@ func (c *BaseDocker) CreateH5BlackListCmd(host *models.Host) (cmd string, err er
 	if err != nil {
 		return
 	}
+	cmdTls := ""
+	dockerTlsPath := c.BaseComponents.Service.DockerTlsPath
+	if dockerTlsPath != ""{
+		cmdTls = fmt.Sprintf( " --tls --tlscacert %s/cacert.pem --tlscert %s/certs/dk.crt  --tlskey %s/private/dk.key ",dockerTlsPath,dockerTlsPath,dockerTlsPath)
+	}
+
 
 	//docker cp 命令
 	blackListCmds := make([]string, 0)
-	cc := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s ", host.UseIp, c.BaseComponents.Docker.Port)
+	cc := fmt.Sprintf("/usr/bin/env docker %s -H tcp://%s:%s ",cmdTls, host.UseIp, c.BaseComponents.Service.DockerPort)
 	blackListCmds = append(blackListCmds, fmt.Sprintf("%s cp %s %s:/etc/nginx/conf.d/deny.conf", cc, srcFilePath, c.BaseComponents.Docker.Name))
 	blackListCmds = append(blackListCmds, fmt.Sprintf("sleep 1s; %s restart %s ", cc, c.BaseComponents.Docker.Name))
 	//blackListCmds = append(blackListCmds, fmt.Sprintf("sleep 1s;  %s exec -i %s nginx -s reload", cc, c.BaseComponents.Docker.Name))
@@ -697,10 +726,16 @@ func (c *BaseDocker) CreateCheckDeployHostsResultCmd(host *models.Host) (checkDe
 	Keyword := c.BaseComponents.Service.LogKeyword
 
 	if Keyword != "" {
-		dockerManager := fmt.Sprintf("tcp://%s:%s", host.UseIp, c.BaseComponents.Docker.Port)
-		cc := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s ", host.UseIp, c.BaseComponents.Docker.Port)
+		cmdTls := ""
+		dockerTlsPath := c.BaseComponents.Service.DockerTlsPath
+		if dockerTlsPath != ""{
+			cmdTls = fmt.Sprintf( " --tls --tlscacert %s/cacert.pem --tlscert %s/certs/dk.crt  --tlskey %s/private/dk.key ",dockerTlsPath,dockerTlsPath,dockerTlsPath)
+		}
+
+		dockerManager := fmt.Sprintf("tcp://%s:%s", host.UseIp, c.BaseComponents.Service.DockerPort)
+		cc := fmt.Sprintf("/usr/bin/env docker %s -H tcp://%s:%s ",cmdTls, host.UseIp, c.BaseComponents.Service.DockerPort)
 		date := "date +%Y%m%d-%H%M%S-%s"
-		cmdAwk := fmt.Sprintf("awk '/%s/{print $0;system(\"ps x |grep \\\"docker -H %s logs -f %s\\\"|grep -Ev \\\"awk|grep\\\" |cut -b -6|xargs kill\")}'", Keyword, dockerManager, c.BaseComponents.Docker.Name)
+		cmdAwk := fmt.Sprintf("awk '/%s/{print $0;system(\"ps x |grep \\\"docker %s -H %s logs -f %s\\\"|grep -Ev \\\"awk|grep\\\" |cut -b -6|xargs kill\")}'", Keyword,cmdTls, dockerManager, c.BaseComponents.Docker.Name)
 
 		checkDeployHostsResultCmd = fmt.Sprintf("%s ; %s logs -f %s|%s", date, cc, c.BaseComponents.Docker.Name, cmdAwk)
 
@@ -922,7 +957,7 @@ func (c *BaseDocker) Build(operationRecord *models.OperationRecord) (repoTag str
 	dir := fmt.Sprintf("upload/task/%s/%s", name, name)
 	zip := fmt.Sprintf("upload/task/%s/%s.zip", name, name)
 
-	dockerManager := fmt.Sprintf("tcp://%s:%s", operationRecord.Host.UseIp, c.BaseComponents.Docker.Port)
+	dockerManager := fmt.Sprintf("tcp://%s:%s", operationRecord.Host.UseIp, c.BaseComponents.Service.DockerPort)
 	repoTag = fmt.Sprintf("%s_%s", name, time.Now().Format("20060102_150405"))
 
 	dockerFile := "FROM harbor.one2.cc/devops/nginx_akgo:1.11.13\nADD html /data/www/html"
@@ -953,21 +988,27 @@ func (c *BaseDocker) Build(operationRecord *models.OperationRecord) (repoTag str
 	if err != nil {
 		return
 	}
+	cmdTls := ""
+	dockerTlsPath := c.BaseComponents.Service.DockerTlsPath
+	if dockerTlsPath != ""{
+		cmdTls = fmt.Sprintf( " --tls --tlscacert %s/cacert.pem --tlscert %s/certs/dk.crt  --tlskey %s/private/dk.key ",dockerTlsPath,dockerTlsPath,dockerTlsPath)
+	}
 
-	cmd_login := fmt.Sprintf("/usr/bin/env docker -H %s login -u %s -p %s %s", dockerManager, c.BaseComponents.Repo.User, c.BaseComponents.Repo.Pass, c.BaseComponents.Repo.AddressImage)
+
+	cmd_login := fmt.Sprintf("/usr/bin/env docker %s -H %s login -u %s -p %s %s",cmdTls, dockerManager, c.BaseComponents.Repo.User, c.BaseComponents.Repo.Pass, c.BaseComponents.Repo.AddressImage)
 	_, err = c.BaseComponents.LocalOther(cmd_login, 0, 60, operationRecord)
 	if err != nil {
 		return
 	}
 
-	cmd_build := fmt.Sprintf("/usr/bin/env docker -H %s build --pull %s -t  %s/%s:%s", dockerManager, dir, c.BaseComponents.Repo.AddressImage, c.BaseComponents.Service.ImagePath, repoTag)
+	cmd_build := fmt.Sprintf("/usr/bin/env docker %s -H %s build --pull %s -t  %s/%s:%s",cmdTls, dockerManager, dir, c.BaseComponents.Repo.AddressImage, c.BaseComponents.Service.ImagePath, repoTag)
 	_, err = c.BaseComponents.LocalOther(cmd_build, 0, 80, operationRecord)
 	if err != nil {
 		return
 	}
 
 	cmd_date := "date +%Y%m%d-%H%M%S-%s"
-	cmd_push := fmt.Sprintf("%s;/usr/bin/env docker -H %s push %s/%s:%s", cmd_date, dockerManager, c.BaseComponents.Repo.AddressImage, c.BaseComponents.Service.ImagePath, repoTag)
+	cmd_push := fmt.Sprintf("%s;/usr/bin/env docker %s -H %s push %s/%s:%s", cmdTls, cmd_date, dockerManager, c.BaseComponents.Repo.AddressImage, c.BaseComponents.Service.ImagePath, repoTag)
 	_, err = c.BaseComponents.LocalOther(cmd_push, 0, 100, operationRecord)
 	if err != nil {
 		return
@@ -981,7 +1022,7 @@ func (c *BaseDocker) Build(operationRecord *models.OperationRecord) (repoTag str
  */
 func (c *BaseDocker) Restart(operationRecord *models.OperationRecord) error {
 	//dockermanager := beego.AppConfig.String("dockerManager")
-	//c.BaseComponents.Docker.Port
+	//c.BaseComponents.Service.DockerPort
 
 	name := ""
 	if c.BaseComponents.Service.DockerName == "" {
@@ -989,14 +1030,19 @@ func (c *BaseDocker) Restart(operationRecord *models.OperationRecord) error {
 	} else {
 		name = c.BaseComponents.Service.DockerName
 	}
+	cmdTls := ""
+	dockerTlsPath := c.BaseComponents.Service.DockerTlsPath
+	if dockerTlsPath != ""{
+		cmdTls = fmt.Sprintf( " --tls --tlscacert %s/cacert.pem --tlscert %s/certs/dk.crt  --tlskey %s/private/dk.key ",dockerTlsPath,dockerTlsPath,dockerTlsPath)
+	}
 
 	var OutTime = 60
 	cmds := []string{}
 	cmds = append(cmds, "date +%Y%m%d-%H%M%S-%s")
 	if c.BaseComponents.Service.KillTime == "" {
-		cmds = append(cmds, fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s restart %s", operationRecord.Host.UseIp, c.BaseComponents.Docker.Port, name))
+		cmds = append(cmds, fmt.Sprintf("/usr/bin/env docker %s -H tcp://%s:%s restart %s",cmdTls, operationRecord.Host.UseIp, c.BaseComponents.Service.DockerPort, name))
 	} else {
-		cmds = append(cmds, fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s restart -t=%s %s", operationRecord.Host.UseIp, c.BaseComponents.Docker.Port, c.BaseComponents.Service.KillTime, name))
+		cmds = append(cmds, fmt.Sprintf("/usr/bin/env docker %s -H tcp://%s:%s restart -t=%s %s",cmdTls, operationRecord.Host.UseIp, c.BaseComponents.Service.DockerPort, c.BaseComponents.Service.KillTime, name))
 		OutTime = common.StrToInt(c.BaseComponents.Service.KillTime) + 60
 	}
 
@@ -1015,7 +1061,7 @@ func (c *BaseDocker) Restart(operationRecord *models.OperationRecord) error {
  */
 func (c *BaseDocker) Stop(operationRecord *models.OperationRecord) error {
 	//dockermanager := beego.AppConfig.String("dockerManager")
-	//c.BaseComponents.Docker.Port
+	//c.BaseComponents.Service.DockerPort
 
 	name := ""
 	if c.BaseComponents.Service.DockerName == "" {
@@ -1023,14 +1069,19 @@ func (c *BaseDocker) Stop(operationRecord *models.OperationRecord) error {
 	} else {
 		name = c.BaseComponents.Service.DockerName
 	}
+	cmdTls := ""
+	dockerTlsPath := c.BaseComponents.Service.DockerTlsPath
+	if dockerTlsPath != ""{
+		cmdTls = fmt.Sprintf( " --tls --tlscacert %s/cacert.pem --tlscert %s/certs/dk.crt  --tlskey %s/private/dk.key ",dockerTlsPath,dockerTlsPath,dockerTlsPath)
+	}
 
 	var OutTime = 60
 	cmds := []string{}
 	cmds = append(cmds, "date +%Y%m%d-%H%M%S-%s")
 	if c.BaseComponents.Service.KillTime == "" {
-		cmds = append(cmds, fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s stop %s", operationRecord.Host.UseIp, c.BaseComponents.Docker.Port, name))
+		cmds = append(cmds, fmt.Sprintf("/usr/bin/env docker %s -H tcp://%s:%s stop %s",cmdTls, operationRecord.Host.UseIp, c.BaseComponents.Service.DockerPort, name))
 	} else {
-		cmds = append(cmds, fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s stop -t=%s %s", operationRecord.Host.UseIp, c.BaseComponents.Docker.Port, c.BaseComponents.Service.KillTime, name))
+		cmds = append(cmds, fmt.Sprintf("/usr/bin/env docker %s -H tcp://%s:%s stop -t=%s %s", cmdTls, operationRecord.Host.UseIp, c.BaseComponents.Service.DockerPort, c.BaseComponents.Service.KillTime, name))
 		OutTime = common.StrToInt(c.BaseComponents.Service.KillTime) + 60
 	}
 
@@ -1056,12 +1107,18 @@ func (c *BaseDocker) Reload(operationRecord *models.OperationRecord) error {
 	} else {
 		name = c.BaseComponents.Service.DockerName
 	}
+	cmdTls := ""
+	dockerTlsPath := c.BaseComponents.Service.DockerTlsPath
+	if dockerTlsPath != ""{
+		cmdTls = fmt.Sprintf( " --tls --tlscacert %s/cacert.pem --tlscert %s/certs/dk.crt  --tlskey %s/private/dk.key ",dockerTlsPath,dockerTlsPath,dockerTlsPath)
+	}
+
 
 	var OutTime = 60
 	cmds := []string{}
 	cmds = append(cmds, "date +%Y%m%d-%H%M%S-%s")
-	cmds = append(cmds, fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s exec -i %s nginx -t", operationRecord.Host.UseIp, c.BaseComponents.Docker.Port, name))
-	cmds = append(cmds, fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s exec -i %s nginx -s reload", operationRecord.Host.UseIp, c.BaseComponents.Docker.Port, name))
+	cmds = append(cmds, fmt.Sprintf("/usr/bin/env docker %s -H tcp://%s:%s exec -i %s nginx -t", cmdTls, operationRecord.Host.UseIp, c.BaseComponents.Service.DockerPort, name))
+	cmds = append(cmds, fmt.Sprintf("/usr/bin/env docker %s -H tcp://%s:%s exec -i %s nginx -s reload", cmdTls, operationRecord.Host.UseIp, c.BaseComponents.Service.DockerPort, name))
 
 	cmd := strings.Join(cmds, " && ")
 	_, err := c.BaseComponents.LocalOther(cmd, OutTime, 100, operationRecord)
@@ -1092,12 +1149,18 @@ func (c *BaseDocker) DownloadZip(operationRecord *models.OperationRecord) (strin
 		fmt.Println("error: DownloadZip common.RmMkdir  ", dir, "  ", err)
 		return "", err
 	}
+	cmdTls := ""
+	dockerTlsPath := c.BaseComponents.Service.DockerTlsPath
+	if dockerTlsPath != ""{
+		cmdTls = fmt.Sprintf( " --tls --tlscacert %s/cacert.pem --tlscert %s/certs/dk.crt  --tlskey %s/private/dk.key ",dockerTlsPath,dockerTlsPath,dockerTlsPath)
+	}
+
 
 	cmds := []string{}
 	cmds = append(cmds, "date +%Y%m%d-%H%M%S-%s")
 
 	dirCp := fmt.Sprintf("%s/html", dir)
-	cmds = append(cmds, fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s cp %s:%s %s", operationRecord.Host.UseIp, dockermanager, name, c.BaseComponents.Service.ReleaseTo, dirCp)) ///  添加ReleaseTo
+	cmds = append(cmds, fmt.Sprintf("/usr/bin/env docker %s -H tcp://%s:%s cp %s:%s %s",cmdTls, operationRecord.Host.UseIp, dockermanager, name, c.BaseComponents.Service.ReleaseTo, dirCp)) ///  添加ReleaseTo
 
 	cmd := strings.Join(cmds, " ; ")
 	_, err = c.BaseComponents.LocalOther(cmd, 0, 100, operationRecord)
@@ -1125,8 +1188,14 @@ func (c *BaseDocker) GetStatusHost(host string) (res []map[string]string, err er
 	PsStatus := "------"
 	PsCreatedAt := "------"
 	PsImage := "------\n"
+	cmdTls := ""
+	dockerTlsPath := c.BaseComponents.Service.DockerTlsPath
+	if dockerTlsPath != ""{
+		cmdTls = fmt.Sprintf( " --tls --tlscacert %s/cacert.pem --tlscert %s/certs/dk.crt  --tlskey %s/private/dk.key ",dockerTlsPath,dockerTlsPath,dockerTlsPath)
+	}
 
-	cmd := fmt.Sprintf("/usr/bin/env docker -H tcp://%s:%s ps -a --format {{.Names}}#{{.Status}}#{{.CreatedAt}}#{{.Image}}", host, dockerPort)
+
+	cmd := fmt.Sprintf("/usr/bin/env docker %s -H tcp://%s:%s ps -a --format {{.Names}}#{{.Status}}#{{.CreatedAt}}#{{.Image}}",cmdTls, host, dockerPort)
 
 	s, _, err := c.BaseComponents.RunLocal(c.BaseComponents.Task, cmd, 3, host, "")
 	if err != nil {
