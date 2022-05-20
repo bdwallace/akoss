@@ -528,7 +528,7 @@ func (c *BaseDocker) CreateDockerCmd(task *models.Task, count int, serviceClass 
 	domainCmdAll := make([]string, 0)
 	blackListCmd := ""
 	checkDeployHostsResultCmd := ""
-	isCheck := false
+	//isCheck := false
 
 	// analyze public param
 	public, err := c.AnalyzePublicParam()
@@ -623,7 +623,7 @@ func (c *BaseDocker) CreateDockerCmd(task *models.Task, count int, serviceClass 
 			checkDeployHostsResultCmd = c.CreateCheckDeployHostsResultCmd(host)
 			checkDeployHostsResultCmd = fmt.Sprintf("%s##", checkDeployHostsResultCmd)
 			checkDeployHostsResultCmd = fmt.Sprintf("%s:%s", host.UseIp, checkDeployHostsResultCmd)
-			isCheck = true
+			//isCheck = true
 		}
 
 		// 判断服务有绑定域名
@@ -644,24 +644,24 @@ func (c *BaseDocker) CreateDockerCmd(task *models.Task, count int, serviceClass 
 	}
 
 	if len(domainCmdAll) < 1 {
+/*
 		if isCheck {
 			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n", "docker-check", checkDeployHostsResultCmd, "docker-pull", serviceCmdPullAll, "docker-run", serviceCmdRunAll)
 		} else {
 			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n", "docker-pull", serviceCmdPullAll, "docker-run", serviceCmdRunAll)
 		}
+*/
+		c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n", "docker-pull", serviceCmdPullAll, "docker-run", serviceCmdRunAll)
 
-		/*if isCheck {
-			c.DockerCmd.CheckCmd = checkDeployHostsResultCmd
-			c.DockerCmd.PullCmd = serviceCmdPullAll
-		} else {
-
-		}*/
 	} else {
+/*
 		if isCheck {
 			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n", "docker-check", checkDeployHostsResultCmd, "docker-pull", serviceCmdPullAll, "docker-run", serviceCmdRunAll, "docker-domain", domainCmdAll)
 		} else {
 			c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n", "docker-pull", serviceCmdPullAll, "docker-run", serviceCmdRunAll, "docker-domain", domainCmdAll)
 		}
+*/
+		c.Cmds = fmt.Sprintf("%s\n%s\n%s\n%s\n%s\n%s\n", "docker-pull", serviceCmdPullAll, "docker-run", serviceCmdRunAll, "docker-domain", domainCmdAll)
 	}
 
 	// add other service class

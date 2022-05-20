@@ -202,7 +202,8 @@ type deployCmd struct {
 */
 func (c *DeployController) releaseHandling(ch chan int, task *models.Task, deploy *models.Deploy, hosts []*models.Host) {
 
-	checkCmd, pullCmds, runCmds, domainCmds, blackListCmds := c.AnalyzeDockerCmd(task.Cmd, deploy.Class)
+	//checkCmd, pullCmds, runCmds, domainCmds, blackListCmds := c.AnalyzeDockerCmd(task.Cmd, deploy.Class)
+	_, pullCmds, runCmds, domainCmds, blackListCmds := c.AnalyzeDockerCmd(task.Cmd, deploy.Class)
 
 	var err error
 
@@ -234,7 +235,7 @@ func (c *DeployController) releaseHandling(ch chan int, task *models.Task, deplo
 
 	var runResId int64
 	// docker run
-	for i, cmd := range runCmds {
+	for _, cmd := range runCmds {
 
 		_, isDelpoy := c.CheckIsDeploy(cmd, hosts)
 		if !isDelpoy {
@@ -257,7 +258,7 @@ func (c *DeployController) releaseHandling(ch chan int, task *models.Task, deplo
 				return
 			}
 		}
-
+/*
 		if i == 0 && deploy.Class == "java" && checkCmd != "" {
 			if runResId, err = c.RunDockerCmd(task, "check", checkCmd); err != nil && runResId > 0 {
 				if err := UpdateRecordActionAndCount(runResId, 120, deploy.Count); err != nil {
@@ -274,7 +275,7 @@ func (c *DeployController) releaseHandling(ch chan int, task *models.Task, deplo
 				}
 			}
 		}
-
+*/
 		// 更新服务最新tag
 		// 因为发布次数会有不确定性，所以更新service的tag和last_tag不能在发布的时候更新
 		// 只能在确定task的tag和生成命令时更新service的tag和last_tag
