@@ -750,7 +750,9 @@ func (c *BaseDocker) CreateCheckDeployHostsResultCmd(host *models.Host) (checkDe
 func (c *BaseDocker) AnalyzePlatformParam(encryptionDomain string) (resPlatformValue string, err error) {
 
 	platformValues := make([]*models.PlatformValue, 0)
+	fmt.Printf("platformValue: %s\n",c.BaseComponents.Platform.Value)
 	if err := json.Unmarshal([]byte(c.BaseComponents.Platform.Value), &platformValues); err != nil {
+		fmt.Printf("error:  json.Unmarshal  ::  %s\n",c.BaseComponents.Platform.Value)
 		return resPlatformValue, err
 	}
 
