@@ -416,7 +416,7 @@ func (c *DeployController) RunDockerCmd(task *models.Task, cmdType string, docke
 
 	// check
 	if cmdType == "check" {
-		sshExec, resId, err = docker.BaseComponents.RunLocalCommandHostLog(task, cmd, 120, host, "add")
+		sshExec, resId, err = docker.BaseComponents.RunLocalCommandHostLog(task, cmd,60*10 , host, "add")
 		if err != nil {
 			fmt.Println("error docker check ", err)
 			fmt.Println("sshEcec result : ", sshExec.Result)
@@ -426,7 +426,7 @@ func (c *DeployController) RunDockerCmd(task *models.Task, cmdType string, docke
 
 	//docker pull
 	if cmdType == "pull" {
-		sshExec, resId, err = docker.BaseComponents.RunLocal(task, cmd, 0, host, "add")
+		sshExec, resId, err = docker.BaseComponents.RunLocal(task, cmd, 60*10, host, "add")
 		if err != nil {
 			fmt.Println("error docker pull ", err)
 			fmt.Println("sshEcec result : ", sshExec.Result)
@@ -436,7 +436,7 @@ func (c *DeployController) RunDockerCmd(task *models.Task, cmdType string, docke
 
 	// docker run
 	if cmdType == "run" {
-		sshExec, resId, err = docker.BaseComponents.RunLocal(task, cmd, 60, host, "add")
+		sshExec, resId, err = docker.BaseComponents.RunLocal(task, cmd, 60*10, host, "add")
 		if err != nil {
 			fmt.Println("error docker run ", err)
 			fmt.Println("sshEcec result : ", sshExec.Result)
@@ -447,7 +447,7 @@ func (c *DeployController) RunDockerCmd(task *models.Task, cmdType string, docke
 
 	// domain docker run
 	if cmdType == "domain" {
-		sshExec, resId, err = docker.BaseComponents.RunLocal(task, cmd, 60, host, "add")
+		sshExec, resId, err = docker.BaseComponents.RunLocal(task, cmd, 60*10, host, "add")
 		if err != nil {
 			fmt.Println("error domain docker cmd ", err)
 			fmt.Println("sshEcec result : ", sshExec.Result)
@@ -457,7 +457,7 @@ func (c *DeployController) RunDockerCmd(task *models.Task, cmdType string, docke
 
 	// docker run cp black-list
 	if cmdType == "black-list" {
-		sshExec, resId, err = docker.BaseComponents.RunLocal(task, cmd, 60, host, "add")
+		sshExec, resId, err = docker.BaseComponents.RunLocal(task, cmd, 60*10, host, "add")
 		if err != nil {
 			fmt.Println("error black-list cp docker cmd ", err)
 			fmt.Println("sshEcec result : ", sshExec.Result)

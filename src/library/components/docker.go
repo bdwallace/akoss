@@ -583,7 +583,7 @@ func (c *BaseDocker) CreateDockerCmd(task *models.Task, count int, serviceClass 
 
 			platformParam, err = c.AnalyzePlatformParam(encryptionDomain)
 			if err != nil {
-				beego.Error("AnalyzePlatformParam error!")
+				fmt.Printf("AnalyzePlatformParam error! ::  %s\n",err)
 				return
 			}
 		}
@@ -750,7 +750,6 @@ func (c *BaseDocker) CreateCheckDeployHostsResultCmd(host *models.Host) (checkDe
 func (c *BaseDocker) AnalyzePlatformParam(encryptionDomain string) (resPlatformValue string, err error) {
 
 	platformValues := make([]*models.PlatformValue, 0)
-	fmt.Printf("platformValue: %s\n",c.BaseComponents.Platform.Value)
 	if err := json.Unmarshal([]byte(c.BaseComponents.Platform.Value), &platformValues); err != nil {
 		fmt.Printf("error:  json.Unmarshal  ::  %s\n",c.BaseComponents.Platform.Value)
 		return resPlatformValue, err
@@ -804,6 +803,7 @@ func (c *BaseDocker) AnalyzePlatformParam(encryptionDomain string) (resPlatformV
 
 		vueEncryptValue, err := common.DesECBEncrypt(vueStr, keyStr)
 		if err != nil {
+			fmt.Printf("error: DesECBEncrypt, Missing emqtt public parameter  ::  %s",err)
 			return "", err
 		}
 
