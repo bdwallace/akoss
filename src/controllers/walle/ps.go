@@ -23,6 +23,8 @@ func (c *WalleController) DockerPs() {
 		return
 	}
 
+	components.GetServiceNacos(c.Service.Project,service)
+
 	_, err = models.GetServiceAllRelated(service)
 	if err != nil {
 		c.SetJson(1, err, "获取 service host conf by id失败")

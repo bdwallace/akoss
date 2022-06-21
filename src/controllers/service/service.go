@@ -360,6 +360,11 @@ func (c *ServiceController) AddServiceAllRelatedByService() {
 		c.SetJson(1, nil, "数据格式错误")
 		return
 	}
+ 	components.GetServiceNacos(c.Service.Project,service)
+	if service.NacosUserName == "" || service.NacosPwd == ""{
+		c.SetJson(1, nil, "获取nacos用户名密码失败")
+		return
+	}
 
 	// 2. 校验数据
 	if service.Hosts == nil {
