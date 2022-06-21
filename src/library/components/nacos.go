@@ -2,7 +2,7 @@ package components
 
 import "models"
 
-func GetServiceNacos(p * models.Project, s * models.Service){
+func GetServiceNacos(p * models.Project, s * models.Service)(err error){
 
 	nacosList := make([]string,0)
 	nacosList = append(nacosList, p.Nacos1)
@@ -25,6 +25,8 @@ func GetServiceNacos(p * models.Project, s * models.Service){
 			}
 		}
 	}
+
+	_, err = models.UpdateServiceById(s)
 
 	return
 }

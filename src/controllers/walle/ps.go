@@ -23,7 +23,10 @@ func (c *WalleController) DockerPs() {
 		return
 	}
 
-	components.GetServiceNacos(service.Project,service)
+	if err := components.GetServiceNacos(service.Project,service); err != nil{
+		c.SetJson(1, err, "获取service nacos username / pwd 失败")
+		return
+	}
 
 	_, err = models.GetServiceAllRelated(service)
 	if err != nil {
