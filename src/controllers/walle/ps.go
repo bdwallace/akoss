@@ -23,7 +23,7 @@ func (c *WalleController) DockerPs() {
 		return
 	}
 
-	components.GetServiceNacos(c.Service.Project,service)
+	components.GetServiceNacos(service.Project,service)
 
 	_, err = models.GetServiceAllRelated(service)
 	if err != nil {
