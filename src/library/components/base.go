@@ -324,7 +324,7 @@ func LineChangeHost(url string, host *models.Host, line string) (err error) {
 	for _, service := range hosts.Services {
 		port := service.Port
 		hostPort := fmt.Sprintf("%s:%s", host.UseIp, port)
-		err = LineChange(url, hostPort, line)
+		err = LineChange(service, url, hostPort, line)
 		if err != nil {
 			return
 		}
@@ -335,9 +335,9 @@ func LineChangeHost(url string, host *models.Host, line string) (err error) {
 }
 
 // ????
-func LineChange(url string, hostPort string, line string) (err error) {
+func LineChange(s * models.Service, url string, hostPort string, line string) (err error) {
 
-	lineData, err := Line(url)
+	lineData, err := Line(s, url)
 	if err != nil {
 		return
 	}
@@ -360,6 +360,12 @@ func LineChange(url string, hostPort string, line string) (err error) {
 	reqPost.Param("dataId", "grayReleaseConfig.properties")
 	reqPost.Param("group", "DEFAULT_GROUP")
 	reqPost.Param("type", "properties")
+
+	if s.NacosUserName != "" && s.NacosPwd != ""{
+		reqPost.Param("username", s.NacosUserName)
+		reqPost.Param("password", s.NacosPwd)
+	}
+
 	content1 := "grayRelease.enable=true\r\n"
 	content2 := "grayRelease.grayLogEnabled=true\r\n"
 	content3 := "grayRelease.grayClientIpList=\r\n"
@@ -376,10 +382,16 @@ func LineChange(url string, hostPort string, line string) (err error) {
 
 }
 
-func Line(url string) (lineStr string, err error) {
+func Line(s * models.Service, url string) (lineStr string, err error) {
 	req := httplib.Get(url)
 	req.Param("dataId", "grayReleaseConfig.properties")
 	req.Param("group", "DEFAULT_GROUP")
+
+	if s.NacosUserName != "" && s.NacosPwd != ""{
+		req.Param("username", s.NacosUserName)
+		req.Param("password", s.NacosPwd)
+	}
+
 	result, err := req.String()
 	//beego.Info(fmt.Sprintf("curl: %s", url))
 

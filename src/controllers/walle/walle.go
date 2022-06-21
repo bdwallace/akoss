@@ -96,7 +96,7 @@ func (c *WalleController) LineGet() {
 	ipList := ""
 	if c.Service.UseNacos != "" {
 		url := "http://" + c.Service.UseNacos + "/nacos/v1/cs/configs"
-		ipList, err = components.LineGet(url)
+		ipList, err = components.LineGet(c.Service, url)
 		if err != nil {
 			c.SetJson(1, err.Error(), "访问nacos的下线列表失败")
 			return
@@ -133,7 +133,7 @@ func (c *WalleController) LineChange() {
 	}
 
 	url := "http://" + c.Service.UseNacos + "/nacos/v1/cs/configs"
-	lineData, err := components.LineGet(url)
+	lineData, err := components.LineGet(c.Service, url)
 	if err != nil {
 		c.SetJson(1, err.Error(), "获取nacos接口数据返回失败")
 		return
@@ -157,6 +157,12 @@ func (c *WalleController) LineChange() {
 	reqPost.Param("dataId", "grayReleaseConfig.properties")
 	reqPost.Param("group", "DEFAULT_GROUP")
 	reqPost.Param("type", "properties")
+
+	if c.Service.NacosUserName != "" && c.Service.NacosPwd != ""{
+		reqPost.Param("username", c.Service.NacosUserName)
+		reqPost.Param("password", c.Service.NacosPwd)
+	}
+
 	content1 := "grayRelease.enable=true\r\n"
 	content2 := "grayRelease.grayLogEnabled=true\r\n"
 	content3 := "grayRelease.grayClientIpList=\r\n"
@@ -184,6 +190,8 @@ func (c *WalleController) GetServiceNacos(serviceId int) (err error) {
 
 	if c.Service.UseNacos == "" && c.Project.Nacos1 != ""{
 		c.Service.UseNacos = c.Project.Nacos1
+		c.Service.NacosUserName = c.Project.Nacos1UserName
+		c.Service.NacosPwd = c.Project.Nacos1Pwd
 		if err = models.UpdateServiceAndRelated(c.Service); err != nil {
 			c.SetJson(1, err.Error(), "update service.UseNacos failed!")
 			return

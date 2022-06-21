@@ -24,6 +24,8 @@ type Service struct {
 	BlackList     string `orm:"column(black_list);type(text);null"`
 	DenyUserAgent string `orm:"column(deny_user_agent);type(text);null"`
 	UseNacos      string `orm:"column(use_nacos);size(100);"`
+	NacosUserName string `orm:"column(nacos_user_name);size(100);"`
+	NacosPwd	  string `orm:"column(nacos_password);size(100);"`
 	DockerNetwork string `orm:"column(docker_network);size(100);"`
 	DockerPort	  string `orm:"column(docker_port);size(100)"`
 	DockerTlsPath string `orm:"column(docker_tls_path);size(100);null;"`

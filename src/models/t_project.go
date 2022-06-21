@@ -10,15 +10,24 @@ import (
 )
 
 type Project struct {
-	Id           int    `orm:"column(id);pk;auto"`
-	Name         string `orm:"column(name);size(100);unique"`  // 项目名称，创建后不可修改
-	Alias        string `orm:"column(alias);size(100);unique"` // 项目别名
-	Nacos1       string `orm:"column(nacos_1);size(100);null"`
-	Nacos2       string `orm:"column(nacos_2);size(100);null"`
-	Nacos3       string `orm:"column(nacos_3);size(100);null"`
-	AwsKeyId     string `orm:"column(aws_key_id);size(100);null"`
-	AwsKeySecret string `orm:"column(aws_key_secret);size(100);null"`
-	AwsRegion    string `orm:"column(aws_region);size(100);null"`
+	Id           	int    `orm:"column(id);pk;auto"`
+	Name         	string `orm:"column(name);size(100);unique"`  // 项目名称，创建后不可修改
+	Alias        	string `orm:"column(alias);size(100);unique"` // 项目别名
+	Nacos1       	string `orm:"column(nacos_1);size(100);null"`
+	Nacos1UserName 	string `orm:"column(user_name_nacos_1);size(100);null"`
+	Nacos1Pwd	 	string `orm:"column(password_nacos_1);size(100);null"`
+
+	Nacos2       	string `orm:"column(nacos_2);size(100);null"`
+	Nacos2UserName 	string `orm:"column(user_name_nacos_2);size(100);null"`
+	Nacos2Pwd	 	string `orm:"column(password_nacos_2);size(100);null"`
+
+	Nacos3       	string `orm:"column(nacos_3);size(100);null"`
+	Nacos3UserName 	string `orm:"column(user_name_nacos_3);size(100);null"`
+	Nacos3Pwd	 	string `orm:"column(password_nacos_3);size(100);null"`
+
+	AwsKeyId     	string `orm:"column(aws_key_id);size(100);null"`
+	AwsKeySecret 	string `orm:"column(aws_key_secret);size(100);null"`
+	AwsRegion    	string `orm:"column(aws_region);size(100);null"`
 
 	CreatedAt time.Time `orm:"column(created_at);type(datetime);auto_now_add;"`
 	UpdatedAt time.Time `orm:"column(updated_at);type(datetime);auto_now;"`
@@ -462,10 +471,10 @@ func GetNacosByProjectId(id int) (nacos []*Nacos, err error) {
 		nacos = append(nacos, n2)
 	}
 	if len(p.Nacos3) > 6 {
-	        n3 := new(Nacos)
-	        n3.Name = "nacos-3"
-	        n3.Value = p.Nacos3
-	        nacos = append(nacos, n3)
+		n3 := new(Nacos)
+		n3.Name = "nacos-3"
+		n3.Value = p.Nacos3
+		nacos = append(nacos, n3)
 	}
 
 

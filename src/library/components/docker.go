@@ -180,7 +180,7 @@ func (c *BaseDocker) DockerPs(lineData string) (res []map[string]string, err err
 
 	if lineData == "" && c.BaseComponents.Service.UseNacos != ""{
 		url := "http://" + c.BaseComponents.Service.UseNacos + "/nacos/v1/cs/configs"
-		lineData, err = LineGet(url)
+		lineData, err = LineGet(c.BaseComponents.Service, url)
 		if err != nil {
 	  		return
 	  	}

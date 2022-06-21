@@ -8,50 +8,83 @@
         <el-col :span="8">
           <el-form ref="form" :model="form" :rules="rules">
 
-            <el-form-item label="名称:" prop="Name" label-width="120px">
-              <el-input v-model="form.Name" placeholder="请类型名称"
+            <el-form-item label="名称:" prop="Name" label-width="150px">
+              <el-input v-model="form.Name" placeholder="名称"
                         style="width: 300px;"></el-input>
             </el-form-item>
 
-            <el-form-item label="系统别名:" prop="Alias" label-width="120px">
-              <el-input v-model="form.Alias" placeholder="请类型名称"
+            <el-form-item label="系统别名:" prop="Alias" label-width="150px">
+              <el-input v-model="form.Alias" placeholder="系统别名"
                         style="width: 300px;"></el-input>
             </el-form-item>
 
-            <el-form-item label="Nacos-1:" prop="Nacos1" label-width="120px">
-              <el-input v-model="form.Nacos1" placeholder="请类型名称"
+<!--            ----------                  -->
+            <el-form-item label="Nacos-1:" prop="Nacos1" label-width="150px">
+              <el-input v-model="form.Nacos1" placeholder="Nacos-1"
                         style="width: 300px;"></el-input>
             </el-form-item>
 
-            <el-form-item label="Nacos-2:" prop="Nacos2" label-width="120px">
-              <el-input v-model="form.Nacos2" placeholder="请类型名称"
+            <el-form-item label="UserNameNacos1:" prop="UserNameNacos1" label-width="150px">
+              <el-input v-model="form.Nacos1UserName" placeholder="Nacos-1 UserName"
                         style="width: 300px;"></el-input>
             </el-form-item>
 
-            <el-form-item label="Nacos-3:" prop="Nacos3" label-width="120px">
-              <el-input v-model="form.Nacos3" placeholder="请类型名称"
+            <el-form-item label="PasswordNacos1:" prop="PasswordNacos1" label-width="150px">
+              <el-input v-model="form.Nacos1Pwd" placeholder="Nacos-1 Password"
                         style="width: 300px;"></el-input>
             </el-form-item>
 
-
-            <el-form-item label="Prometheus:" prop="Prometheus" label-width="120px">
-              <el-input v-model="form.Prometheus" placeholder="请类型名称"
+<!--            ----------                  -->
+            <el-form-item label="Nacos-2:" prop="Nacos2" label-width="150px">
+              <el-input v-model="form.Nacos2" placeholder="Nacos-2"
                         style="width: 300px;"></el-input>
             </el-form-item>
 
-            <el-form-item label="Aws默认区域:" prop="AwsRegion" label-width="120px">
-              <el-input v-model="form.AwsRegion" placeholder="请类型名称"
+            <el-form-item label="UserNameNacos2:" prop="UserNameNacos2" label-width="150px">
+              <el-input v-model="form.Nacos2UserName" placeholder="Nacos-2 UserName"
+                        style="width: 300px;"></el-input>
+            </el-form-item>
+
+            <el-form-item label="PasswordNacos2:" prop="PasswordNacos2" label-width="150px">
+              <el-input v-model="form.Nacos2Pwd" placeholder="Nacos2 Password"
+                        style="width: 300px;"></el-input>
+            </el-form-item>
+
+<!--            ----------                  -->
+            <el-form-item label="Nacos-3:" prop="Nacos3" label-width="150px">
+              <el-input v-model="form.Nacos3" placeholder="Nacos-3"
+                        style="width: 300px;"></el-input>
+            </el-form-item>
+
+            <el-form-item label="UserNameNacos3:" prop="UserNameNacos3" label-width="150px">
+              <el-input v-model="form.Nacos3UserName" placeholder="Nacos-3 UserName"
+                        style="width: 300px;"></el-input>
+            </el-form-item>
+
+            <el-form-item label="PasswordNacos3:" prop="PasswordNacos3" label-width="150px">
+              <el-input v-model="form.Nacos3Pwd" placeholder="Nacos-3 Password"
+                        style="width: 300px;"></el-input>
+            </el-form-item>
+
+            <!--            ----------                  -->
+            <el-form-item label="Prometheus:" prop="Prometheus" label-width="150px">
+              <el-input v-model="form.Prometheus" placeholder="Prometheus"
+                        style="width: 300px;"></el-input>
+            </el-form-item>
+
+            <el-form-item label="Aws默认区域:" prop="AwsRegion" label-width="150px">
+              <el-input v-model="form.AwsRegion" placeholder="AwsRegion"
                         style="width: 300px;"></el-input>
             </el-form-item>
 
             <div v-show="userId == 1" >
-              <el-form-item label="AwsKeyId:" prop="AwsKeyId" label-width="120px">
-                <el-input v-model="form.AwsKeyId" placeholder="请类型名称"
+              <el-form-item label="AwsKeyId:" prop="AwsKeyId" label-width="150px">
+                <el-input v-model="form.AwsKeyId" placeholder="AwsKeyId"
                           style="width: 300px;"></el-input>
               </el-form-item>
 
-              <el-form-item label="AwsKeySecret:" prop="AwsKeySecret" label-width="120px">
-                <el-input v-model="form.AwsKeySecret" placeholder="请类型名称"
+              <el-form-item label="AwsKeySecret:" prop="AwsKeySecret" label-width="150px">
+                <el-input v-model="form.AwsKeySecret" placeholder="AwsKeySecret"
                           style="width: 300px;"></el-input>
               </el-form-item>
 

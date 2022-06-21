@@ -45,6 +45,8 @@ func (c *ProjectController) AddProject() {
 		return
 	}
 
+
+
 	if 0 != project.Id {
 		// update project
 		resId, err := models.UpdateProject(&project)

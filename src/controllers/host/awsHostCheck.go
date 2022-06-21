@@ -458,7 +458,7 @@ func (c *HostCheckController) AwsStopOnlineHost() {
 
 	url := "http://" + c.Service.UseNacos + "/nacos/v1/cs/configs"
 
-	ipList, err := components.Line(url)
+	ipList, err := components.Line(c.Service, url)
 	if err != nil {
 		c.SetJson(1, err.Error(), "访问nacos的下线列表失败")
 		return
