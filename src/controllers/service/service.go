@@ -365,7 +365,7 @@ func (c *ServiceController) AddServiceAllRelatedByService() {
 		c.SetJson(1, err, "获取service nacos username / pwd 失败")
 		return
 	}
-	if service.NacosUserName == "" || service.NacosPwd == ""{
+	if (service.NacosUserName == "" || service.NacosPwd == "") && service.Id > 0 {
 		c.SetJson(1, nil, "获取nacos用户名密码失败")
 		return
 	}
