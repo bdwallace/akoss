@@ -1010,7 +1010,7 @@ func (c *BaseDocker) Build(operationRecord *models.OperationRecord) (repoTag str
 	}
 
 	cmd_date := "date +%Y%m%d-%H%M%S-%s"
-	cmd_push := fmt.Sprintf("%s;/usr/bin/env docker %s -H %s push %s/%s:%s", cmdTls, cmd_date, dockerManager, c.BaseComponents.Repo.AddressImage, c.BaseComponents.Service.ImagePath, repoTag)
+	cmd_push := fmt.Sprintf("%s /usr/bin/env docker -H %s push %s/%s:%s", cmdTls, dockerManager, c.BaseComponents.Repo.AddressImage, c.BaseComponents.Service.ImagePath, repoTag)
 	_, err = c.BaseComponents.LocalOther(cmd_push, 0, 100, operationRecord)
 	if err != nil {
 		return
