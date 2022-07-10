@@ -16,12 +16,12 @@ harbor.one2.cc/devops/akgo
 
 docker build . -t harbor.one2.cc/devops/akgo:$version
 
-#docker login -u docker -p r0JT67Ud6Ybt harbordev.one2.cc
+#docker login -u docker -p harbordev.one2.cc
 #docker push $repo:$version
 
 for repo in $docker_repo;do
     echo $repo:$version
-    docker login -u docker -p r0JT67Ud6Ybt harbor.one2.cc
+    docker login -u docker -p H6MUai+gsbMJSTCA harbor.one2.cc
     docker tag harbor.one2.cc/devops/akgo:$version $repo:$version
     docker push $repo:$version
 done

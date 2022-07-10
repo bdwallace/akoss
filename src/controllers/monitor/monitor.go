@@ -174,7 +174,7 @@ func DeployNodeExporter(host string, waitgroup *sync.WaitGroup) {
 		// 运行启动 cadvisor 命令
 		//fmt.Println("exec node_exporter is not exist")
 		fmt.Printf("%s:: exec deploy node_exporter ... \n", host)
-		//docker -H tcp://${remote} login -u docker -p r0JT67Ud6Ybt @REG_ADDRESS@ ; docker -H tcp://${remote} run --name node-exporter -d \
+		//docker -H tcp://${remote} login -u docker -p @REG_ADDRESS@ ; docker -H tcp://${remote} run --name node-exporter -d \
 		//dockerRun := fmt.Sprintf( "docker -H tcp://%s run -itd",host)
 		dockerPort := beego.AppConfig.String("dockerport")
 		repoUser := beego.AppConfig.String("repouser")
