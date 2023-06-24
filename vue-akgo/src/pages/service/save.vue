@@ -1,0 +1,777 @@
+<template>
+  <el-form ref="form" :model="form" :rules="rules">
+    <div class="panel">
+      <panel-title :title="$route.meta.title">
+      </panel-title>
+
+    </div>
+    <div class="panel-body" v-loading="load_data" element-loading-text="拼命加载中">
+      <el-row>
+        <el-col :span="11">
+            <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px">
+              <el-form-item label="服务名称:" prop="Name" label-width="150px">
+                <el-input v-model="form.Name" placeholder="请输入项目名称" style="width: 400px">
+                          </el-input>
+              </el-form-item>
+              <el-form-item label="别名:" prop="Alias" label-width="150px">
+                <el-input v-model="form.Alias" placeholder="请输入项目别名" style="width: 400px">
+                </el-input>
+              </el-form-item>
+
+              <el-form-item label="仓库地址:" prop="ImagePath" label-width="150px">
+                <el-input v-model="form.ImagePath" style="width: 400px;"></el-input>
+              </el-form-item>
+
+              <el-form-item label="服务端口:" prop="Port" label-width="150px">
+                <el-tooltip class="item" effect="dark"
+                            content="192.168.57.0:8080:80,8443:443" placement="top">
+                  <el-input v-model="form.Port" placeholder="请输入端口"
+                            style="width: 400px;"></el-input>
+                </el-tooltip>
+              </el-form-item>
+
+              <el-form-item label="容器名:" prop="DockerName" label-width="150px">
+                <el-tooltip class="item" effect="dark"
+                            content="指定容器名，为兼容OSS容器名而设置，默认容器名==项目名" placement="top">
+                  <el-input v-model="form.DockerName" placeholder="项目名_系统别名"
+                            style="width: 400px;"></el-input>
+                </el-tooltip>
+              </el-form-item>
+
+              <el-form-item label="日志关键字:" prop="LogKeyword" label-width="150px">
+                <el-tooltip class="item" effect="dark"
+                            content="如果有关键字，则在第一台目标机docker启动时一直到跟踪检测到有这个关键字为止" placement="top">
+                  <el-input v-model="form.LogKeyword" placeholder="Started .* seconds"
+                            style="width: 400px;"></el-input>
+                </el-tooltip>
+              </el-form-item>
+
+              <el-form-item label="健康监测:" prop="Health" label-width="150px">
+                <el-tooltip class="item" effect="dark"
+                            content="探测应用是否正常的URL" placement="top">
+                  <el-input v-model="form.Health" placeholder="${service_name}/actuator/health"
+                            style="width: 400px;"></el-input>
+                </el-tooltip>
+              </el-form-item>
+
+
+            <el-form-item label="Nacos:" prop="UseNacos" label-width="150px">
+                <el-select v-model="Nacos" placeholder="请选择"
+              clearable
+              style="width: 400px;">
+                <el-option
+                  v-for="item in itemNacos"
+                  :key="item.value"
+                  :label="`${item.value}`"
+                  :value="item.value">
+                </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="Docker Network:" prop="UseDockerNetwork" label-width="150px">
+              <el-select v-model="selectDockerNetwork" placeholder="请选择"
+                         clearable
+                         style="width: 400px;">
+                <el-option
+                  v-for="item in itemDockerNetwork"
+                  :key="item"
+                  :label="`${item}`"
+                  :value="item">
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+              <el-form-item label="Docker Port:" prop="UseDockerPort" label-width="150px">
+                <el-select v-model="selectDockerPort" placeholder="请选择"
+                           clearable
+                           style="width: 400px;">
+                  <el-option
+                    v-for="item in itemDockerPort"
+                    :key="item"
+                    :label="`${item}`"
+                    :value="item">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+
+              <el-form-item label="Docker TLS path:" prop="DockerTlsPath" label-width="150px">
+                <el-tooltip class="item" effect="dark"
+                            content="/etc/openssl/" placement="top">
+                  <el-input v-model="form.DockerTlsPath" placeholder="/etc/openssl/"
+                            style="width: 400px;"></el-input>
+                </el-tooltip>
+              </el-form-item>
+
+<!--
+
+
+              <el-form-item label="Docker TLS path:" prop="DockerTlsPath" label-width="150px">
+                <el-input v-model="form.DockerTLSPath" style="width: 400px;"></el-input>
+              </el-form-item>
+-->
+
+            </div>
+            <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px">
+                  <el-form-item label="上传地址:" prop="ReleaseTo" label-width="100px">
+                    <el-input v-model="form.ReleaseTo" style="width: 400px;" placeholder="download html 上传目录"></el-input>
+                  </el-form-item>
+            </div>
+
+            <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px">
+              <el-form-item label="机器列表:" prop="Hosts" label-width="100px">
+                <el-form-item v-for="(item, hostindex) in form.Hosts" :key="hostindex" style="margin-top: 5px">
+                  <el-button @click.stop="get_itemHost()" size="mini">
+                    <i class="fa fa-refresh"></i>
+                  </el-button>
+                  <el-select v-model="form.Hosts[hostindex]" placeholder="选择主机"
+                              filterable
+                              clearable
+                              value-key="Id"
+                              style="width: 400px;">
+                      <!-- :label="`${item.Name} / ${item.PrivateIp} / ${item.PublicIp} / ${item.UseIp}`" -->
+                    <el-option
+                      v-for="item in itemHost"
+                      :key="item"
+                      :label="`${item.Name} / ${item.UseIp}`"
+                      :value="item">
+                    </el-option>
+                  </el-select>
+
+                  <el-button type="warning" icon="delete" size="mini" @click="del_Host(hostindex)">删除</el-button>
+                </el-form-item>
+              </el-form-item>
+              <el-button type="primary" icon="plus" size="mini" @click="add_Host()">添加</el-button>
+            </div>
+
+            <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px">
+              <el-form-item label="自定义参数:" v-for="(list,index) in valueJson" :key="index" label-width="100px">
+                <el-input v-model="valueJson[index].Value" placeholder="请输入自定义参数"
+                      type="textarea" autosize
+                      style="width: 400px;">
+                </el-input>
+
+                <el-select v-model="valueJson[index].HostId" placeholder="不选为全部主机"
+                            filterable
+                            clearable
+                            style="width: 150px;">
+                  <el-option
+                    v-for="item in form.Hosts"
+                    :key="item.Id"
+                    :label="`${item.Name} / ${item.UseIp}`"
+                    :value="item.Id">
+                  </el-option>
+                </el-select>
+
+                <el-button type="warning" icon="delete" size="mini"   @click="del_valueJson(index)">删除</el-button>
+
+              </el-form-item>
+
+              <el-button type="primary" icon="plus" size="mini"   @click="add_valueJson()">添加</el-button>
+            </div>
+
+          <el-form-item v-if="form.Class == 'h5' || form.Class == 'h5-proxy' || form.Class == 'h5-site' || form.Class == 'merchant' || form.Class == 'other'">
+            <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px;weight:500px">
+
+            <el-form-item label="黑名单列表:" prop="BlackList" label-width="100px">
+              <el-input type="textarea" :rows="5" placeholder="eg:
+deny 1.1.1.1;
+deny 2.2.2.2；
+allow all;"
+                    v-model.trim="form.BlackList" style="width: 599px;"></el-input>
+            </el-form-item>
+
+            <el-form-item label="禁止UA:" prop="DenyUserAgent" label-width="100px">
+              <el-input type="textarea" :rows="5" placeholder="eg:
+...
+...
+...
+"
+                        v-model.trim="form.DenyUserAgent" style="width: 599px;"></el-input>
+            </el-form-item>
+            </div>
+
+          </el-form-item>
+        </el-col>
+
+
+        <el-col :span="12" style="margin-left: 10px">
+
+
+          <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px">
+            <el-form-item label="关联公有参数:" v-for="(conf,confindex) in form.Confs" :key="confindex">
+              <el-select v-model="form.Confs[confindex]" placeholder="选择已有公有类"
+                          filterable
+                          value-key="Id"
+                          style="width: 400px;">
+                <el-option
+                  v-for="item in itemConf"
+                  :key="item"
+                  :label="item.Name"
+                  :value="item">
+                </el-option>
+              </el-select>
+
+              <el-button @click.stop="get_itemConf" size="mini">
+                <i class="fa fa-refresh"></i>
+              </el-button>
+
+              <el-button type="warning" icon="delete" size="mini" @click="del_Conf(confindex)">删除</el-button>
+
+              <el-form-item>
+                <table v-if="form.Confs[confindex].Value">
+                  <tr v-for="(item, index) in JSON.parse(form.Confs[confindex].Value)" :key="index" style="line-height:20px">
+                      <td align="right" style="width:300px;padding:5px">
+                          {{ item.Key }}
+                      </td>
+
+                      <td align="left" style="padding:5px">
+                          {{ item.Value }}
+                      </td>
+                  </tr>
+                </table>
+              </el-form-item>
+
+            </el-form-item>
+
+            <el-button type="primary" icon="plus" size="mini"   @click="add_Conf()">添加</el-button>
+          </div>
+
+          <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px">
+            <el-form-item label="服务类型:" label-width="100px">
+              <el-select v-model="form.Class" placeholder="选择服务"
+                          filterable
+                          style="width: 400px;"
+                          @change="change_class()">
+                <el-option
+                  v-for="item in itemClass"
+                  :key="item"
+                  :label="item"
+                  :value="item">
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item v-if="form.Class != 'java'">
+            <el-form-item label="所属平台:" label-width="100px">
+              <el-select v-model="form.Platforms[0]" placeholder="选择平台"
+                          value-key="Id"
+                          filterable
+                          clearable
+                          style="width: 400px;"
+                          @change="change_platform()">
+                <el-option
+                  v-for="item in itemPlatform"
+                  :key="item.Name"
+                  :label="item.Name"
+                  :value="item">
+                </el-option>
+              </el-select>
+              <el-button @click.stop="get_itemPlatform()" size="mini">
+                <i class="fa fa-refresh"></i>
+              </el-button>
+            </el-form-item>
+
+            <td v-if="form.Platforms[0]&&!form.Platforms[0].Value" align="right" style="width:300px;padding:5px">
+              无平台参数
+            </td>
+            <table v-if="form.Platforms[0]&&form.Platforms[0].Value" >
+              <tr v-for="(item, index) in JSON.parse(form.Platforms[0].Value)" :key="index"
+                style="line-height:20px">
+                  <td align="right" style="width:300px;padding:5px">
+                      {{ item.Key }}
+                  </td>
+
+                  <td align="left" style="padding:5px">
+                      {{ item.Value }}
+                  </td>
+              </tr>
+            </table>
+
+            <el-form-item label="加速域名:" prop="Domains" label-width="100px">
+              <el-form-item v-for="(list,index) in form.Domains" :key="index" style="margin-top: 5px">
+                <!-- <el-button @click.stop="get_itemDomain()" size="mini">
+                  <i class="fa fa-refresh"></i>
+                </el-button> -->
+                <el-select v-model="form.Domains[index]" placeholder="请指定加速域名"
+                            value-key="Id"
+                            filterable
+                            clearable
+                            style="width: 400px;"
+                            @change="change_domain(index)">
+                    <!-- v-for="item in form.Platforms[0].Domains" -->
+                  <el-option
+                    value-key
+                    v-for="item in itemDomain"
+                    :key="item.Name"
+                    :label="`${item.Name} / ${item.Domain} / ${(item.Quicken == 0) ? '' : '加速'}`"
+                    :value="item">
+                  </el-option>
+                </el-select>
+                <!-- <el-button type="warning" icon="delete" size="mini"   @click="del_addDomain(index)">删除</el-button> -->
+                <font v-show="index == 0" style="color: red" size="1">此域名Mqtt加速！</font>
+              </el-form-item>
+            </el-form-item>
+
+            <!-- <el-button type="primary" icon="plus" size="mini"   @click="add_addDomain()">添加</el-button> -->
+            </el-form-item>
+
+            <el-form-item label="非加速域名:" prop="Domains" label-width="100px">
+              <div v-for="item in noQuickenDomain" :key="item">{{item.Domain}}</div>
+            </el-form-item>
+          </div>
+        </el-col>
+
+      </el-row>
+    </div>
+
+    <div class="panel" style="margin-top:5px;margin-bottom:15px;padding:15px">
+    <el-form-item>
+      <el-button type="primary" @click="on_submit_form" :loading="on_submit_loading">立即提交
+      </el-button>
+      <el-button @click="$router.back()">取消</el-button>
+    </el-form-item>
+    </div>
+  </el-form>
+</template>
+<script type="text/javascript">
+  import {panelTitle} from 'components'
+  import {port_platform, port_domain, port_conf, port_host, port_service,port_project} from 'common/port_uri'
+  import store from 'store'
+
+  export default {
+    data() {
+      return {
+        ProjectId: store.state.user_info.user.ProjectId,
+        form: {
+          Id: 0,
+          // UserId: store.state.user_info.user.Id,
+          Name: "",
+          Alias: "",
+          Class: "java",
+          ImagePath: null,
+          Port: "",
+          LogKeyword: "Started .* seconds",
+          BlackList:"",
+          DenyUserAgent: "",
+          // IsRegister: 0,
+          Health: "",
+          DockerName: "",
+          DockerNetwork: "",
+          DockerPort: "",
+          DockerTlsPath: "",
+          // Upload: "",
+          Value: "",
+          Hosts: [],
+          UseNacos: "",
+          Confs: [],
+          Project: {
+            Id: store.state.user_info.user.ProjectId,
+          },
+          Platforms: [],
+          Domains: [],
+          // DomainId: "",
+          // PlatformId: ""
+        },
+        Nacos:"",
+        itemNacos: [],
+        itemConf: [],
+        itemClass: [
+          "java",
+          "h5",
+          "h5-proxy",
+          "h5-site",
+          "merchant",
+          "download",
+          "download-share",
+          "agent",
+          "share-agent",
+          "customer",
+          "chat-backend",
+          "other"
+        ],
+        selectDockerNetwork: "",
+        selectDockerPort: "",
+        itemDockerNetwork: [
+          "--net=host",
+          "--net=bridge",
+        ],
+        itemDockerPort: [
+          "2375",
+          "32375",
+        ],
+        // valueJson: [{}],
+        valueJson:[{
+          Value: null,
+          HostId: null
+        }],
+        itemHost: [],
+        // addPlatform:[null],
+        itemPlatform: [],
+        // addDomain:[null],
+        itemDomain: [],
+        noQuickenDomain: [],
+        route_id: this.$route.params.id,
+        load_data: false,
+        on_submit_loading: false,
+        rules: {
+          Name: [{required: true, message: '项目名称不能为空', trigger: 'blur'}],
+          ImagePath: [{required: true, message: '项目地址不能为空', trigger: 'blur'}],
+          Port: [{required: true, message: '项目端口不能为空', trigger: 'blur'}],
+        }
+      }
+    },
+    created() {
+
+      this.get_itemNacos()
+      if (this.route_id) {
+        this.get_form_data()
+      }
+        this.get_itemPlatform()
+        this.get_itemConf()
+        this.get_itemHost()
+        // this.get_itemNacos()
+    },
+    methods: {
+      //下拉框获取已有域名
+      // get_itemDomain(){
+      //   this.load_data = true
+      //   this.$http.get(port_domain.platform, {
+      //                       params: {
+      //                           // project_id: this.ProjectId,
+      //                           platform_id: this.form.Platforms[0].Id,
+      //                       }
+      //                   })
+      //     .then(({data: {data}}) => {
+      //       this.load_data = true
+      //       this.itemDomain = data
+      //       this.load_data = false
+      //     })
+      //     .
+      //     catch(() => {
+      //       this.load_data = false
+      //     })
+      // },
+
+      get_itemNacos(){
+        this.load_data = true
+        this.$http.get(port_project.nacos, {
+          params: {
+            id: this.form.Project.Id
+          }
+        })
+          .then(({data: {data}}) => {
+            this.itemNacos = data
+            this.load_data = false
+          })
+          .
+          catch(() => {
+            this.load_data = false
+          })
+      },
+
+
+      add_Nacos(){
+        this.load_data = true
+        this.form.Nacos.push({});
+        this.load_data = false
+      },
+
+
+      get_itemDomain() {
+        this.load_data = true
+        if (this.form.Domains.length == 0) {
+          this.form.Domains.push(null)
+        }
+        this.itemDomain = []
+        for(let i in this.form.Platforms[0].Domains) {
+          if (this.form.Platforms[0].Domains[i].Class == this.form.Class) {
+            this.itemDomain.push(this.form.Platforms[0].Domains[i])
+          }
+        }
+
+        this.load_data = false
+      },
+
+      get_noQuickenDomain() {
+        this.load_data = true
+        this.$http.get(port_domain.noquickenlist, {
+                            params: {
+                                platform_id: this.form.Platforms[0].Id,
+                                class: this.form.Class
+                            }
+                        })
+          .then(({data: {data}}) => {
+            this.load_data = true
+            this.noQuickenDomain = data
+            this.load_data = false
+          })
+          .
+          catch(() => {
+            this.load_data = false
+          })
+
+      },
+
+      add_addDomain(){
+        this.load_data = true
+        this.form.Domains.push(null);
+        this.load_data = false
+      },
+
+      del_addDomain(index){
+        this.load_data = true
+        this.form.Domains.splice(index,1)
+        this.load_data = false
+      },
+
+      //下拉框获取已有类型
+      get_itemPlatform(){
+        this.load_data = true
+        this.$http.get(port_platform.list, {
+                            params: {
+                                project_id: this.ProjectId,
+                            }
+                        })
+          .then(({data: {data}}) => {
+            this.load_data = true
+            this.itemPlatform = data
+            this.load_data = false
+          })
+          .
+          catch(() => {
+            this.load_data = false
+          })
+      },
+
+      add_addplatform(){
+        this.load_data = true
+        this.form.Platforms.push(null);
+        this.load_data = false
+      },
+
+      del_addplatform(index){
+        this.load_data = true
+        this.form.Platforms.splice(index,1)
+        this.load_data = false
+      },
+
+      change_class() {
+        this.load_data = true
+        if (this.form.Class != "java") {
+          if (this.form.Platforms.length == 0 || this.form.Platforms[0] == "") {
+            this.form.Platforms[0] = this.itemPlatform[0]
+          }
+          this.get_itemDomain()
+          this.get_noQuickenDomain()
+        } else {
+            this.form.Platforms = []
+            this.form.Domains = []
+        }
+        this.load_data = false
+      },
+
+      change_platform() {
+        this.load_data = true
+        this.form.Domains = []
+        this.get_itemDomain()
+        this.get_noQuickenDomain()
+        this.load_data = false
+      },
+
+      change_domain(index) {
+        this.load_data = true
+        let obj = {}
+        if(this.form.Domains.length == 1 && this.form.Domains[1] == null) {
+          this.load_data = false
+          return
+        }
+        for ( let i in this.form.Domains) {
+          obj[this.form.Domains[i].Id] = i
+        }
+
+        if ( this.form.Domains.length != Object.keys(obj).length) {
+          // this.form.Domains.splice(index, 1)
+          this.form.Domains[index] = {}
+          this.$message({
+            message: "不能选择重复域名",
+            type: 'warning'
+          })
+          this.load_data = false
+        }
+
+        this.load_data = false
+      },
+
+      //下拉框获取已有公有类型
+      get_itemHost(){
+        this.load_data = true
+        this.$http.get(port_host.project, {
+                            params: {
+                                project_id: this.form.Project.Id
+                            }
+                        })
+          .then(({data: {data}}) => {
+            this.load_data = true
+            this.itemHost = data
+            this.load_data = false
+          })
+          .
+          catch(() => {
+            this.load_data = false
+          })
+      },
+
+      add_Host(){
+        this.load_data = true
+        this.form.Hosts.push({});
+        this.load_data = false
+      },
+
+      del_Host(index){
+        this.load_data = true
+        this.form.Hosts.splice(index,1)
+        this.load_data = false
+      },
+
+      add_valueJson(){
+        this.load_data = true
+        this.valueJson.push({
+          Value: null,
+          HostId: null
+        });
+        this.load_data = false
+      },
+
+      del_valueJson(index){
+        this.load_data = true
+        this.valueJson.splice(index, 1)
+        this.load_data = false
+      },
+
+      //下拉框获取已有公有类型
+      get_itemConf(){
+        this.load_data = true
+        this.$http.get(port_conf.list, {
+          params: {
+            project_id: this.form.Project.Id
+          }
+        })
+          .then(({data: {data}}) => {
+            this.itemConf = data
+            this.load_data = false
+          })
+          .
+          catch(() => {
+            this.load_data = false
+          })
+      },
+
+      add_Conf(){
+        this.load_data = true
+        this.form.Confs.push({});
+        this.load_data = false
+      },
+
+      del_Conf(index){
+        this.load_data = true
+        this.form.Confs.splice(index,1);
+        this.load_data = false
+      },
+
+      //获取数据
+      get_form_data() {
+        this.load_data = true
+        this.$http.get(port_service.id, {
+          params: {
+            id: this.route_id
+          }
+        })
+          .then(({data: {data}}) => {
+            this.form = data
+            if (this.form.Alias === "") {
+              this.form.Alias = this.form.Name
+            }
+
+            if(this.form.Platforms[0]) {
+              this.get_itemDomain()
+            }
+
+            this.Nacos = this.form.UseNacos
+            this.selectDockerNetwork = this.form.DockerNetwork
+            this.selectDockerPort = this.form.DockerPort
+
+            this.valueJson = JSON.parse(this.form.Value)
+          })
+          .catch(() => {
+            this.load_data = false
+          })
+      },
+
+      //时间选择改变时
+      on_change_birthday(val) {
+        this.$set(this.form, 'birthday', val)
+      },
+
+      //提交
+      on_submit_form() {
+        this.$refs.form.validate((valid) => {
+          if (
+            !valid
+          )
+            return false
+
+          this.load_data = true
+          this.on_submit_loading = true
+
+          this.form.Value = JSON.stringify(this.valueJson)
+          for (let i in this.form.Domains) {
+            if(this.form.Domains[i] === "" || this.form.Domains[i] === null) {
+              this.form.Domains.splice(i, 1)
+            }
+          }
+
+        if (this.Nacos !== "") {
+            this.form.UseNacos = this.Nacos
+          } else {
+            this.form.UseNacos = this.itemNacos[0].value
+          }
+
+         if (this.selectDockerNetwork !== "")  {
+            this.form.DockerNetwork = this.selectDockerNetwork
+         } else {
+            this.form.DockerNetwork = this.itemDockerNetwork[0]
+         }
+         if (this.selectDockerPort !== "") {
+            this.form.DockerPort = this.selectDockerPort
+         } else {
+            this.form.DockerPort = this.itemDockerPort[0]
+         }
+
+          this.$http.post(port_service.saverelated, this.form,this.Nacos)
+            .then(({data: {msg}}) => {
+              this.$message({
+                message: msg,
+                type: 'success'
+              })
+              setTimeout(() => {
+                  this.load_data = true
+                  this.$router.back()
+                },
+                500
+              )
+            })
+            .catch(() => {
+              this.load_data = false
+              this.on_submit_loading = false
+            })
+
+            this.load_data = false
+            this.on_submit_loading = false
+
+        })
+      }
+    },
+    components: {
+      panelTitle
+    }
+  }
+</script>
