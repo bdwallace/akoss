@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-# akoss
-
-This is Main Branch
-=======
 ## Docker 快速启动
 ``` shell
 # 创建akgo-mysql
@@ -79,4 +74,3 @@ npm run dev
 mysql -uroot -p123456 -h127.0.0.1 gopub
 update user set password_hash = "$2y$13$8q0MfKpnghuqCL.3FAAjiOkA8kBFNCW.ECUlqWp1zTpMHs9e5xn6u" where username = "admin";
 ```
->>>>>>> master
